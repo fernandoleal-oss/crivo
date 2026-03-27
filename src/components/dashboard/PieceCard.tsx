@@ -73,17 +73,19 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
       {expanded && (
         <div className="border-t border-slate-100 px-4 pb-4 pt-3 space-y-3">
           <div className="flex gap-2 flex-wrap">
-            <Button variant="outline" size="sm" onClick={copyLink}>Copiar link</Button>
+            <Button variant="outline" size="sm" onClick={copyLink} title="Copia o link de revisão da peça para a área de transferência">📋 Copiar link</Button>
             <Button
               size="sm"
               onClick={() => onSendToClient(piece)}
               className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              title="Envia um email para o cliente com o link de revisão"
             >
-              {piece.notified_at ? 'Reenviar para cliente' : 'Enviar para cliente'}
+              {piece.notified_at ? '📨 Reenviar para cliente' : '📨 Enviar para cliente'}
             </Button>
           </div>
-          <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Versões</p>
+          <p className="text-xs text-slate-400 mt-1">O cliente acessa o link, revisa a peça e aprova direto pelo navegador.</p>
+          <div className="mt-3">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Versões ({(piece.piece_versions ?? []).length})</p>
             {(piece.piece_versions ?? []).map(v => (
               <div key={v.id} className="flex items-center gap-2 text-sm text-slate-600">
                 <span>v{v.version_number}</span>

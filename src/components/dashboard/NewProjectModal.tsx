@@ -50,17 +50,23 @@ export function NewProjectModal({ onCreated, open: externalOpen, onOpenChange }:
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Novo Projeto</DialogTitle></DialogHeader>
+          <p className="text-sm text-slate-500 -mt-1 mb-2">
+            Um projeto agrupa todas as peças de uma campanha ou demanda. O cliente receberá links individuais para revisar cada peça.
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
             <div>
               <Label htmlFor="name">Nome do projeto</Label>
+              <p className="text-xs text-slate-400 mb-1">Identifique a campanha ou demanda. Use algo descritivo para facilitar a busca depois.</p>
               <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Campanha Janeiro 2026" required />
             </div>
             <div>
               <Label htmlFor="client">Cliente</Label>
+              <p className="text-xs text-slate-400 mb-1">Nome da empresa ou pessoa que vai aprovar as peças.</p>
               <Input id="client" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Ex: EMS Pharma" required />
             </div>
             <div>
               <Label>Setor responsável</Label>
+              <p className="text-xs text-slate-400 mb-1">Selecione a área da agência que cuida desse projeto.</p>
               <div className="flex gap-2 flex-wrap mt-1">
                 {SECTOR_OPTIONS.map(s => (
                   <button

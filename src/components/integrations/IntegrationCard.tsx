@@ -3,12 +3,16 @@ interface IntegrationCardProps {
   description: string
   icon: string
   status: 'active' | 'coming_soon'
+  howItWorks?: string
   onRequest?: () => void
+  requested?: boolean
 }
 
-export function IntegrationCard({ name, description, icon, status, onRequest }: IntegrationCardProps) {
+export function IntegrationCard({ name, description, icon, status, howItWorks, onRequest, requested }: IntegrationCardProps) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-5 flex items-start gap-4">
+    <div className={`bg-white border rounded-xl p-5 flex items-start gap-4 transition-colors ${
+      status === 'active' ? 'border-green-200' : 'border-slate-200'
+    }`}>
       <div className="text-3xl flex-shrink-0">{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
@@ -20,13 +24,23 @@ export function IntegrationCard({ name, description, icon, status, onRequest }: 
           )}
         </div>
         <p className="text-sm text-slate-500 mt-1">{description}</p>
+        {howItWorks && (
+          <p className="text-xs text-slate-400 mt-2 bg-slate-50 rounded-lg px-3 py-2">
+            ⚙️ <strong>Como funciona:</strong> {howItWorks}
+          </p>
+        )}
       </div>
       {status === 'coming_soon' && onRequest && (
         <button
-          onClick={onRequest}
-          className="flex-shrink-0 text-xs text-indigo-600 border border-indigo-200 rounded-lg px-3 py-1.5 hover:bg-indigo-50 transition-colors"
+          onClick={requested ? undefined : onRequest}
+          disabled={requested}
+          className={`flex-shrink-0 text-xs rounded-lg px-3 py-1.5 transition-colors ${
+            requested
+              ? 'bg-green-50 text-green-600 border border-green-200 cursor-default'
+              : 'text-indigo-600 border border-indigo-200 hover:bg-indigo-50'
+          }`}
         >
-          Solicitar acesso
+          {requested ? '✓ Solicitado' : 'Solicitar acesso'}
         </button>
       )}
     </div>

@@ -1,5 +1,34 @@
-# Crivo — Handoff de Sessão
+# Crivo v2 — Handoff de Sessão
 **Data:** 2026-03-27
+
+## Estado atual
+Branch: `feature/build` | Worktree: `/Users/fsleal/crivo/.worktrees/build`
+Build: ✅ | Deploy: https://crivo-neon.vercel.app
+Plano: `docs/superpowers/plans/2026-03-27-crivo-v2.md`
+
+## Para retomar
+Diga: "continua o Crivo v2 — executa o plano com subagents, worktree em /Users/fsleal/crivo/.worktrees/build"
+
+## 10 tasks do plano v2
+1. Migrações SQL — `projects.sector` + `comments.is_internal`
+2. Types + n8n client — tipos v2 + `notifySendClient()`
+3. UploadProgress — componente shared
+4. Upload XHR — progress bar real
+5. Thumbnail + EmptyState CTA
+6. ApprovalConfirmation — card pós-decisão
+7. SectorTabs — filtro por setor
+8. Comentários internos
+9. SendToClientModal + n8n Crivo_Send_Client
+10. Deploy final
+
+## Credenciais
+- Supabase: pvtozapmwecuqpzbdtfd
+- n8n key: /Users/fsleal/nummo-agent/.env → N8N_API_KEY
+- Evolution: https://evolutionapi.nummo-ai.com.br | 861C6E509DF7-4E15-9B87-BE99273B4B0F | zanini
+- Gmail n8n credential: DJSxBrCV2sAenBEI
+
+## ORIGINAL HANDOFF BELOW
+---
 
 ## Estado atual
 Branch de trabalho: `feature/build`

@@ -50,16 +50,22 @@ export function SendToClientModal({ open, piece, projectName, onClose, onSent }:
         <DialogHeader>
           <DialogTitle>Enviar para o cliente</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-slate-500 -mt-2">
-          O cliente receberá um email com o link de revisão e você receberá um aviso no WhatsApp.
-        </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 -mt-1 mb-2">
+          <p className="text-sm text-blue-700">
+            <strong>O que acontece:</strong> O cliente receberá um email com o link de revisão da peça.
+            Ele poderá visualizar, comentar e aprovar/pedir revisão — tudo sem precisar criar conta.
+            Você receberá um aviso no WhatsApp quando ele responder.
+          </p>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div>
             <Label htmlFor="cname">Nome do cliente</Label>
+            <p className="text-xs text-slate-400 mb-1">Aparecerá no email de convite.</p>
             <Input id="cname" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Ex: João Silva" required />
           </div>
           <div>
             <Label htmlFor="cemail">Email do cliente</Label>
+            <p className="text-xs text-slate-400 mb-1">O link de revisão será enviado para este email.</p>
             <Input id="cemail" type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="joao@empresa.com" required />
           </div>
           <div className="flex gap-2">

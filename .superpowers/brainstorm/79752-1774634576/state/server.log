@@ -1,0 +1,9 @@
+{"type":"server-started","port":59517,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:59517","screen_dir":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content","state_dir":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/state"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/analise.html"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/prioridade.html"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/waiting.html"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/melhorias.html"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/workspaces.html"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/distribuicao.html"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/79752-1774634576/content/waiting-2.html"}
+{"type":"server-stopped","reason":"idle timeout"}

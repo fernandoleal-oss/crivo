@@ -105,13 +105,18 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
       <Dialog open={open} onOpenChange={(v) => { if (!v) reset(); setOpen(v) }}>
         <DialogContent>
           <DialogHeader><DialogTitle>Nova Peça</DialogTitle></DialogHeader>
+          <p className="text-sm text-slate-500 -mt-1 mb-2">
+            Uma peça é o arquivo criativo que será enviado para aprovação. O cliente verá o título e a descrição ao revisar.
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
             <div>
-              <Label htmlFor="title">Título</Label>
+              <Label htmlFor="title">Título da peça</Label>
+              <p className="text-xs text-slate-400 mb-1">Nome descritivo que o cliente verá na tela de revisão.</p>
               <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Banner Instagram 1080x1080" required />
             </div>
             <div>
               <Label htmlFor="desc">Descrição (opcional)</Label>
+              <p className="text-xs text-slate-400 mb-1">Instruções ou contexto para o cliente entender a peça. Ex: &quot;Versão com fundo azul conforme briefing&quot;.</p>
               <Textarea id="desc" value={description} onChange={e => setDescription(e.target.value)} placeholder="Orientações para o cliente..." rows={2} />
             </div>
             <div>

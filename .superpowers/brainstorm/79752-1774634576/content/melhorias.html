@@ -1,0 +1,169 @@
+<h2>Pacote de melhorias — antes vs depois</h2>
+<p class="subtitle">6 mudanças de alto impacto para o desafio</p>
+
+<div class="section">
+  <div class="label">Melhoria 1 — Thumbnail no card da peça</div>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">❌ Antes</div>
+      <div class="mockup-body" style="padding:12px">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span style="font-weight:600;color:#0f172a">Banner Homepage</span>
+                <span style="background:#f1f5f9;color:#64748b;font-size:11px;padding:2px 8px;border-radius:999px">Pendente</span>
+              </div>
+              <div style="color:#94a3b8;font-size:12px;margin-top:4px">há 2 horas</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="mock-button" style="font-size:12px;padding:4px 10px">Copiar link</button>
+              <button class="mock-button" style="font-size:12px;padding:4px 10px">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">✅ Depois</div>
+      <div class="mockup-body" style="padding:12px">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+          <div style="height:120px;background:linear-gradient(135deg,#6366f1,#818cf8);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;position:relative">
+            <span>Banner_Homepage_v2.jpg</span>
+            <div style="position:absolute;top:8px;right:8px;background:#dcfce7;color:#16a34a;font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600">Aprovado</div>
+          </div>
+          <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-weight:600;color:#0f172a;font-size:14px">Banner Homepage</span>
+            <div style="display:flex;gap:6px">
+              <button class="mock-button" style="font-size:11px;padding:3px 8px">Copiar link</button>
+              <button class="mock-button" style="font-size:11px;padding:3px 8px">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Melhoria 2 — Progress bar no upload</div>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">❌ Antes — silêncio total</div>
+      <div class="mockup-body" style="padding:16px;text-align:center">
+        <button class="mock-button" style="opacity:0.6">Enviando...</button>
+        <p style="color:#94a3b8;font-size:12px;margin-top:8px">Nada aparece, parece que travou</p>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">✅ Depois — feedback em tempo real</div>
+      <div class="mockup-body" style="padding:16px">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:13px;color:#334155">Banner_Homepage.jpg</span>
+            <span style="font-size:13px;color:#6366f1;font-weight:600">67%</span>
+          </div>
+          <div style="background:#e2e8f0;border-radius:999px;height:6px">
+            <div style="background:#6366f1;width:67%;height:6px;border-radius:999px;transition:width 0.3s"></div>
+          </div>
+          <p style="color:#94a3b8;font-size:11px;margin-top:6px">Fazendo upload para o servidor...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Melhoria 3 — Erro de upload com mensagem clara</div>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">❌ Antes</div>
+      <div class="mockup-body" style="padding:16px;text-align:center">
+        <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px;color:#dc2626;font-size:13px">Erro no upload</div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">✅ Depois</div>
+      <div class="mockup-body" style="padding:16px">
+        <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:12px">
+          <div style="color:#dc2626;font-weight:600;font-size:13px;margin-bottom:4px">❌ Falha no upload</div>
+          <div style="color:#dc2626;font-size:12px">Só aceitamos JPG, PNG e PDF até 10MB. Verifique o arquivo e tente novamente.</div>
+          <button class="mock-button" style="margin-top:8px;font-size:12px;background:#dc2626;color:white;border:none">Tentar novamente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Melhoria 4 — Empty state mais guiado</div>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">❌ Antes — vazio genérico</div>
+      <div class="mockup-body" style="padding:24px;text-align:center;color:#94a3b8;font-size:13px">
+        Nenhum projeto encontrado.
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">✅ Depois — CTA claro</div>
+      <div class="mockup-body" style="padding:24px;text-align:center">
+        <div style="font-size:32px;margin-bottom:8px">📁</div>
+        <div style="font-weight:600;color:#0f172a;margin-bottom:4px">Nenhum projeto ainda</div>
+        <div style="color:#64748b;font-size:13px;margin-bottom:12px">Crie seu primeiro projeto e compartilhe o link de aprovação com seu cliente.</div>
+        <button class="mock-button" style="background:#6366f1;color:white;border:none;padding:8px 16px">+ Novo projeto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Melhoria 5 — Tela de review mais guiada para o cliente</div>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">❌ Antes — botões aparecem sem contexto</div>
+      <div class="mockup-body" style="padding:12px">
+        <div style="display:flex;gap:8px">
+          <button class="mock-button" style="background:#16a34a;color:white;border:none;flex:1;padding:8px">Aprovar</button>
+          <button class="mock-button" style="border-color:#d97706;color:#d97706;flex:1;padding:8px">Pedir Revisão</button>
+        </div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">✅ Depois — contexto + instrução</div>
+      <div class="mockup-body" style="padding:12px">
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:#0369a1">
+          💬 Clique na imagem para fixar um comentário em qualquer ponto. Quando terminar, use os botões abaixo.
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="mock-button" style="background:#16a34a;color:white;border:none;flex:1;padding:8px">✅ Aprovar</button>
+          <button class="mock-button" style="border-color:#d97706;color:#d97706;flex:1;padding:8px">↩ Pedir revisão</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Melhoria 6 — Confirmação visual após aprovação</div>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">❌ Antes — botões somem, nada celebra</div>
+      <div class="mockup-body" style="padding:16px;text-align:center">
+        <div style="background:#f1f5f9;border-radius:8px;padding:12px;color:#64748b;font-size:13px">
+          Decisão registrada ✓<br>
+          <span style="font-size:11px">Você ainda pode deixar comentários.</span>
+        </div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">✅ Depois — celebração + resumo</div>
+      <div class="mockup-body" style="padding:16px;text-align:center">
+        <div style="background:#dcfce7;border:1px solid #86efac;border-radius:12px;padding:16px">
+          <div style="font-size:28px;margin-bottom:6px">✅</div>
+          <div style="font-weight:700;color:#16a34a;font-size:15px">Aprovado!</div>
+          <div style="color:#15803d;font-size:12px;margin-top:4px">A agência foi notificada pelo WhatsApp.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
