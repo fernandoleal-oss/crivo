@@ -18,6 +18,7 @@ export function ProjectGrid() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [sector, setSector] = useState<Sector | 'all'>('all')
+  const [showModal, setShowModal] = useState(false)
 
   const fetchProjects = useCallback(async () => {
     const supabase = createClient()
@@ -49,8 +50,11 @@ export function ProjectGrid() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Projetos</h1>
-        <NewProjectModal onCreated={fetchProjects} />
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Projetos</h1>
+          <p className="text-sm text-slate-500 mt-1">Gerencie aprovações de peças criativas com seus clientes. Sem WhatsApp, sem planilha, sem confusão.</p>
+        </div>
+        <NewProjectModal open={showModal} onOpenChange={setShowModal} onCreated={fetchProjects} />
       </div>
       <DashboardCounters {...counters} />
       <SectorTabs value={sector} onChange={setSector} />
@@ -61,7 +65,9 @@ export function ProjectGrid() {
       {loading ? <ProjectGridSkeleton /> : filtered.length === 0 ? (
         <EmptyState
           title={search ? 'Nenhum projeto encontrado' : 'Nenhum projeto ainda'}
-          description={search ? 'Tente outro termo de busca.' : 'Crie seu primeiro projeto para começar.'}
+          description={search ? 'Tente outro termo de busca.' : 'Chega de aprovar peça por WhatsApp. Crie seu primeiro projeto e envie um link pro cliente revisar — sem app, sem cadastro.'}
+          actionLabel={search ? undefined : 'Criar primeiro projeto'}
+          onAction={search ? undefined : () => setShowModal(true)}
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
