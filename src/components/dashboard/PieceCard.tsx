@@ -1,18 +1,25 @@
 'use client'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import Image from 'next/image'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { UploadNewVersion } from './UploadNewVersion'
 import { formatRelativeTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import type { PieceWithVersions } from '@/lib/types'
 
-interface PieceCardProps { piece: PieceWithVersions; onRefresh: () => void }
+interface PieceCardProps {
+  piece: PieceWithVersions
+  onRefresh: () => void
+  onSendToClient: (piece: PieceWithVersions) => void
+}
 
-export function PieceCard({ piece, onRefresh }: PieceCardProps) {
+export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) {
   const [expanded, setExpanded] = useState(false)
   const latestVersion = piece.piece_versions?.at(-1)
   const approval = piece.approvals?.at(-1)
+  const isImage = latestVersion?.file_type.startsWith('image/')
+  const isPdf = latestVersion?.file_type === 'application/pdf'
 
   function copyLink() {
     const url = `${window.location.origin}/review/${piece.public_token}`
@@ -22,22 +29,59 @@ export function PieceCard({ piece, onRefresh }: PieceCardProps) {
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-      <div className="p-4 flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-medium text-slate-900">{piece.title}</h3>
+      {/* Thumbnail */}
+      {latestVersion && (
+        <div className="relative h-32 bg-slate-100">
+          {isImage ? (
+            <Image
+              src={latestVersion.file_url}
+              alt={piece.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 400px"
+            />
+          ) : isPdf ? (
+            <div className="flex items-center justify-center h-full gap-2 text-slate-400">
+              <span className="text-3xl">📄</span>
+              <span className="text-sm">PDF</span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-slate-300 text-2xl">📎</div>
+          )}
+          <div className="absolute top-2 right-2">
             <StatusBadge status={piece.status} />
           </div>
-          {piece.description && <p className="text-sm text-slate-500 mt-0.5">{piece.description}</p>}
-          <p className="text-xs text-slate-400 mt-1">{formatRelativeTime(piece.updated_at)}</p>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <Button variant="outline" size="sm" onClick={copyLink}>Copiar link</Button>
+      )}
+
+      <div className="p-4 flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-medium text-slate-900">{piece.title}</h3>
+          {piece.description && <p className="text-sm text-slate-500 mt-0.5">{piece.description}</p>}
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
+            <p className="text-xs text-slate-400">{formatRelativeTime(piece.updated_at)}</p>
+            {piece.notified_at && (
+              <span className="text-xs text-indigo-500">✉ Enviado {formatRelativeTime(piece.notified_at)}</span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-1 flex-shrink-0">
           <Button variant="ghost" size="sm" onClick={() => setExpanded(v => !v)}>{expanded ? '▲' : '▼'}</Button>
         </div>
       </div>
+
       {expanded && (
         <div className="border-t border-slate-100 px-4 pb-4 pt-3 space-y-3">
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={copyLink}>Copiar link</Button>
+            <Button
+              size="sm"
+              onClick={() => onSendToClient(piece)}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              {piece.notified_at ? 'Reenviar para cliente' : 'Enviar para cliente'}
+            </Button>
+          </div>
           <div>
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Versões</p>
             {(piece.piece_versions ?? []).map(v => (

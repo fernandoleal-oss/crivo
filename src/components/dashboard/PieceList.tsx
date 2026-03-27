@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { PieceCard } from './PieceCard'
 import { NewPieceModal } from './NewPieceModal'
+import { SendToClientModal } from './SendToClientModal'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { PieceListSkeleton } from '@/components/shared/LoadingSkeleton'
 import type { PieceWithVersions } from '@/lib/types'
@@ -13,6 +14,7 @@ interface PieceListProps { projectId: string; projectName: string }
 export function PieceList({ projectId, projectName }: PieceListProps) {
   const [pieces, setPieces] = useState<PieceWithVersions[]>([])
   const [loading, setLoading] = useState(true)
+  const [sendTarget, setSendTarget] = useState<PieceWithVersions | null>(null)
 
   const fetchPieces = useCallback(async () => {
     const supabase = createClient()
@@ -40,8 +42,6 @@ export function PieceList({ projectId, projectName }: PieceListProps) {
     return () => { supabase.removeChannel(channel) }
   }, [projectId, fetchPieces])
 
-  void projectName
-
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -52,9 +52,16 @@ export function PieceList({ projectId, projectName }: PieceListProps) {
         <EmptyState title="Nenhuma peça ainda" description="Crie a primeira peça desse projeto para enviar ao cliente." />
       ) : (
         <div className="space-y-3">
-          {pieces.map(piece => <PieceCard key={piece.id} piece={piece} onRefresh={fetchPieces} />)}
+          {pieces.map(piece => <PieceCard key={piece.id} piece={piece} onRefresh={fetchPieces} onSendToClient={setSendTarget} />)}
         </div>
       )}
+      <SendToClientModal
+        open={!!sendTarget}
+        piece={sendTarget}
+        projectName={projectName}
+        onClose={() => setSendTarget(null)}
+        onSent={fetchPieces}
+      />
     </div>
   )
 }

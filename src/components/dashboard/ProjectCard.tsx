@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { formatRelativeTime } from '@/lib/utils'
 import type { ProjectWithCounts } from '@/lib/types'
+import { SECTORS } from './SectorTabs'
 
 interface ProjectCardProps { project: ProjectWithCounts }
 
@@ -9,12 +10,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const approved = pieces.filter(p => p.status === 'approved').length
   const revision = pieces.filter(p => p.status === 'revision_requested').length
   const pending = pieces.filter(p => p.status === 'pending').length
+  const sectorInfo = SECTORS.find(s => s.value === project.sector)
 
   return (
     <Link href={`/project/${project.id}`}>
       <div className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer">
         <h3 className="font-semibold text-slate-900 leading-tight mb-1">{project.name}</h3>
-        <p className="text-sm text-slate-500 mb-3">{project.client_name}</p>
+        <p className="text-sm text-slate-500 mb-1">{project.client_name}</p>
+        {sectorInfo && sectorInfo.value !== 'all' && (
+          <span className="text-xs text-slate-400 block mb-2">{sectorInfo.icon} {sectorInfo.label}</span>
+        )}
         <div className="flex gap-2 flex-wrap">
           {approved > 0 && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{approved} aprovada{approved > 1 ? 's' : ''}</span>}
           {revision > 0 && <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{revision} revisão</span>}

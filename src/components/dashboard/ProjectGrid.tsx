@@ -1,19 +1,23 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { ProjectCard } from './ProjectCard'
 import { NewProjectModal } from './NewProjectModal'
+import { SectorTabs } from './SectorTabs'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ProjectGridSkeleton } from '@/components/shared/LoadingSkeleton'
 import { DashboardCounters } from './DashboardCounters'
 import { Input } from '@/components/ui/input'
 import type { ProjectWithCounts } from '@/lib/types'
+import type { Sector } from '@/lib/types'
 
 export function ProjectGrid() {
   const [projects, setProjects] = useState<ProjectWithCounts[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [sector, setSector] = useState<Sector | 'all'>('all')
 
   const fetchProjects = useCallback(async () => {
     const supabase = createClient()
@@ -27,10 +31,12 @@ export function ProjectGrid() {
 
   useEffect(() => { fetchProjects() }, [fetchProjects])
 
-  const filtered = projects.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.client_name.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = projects
+    .filter(p => sector === 'all' || p.sector === sector)
+    .filter(p =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.client_name.toLowerCase().includes(search.toLowerCase())
+    )
 
   const allPieces = projects.flatMap(p => p.pieces ?? [])
   const counters = {
@@ -47,6 +53,7 @@ export function ProjectGrid() {
         <NewProjectModal onCreated={fetchProjects} />
       </div>
       <DashboardCounters {...counters} />
+      <SectorTabs value={sector} onChange={setSector} />
       <div className="mb-4">
         <Input placeholder="Buscar por projeto ou cliente..." value={search}
           onChange={e => setSearch(e.target.value)} className="max-w-sm" />
@@ -61,6 +68,11 @@ export function ProjectGrid() {
           {filtered.map(project => <ProjectCard key={project.id} project={project} />)}
         </div>
       )}
+      <div className="mt-8 pt-4 border-t border-slate-100 text-center">
+        <Link href="/integrations" className="text-sm text-slate-400 hover:text-indigo-600 transition-colors">
+          🔌 Ver integrações disponíveis
+        </Link>
+      </div>
     </div>
   )
 }

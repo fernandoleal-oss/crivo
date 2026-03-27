@@ -5,6 +5,7 @@ import { PieceViewer } from './PieceViewer'
 import { CommentPanel } from './CommentPanel'
 import { VersionNav } from './VersionNav'
 import { ApprovalModal } from './ApprovalModal'
+import { ApprovalConfirmation } from './ApprovalConfirmation'
 import { PinLayer } from './PinLayer'
 import { VersionCompare } from './VersionCompare'
 import { StatusBadge } from '@/components/shared/StatusBadge'
@@ -18,7 +19,9 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
   const versions = piece.piece_versions?.sort((a, b) => a.version_number - b.version_number) ?? []
   const [currentVersion, setCurrentVersion] = useState<PieceVersion>(versions.at(-1)!)
   const [comments, setComments] = useState<Comment[]>([])
-  const [decided, setDecided] = useState(!!piece.approvals?.length)
+  const [decidedWith, setDecidedWith] = useState<'approved' | 'revision_requested' | null>(
+    piece.approvals?.length ? piece.approvals[0].decision : null
+  )
   const [showApprove, setShowApprove] = useState(false)
   const [showRevision, setShowRevision] = useState(false)
   const [hoveredPinIndex, setHoveredPinIndex] = useState<number | null>(null)
@@ -61,34 +64,38 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
                 pinComments={comments.filter(c => c.comment_type === 'pin')}
                 hoveredPinIndex={hoveredPinIndex}
                 onCommentAdded={fetchComments}
-                disabled={decided}
+                disabled={!!decidedWith}
               />
             </PieceViewer>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
-                {!decided && <span className="text-indigo-500 text-xs">Clique na imagem para fixar um comentário</span>}
+                {!decidedWith && <span className="text-indigo-500 text-xs">Clique na imagem para fixar um comentário</span>}
                 <p className="text-xs text-slate-400">v{currentVersion.version_number} · {formatRelativeTime(currentVersion.uploaded_at)}</p>
               </div>
               <a href={currentVersion.file_url} download className="text-xs text-indigo-600 hover:underline">⬇ Download</a>
             </div>
           </div>
           <div className="w-full lg:w-80 flex-shrink-0">
-            {decided ? (
-              <div className="bg-slate-100 rounded-lg p-4 text-center mb-4">
-                <p className="font-medium text-slate-700">Decisão registrada ✓</p>
-                <p className="text-sm text-slate-500 mt-1">Você ainda pode deixar comentários.</p>
+            {decidedWith ? (
+              <div className="mb-4">
+                <ApprovalConfirmation decision={decidedWith} />
               </div>
             ) : (
-              <div className="flex gap-2 mb-4">
-                <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700">Aprovar</Button>
-                <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700 hover:bg-amber-50">Pedir Revisão</Button>
-              </div>
+              <>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-xs text-blue-700">
+                  💬 Clique na imagem para fixar um comentário em qualquer ponto. Quando terminar, use os botões abaixo.
+                </div>
+                <div className="flex gap-2 mb-4">
+                  <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700">✅ Aprovar</Button>
+                  <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700 hover:bg-amber-50">↩ Pedir Revisão</Button>
+                </div>
+              </>
             )}
             <CommentPanel pieceId={piece.id} versionId={currentVersion.id} comments={comments}
               onCommentAdded={fetchComments} onPinHover={setHoveredPinIndex} />
           </div>
         </div>
-        {!decided && (
+        {!decidedWith && (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 flex gap-2 lg:hidden z-10">
             <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700">Aprovar</Button>
             <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700">Pedir Revisão</Button>
@@ -97,10 +104,10 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
       </div>
       <ApprovalModal open={showApprove} decision="approved" pieceId={piece.id} versionId={currentVersion.id}
         pieceName={piece.title} projectName={projectName} pieceToken={piece.public_token}
-        onClose={() => setShowApprove(false)} onDecided={() => setDecided(true)} />
+        onClose={() => setShowApprove(false)} onDecided={() => { setDecidedWith('approved') }} />
       <ApprovalModal open={showRevision} decision="revision_requested" pieceId={piece.id} versionId={currentVersion.id}
         pieceName={piece.title} projectName={projectName} pieceToken={piece.public_token}
-        onClose={() => setShowRevision(false)} onDecided={() => setDecided(true)} />
+        onClose={() => setShowRevision(false)} onDecided={() => { setDecidedWith('revision_requested') }} />
       {comparing && <VersionCompare versions={versions} onClose={() => setComparing(false)} />}
     </div>
   )

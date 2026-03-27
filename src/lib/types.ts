@@ -1,11 +1,13 @@
 export type PieceStatus = 'pending' | 'approved' | 'revision_requested'
 export type CommentType = 'general' | 'pin'
 export type ApprovalDecision = 'approved' | 'revision_requested'
+export type Sector = 'criacao' | 'rtv' | 'midia' | 'atendimento' | 'geral'
 
 export interface Project {
   id: string
   name: string
   client_name: string
+  sector: Sector
   created_at: string
 }
 
@@ -48,6 +50,7 @@ export interface Comment {
   comment_type: CommentType
   pin_x: number | null
   pin_y: number | null
+  is_internal: boolean
   created_at: string
 }
 
@@ -69,4 +72,14 @@ export interface NotifyDecisionPayload {
   feedback?: string
   decidedBy: string
   pieceToken: string
+  ownerPhone?: string
+}
+
+export interface SendToClientPayload {
+  pieceName: string
+  projectName: string
+  clientName: string
+  clientEmail: string
+  reviewUrl: string
+  attendantPhone?: string
 }

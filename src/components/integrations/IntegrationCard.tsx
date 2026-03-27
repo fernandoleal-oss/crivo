@@ -1,0 +1,34 @@
+interface IntegrationCardProps {
+  name: string
+  description: string
+  icon: string
+  status: 'active' | 'coming_soon'
+  onRequest?: () => void
+}
+
+export function IntegrationCard({ name, description, icon, status, onRequest }: IntegrationCardProps) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-5 flex items-start gap-4">
+      <div className="text-3xl flex-shrink-0">{icon}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="font-semibold text-slate-900">{name}</h3>
+          {status === 'active' ? (
+            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">✓ Ativo</span>
+          ) : (
+            <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium">Em breve</span>
+          )}
+        </div>
+        <p className="text-sm text-slate-500 mt-1">{description}</p>
+      </div>
+      {status === 'coming_soon' && onRequest && (
+        <button
+          onClick={onRequest}
+          className="flex-shrink-0 text-xs text-indigo-600 border border-indigo-200 rounded-lg px-3 py-1.5 hover:bg-indigo-50 transition-colors"
+        >
+          Solicitar acesso
+        </button>
+      )}
+    </div>
+  )
+}

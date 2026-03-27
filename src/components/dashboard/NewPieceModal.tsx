@@ -8,8 +8,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { UploadProgress } from '@/components/shared/UploadProgress'
 
 interface NewPieceModalProps { projectId: string; onCreated: () => void }
+
+function getUploadError(file: File): string | null {
+  if (!isValidFileType(file.type)) return 'Só aceitamos JPG, PNG e PDF.'
+  if (!isValidFileSize(file.size)) return 'Arquivo maior que 10MB.'
+  return null
+}
 
 export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
   const [open, setOpen] = useState(false)
@@ -17,21 +24,57 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [progress, setProgress] = useState(0)
+  const [uploadError, setUploadError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
     if (!f) return
-    if (!isValidFileType(f.type)) { toast.error('Tipo inválido. Use JPG, PNG ou PDF.'); return }
-    if (!isValidFileSize(f.size)) { toast.error('Arquivo muito grande. Máximo 10MB.'); return }
+    const err = getUploadError(f)
+    if (err) { toast.error(err); return }
     setFile(f)
+    setUploadError(undefined)
+    setProgress(0)
+  }
+
+  function reset() {
+    setTitle(''); setDescription(''); setFile(null)
+    setProgress(0); setUploadError(undefined); setLoading(false)
+  }
+
+  async function uploadWithProgress(path: string, fileToUpload: File, bucketName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const supabase = createClient()
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/${bucketName}/${path}`
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', url)
+      xhr.setRequestHeader('Authorization', `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`)
+      xhr.setRequestHeader('x-upsert', 'false')
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100))
+      }
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const { data } = supabase.storage.from(bucketName).getPublicUrl(path)
+          resolve(data.publicUrl)
+        } else {
+          reject(new Error('Upload falhou'))
+        }
+      }
+      xhr.onerror = () => reject(new Error('Falha na conexão. Tente novamente.'))
+      const formData = new FormData()
+      formData.append('', fileToUpload)
+      xhr.send(formData)
+    })
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim() || !file) { toast.error('Preencha o título e selecione um arquivo.'); return }
     setLoading(true)
+    setUploadError(undefined)
+    setProgress(0)
     const supabase = createClient()
     const token = generateToken()
     const { data: piece, error: pieceErr } = await supabase
@@ -40,20 +83,26 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
       .select().single()
     if (pieceErr || !piece) { toast.error('Erro ao criar peça'); setLoading(false); return }
     const path = `${piece.id}/1/${file.name}`
-    const { error: uploadErr } = await supabase.storage.from('pieces').upload(path, file)
-    if (uploadErr) { toast.error('Erro no upload'); setLoading(false); return }
-    setProgress(100)
-    const { data: { publicUrl } } = supabase.storage.from('pieces').getPublicUrl(path)
+    let publicUrl: string
+    try {
+      publicUrl = await uploadWithProgress(path, file, 'pieces')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro no upload'
+      setUploadError(msg)
+      await supabase.from('pieces').delete().eq('id', piece.id)
+      setLoading(false)
+      return
+    }
     await supabase.from('piece_versions').insert({ piece_id: piece.id, version_number: 1, file_url: publicUrl, file_type: file.type })
     toast.success('Peça criada!')
-    setTitle(''); setDescription(''); setFile(null); setProgress(0); setOpen(false); setLoading(false)
+    reset(); setOpen(false)
     onCreated()
   }
 
   return (
     <>
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>+ Nova Peça</Button>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(v) => { if (!v) reset(); setOpen(v) }}>
         <DialogContent>
           <DialogHeader><DialogTitle>Nova Peça</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -69,14 +118,16 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
               <Label>Arquivo (JPG, PNG ou PDF — máx. 10MB)</Label>
               <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={handleFile} className="hidden" />
               <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-slate-200 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-300 transition-colors mt-1">
-                {file ? <p className="text-sm text-slate-700">{file.name} — {formatFileSize(file.size)}</p>
+                {file
+                  ? <p className="text-sm text-slate-700">{file.name} — {formatFileSize(file.size)}</p>
                   : <p className="text-sm text-slate-400">Clique para selecionar</p>}
               </div>
-              {progress > 0 && progress < 100 && (
-                <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                  <div className="bg-indigo-500 h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
-                </div>
-              )}
+              <UploadProgress
+                progress={progress}
+                fileName={file?.name ?? ''}
+                error={uploadError}
+                onRetry={() => { setUploadError(undefined); setProgress(0) }}
+              />
             </div>
             <Button type="submit" disabled={loading || !file} className="w-full bg-indigo-600 hover:bg-indigo-700">
               {loading ? 'Enviando...' : 'Criar Peça'}
