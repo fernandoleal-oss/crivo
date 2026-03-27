@@ -1,0 +1,66 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { ProjectCard } from './ProjectCard'
+import { NewProjectModal } from './NewProjectModal'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { ProjectGridSkeleton } from '@/components/shared/LoadingSkeleton'
+import { DashboardCounters } from './DashboardCounters'
+import { Input } from '@/components/ui/input'
+import type { ProjectWithCounts } from '@/lib/types'
+
+export function ProjectGrid() {
+  const [projects, setProjects] = useState<ProjectWithCounts[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+
+  const fetchProjects = useCallback(async () => {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from('projects')
+      .select('*, pieces(status)')
+      .order('created_at', { ascending: false })
+    setProjects((data ?? []) as ProjectWithCounts[])
+    setLoading(false)
+  }, [])
+
+  useEffect(() => { fetchProjects() }, [fetchProjects])
+
+  const filtered = projects.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.client_name.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const allPieces = projects.flatMap(p => p.pieces ?? [])
+  const counters = {
+    total: allPieces.length,
+    approved: allPieces.filter(p => p.status === 'approved').length,
+    revision: allPieces.filter(p => p.status === 'revision_requested').length,
+    pending: allPieces.filter(p => p.status === 'pending').length,
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-slate-900">Projetos</h1>
+        <NewProjectModal onCreated={fetchProjects} />
+      </div>
+      <DashboardCounters {...counters} />
+      <div className="mb-4">
+        <Input placeholder="Buscar por projeto ou cliente..." value={search}
+          onChange={e => setSearch(e.target.value)} className="max-w-sm" />
+      </div>
+      {loading ? <ProjectGridSkeleton /> : filtered.length === 0 ? (
+        <EmptyState
+          title={search ? 'Nenhum projeto encontrado' : 'Nenhum projeto ainda'}
+          description={search ? 'Tente outro termo de busca.' : 'Crie seu primeiro projeto para começar.'}
+        />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map(project => <ProjectCard key={project.id} project={project} />)}
+        </div>
+      )}
+    </div>
+  )
+}
