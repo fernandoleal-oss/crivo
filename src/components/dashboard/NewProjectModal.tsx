@@ -1,12 +1,20 @@
 'use client'
-
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { Sector } from '@/lib/types'
+
+const SECTOR_OPTIONS: { value: Sector; label: string }[] = [
+  { value: 'atendimento', label: '📋 Atendimento' },
+  { value: 'criacao', label: '🎨 Criação' },
+  { value: 'rtv', label: '📺 RTV' },
+  { value: 'midia', label: '📡 Mídia' },
+  { value: 'geral', label: '📁 Geral' },
+]
 
 interface NewProjectModalProps { onCreated: () => void }
 
@@ -14,6 +22,7 @@ export function NewProjectModal({ onCreated }: NewProjectModalProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [clientName, setClientName] = useState('')
+  const [sector, setSector] = useState<Sector>('atendimento')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
@@ -21,35 +30,58 @@ export function NewProjectModal({ onCreated }: NewProjectModalProps) {
     if (!name.trim() || !clientName.trim()) return
     setLoading(true)
     const supabase = createClient()
-    const { error } = await supabase.from('projects').insert({ name: name.trim(), client_name: clientName.trim() })
+    const { error } = await supabase.from('projects').insert({
+      name: name.trim(),
+      client_name: clientName.trim(),
+      sector,
+    })
     setLoading(false)
     if (error) { toast.error('Erro ao criar projeto'); return }
     toast.success('Projeto criado!')
-    setName(''); setClientName(''); setOpen(false)
+    setName(''); setClientName(''); setSector('atendimento'); setOpen(false)
     onCreated()
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <Button className="bg-indigo-600 hover:bg-indigo-700" type="button">+ Novo Projeto</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader><DialogTitle>Novo Projeto</DialogTitle></DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          <div>
-            <Label htmlFor="name">Nome do projeto / campanha</Label>
-            <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Campanha Verão 2026" required />
-          </div>
-          <div>
-            <Label htmlFor="client">Nome do cliente</Label>
-            <Input id="client" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Ex: Marca X" required />
-          </div>
-          <Button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700">
-            {loading ? 'Criando...' : 'Criar Projeto'}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button onClick={() => setOpen(true)} className="bg-indigo-600 hover:bg-indigo-700">+ Novo Projeto</Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Novo Projeto</DialogTitle></DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+            <div>
+              <Label htmlFor="name">Nome do projeto</Label>
+              <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Campanha Janeiro 2026" required />
+            </div>
+            <div>
+              <Label htmlFor="client">Cliente</Label>
+              <Input id="client" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Ex: EMS Pharma" required />
+            </div>
+            <div>
+              <Label>Setor responsável</Label>
+              <div className="flex gap-2 flex-wrap mt-1">
+                {SECTOR_OPTIONS.map(s => (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() => setSector(s.value)}
+                    className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                      sector === s.value
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700">
+              {loading ? 'Criando...' : 'Criar Projeto'}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
