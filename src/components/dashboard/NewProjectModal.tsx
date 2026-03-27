@@ -16,10 +16,12 @@ const SECTOR_OPTIONS: { value: Sector; label: string }[] = [
   { value: 'geral', label: '📁 Geral' },
 ]
 
-interface NewProjectModalProps { onCreated: () => void }
+interface NewProjectModalProps { onCreated: () => void; open?: boolean; onOpenChange?: (v: boolean) => void }
 
-export function NewProjectModal({ onCreated }: NewProjectModalProps) {
-  const [open, setOpen] = useState(false)
+export function NewProjectModal({ onCreated, open: externalOpen, onOpenChange }: NewProjectModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = externalOpen !== undefined ? externalOpen : internalOpen
+  const setOpen = (v: boolean) => { setInternalOpen(v); onOpenChange?.(v) }
   const [name, setName] = useState('')
   const [clientName, setClientName] = useState('')
   const [sector, setSector] = useState<Sector>('atendimento')

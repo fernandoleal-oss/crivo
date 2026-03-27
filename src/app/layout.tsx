@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} bg-slate-50 text-slate-900`}>
         <nav className="bg-slate-900 text-white px-6 py-3 flex items-center">
           <a href="/" className="font-bold text-lg tracking-tight text-indigo-400">crivo</a>
+          <span className="ml-3 text-xs text-slate-400 hidden sm:block">Aprovação de peças sem WhatsApp, sem confusão.</span>
         </nav>
         <main className="min-h-[calc(100vh-48px)]">
           {children}
