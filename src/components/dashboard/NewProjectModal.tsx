@@ -31,8 +31,8 @@ export function NewProjectModal({ onCreated }: NewProjectModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-indigo-600 hover:bg-indigo-700">+ Novo Projeto</Button>
+      <DialogTrigger>
+        <Button className="bg-indigo-600 hover:bg-indigo-700" type="button">+ Novo Projeto</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader><DialogTitle>Novo Projeto</DialogTitle></DialogHeader>
