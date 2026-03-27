@@ -52,7 +52,7 @@ export function PieceList({ projectId, projectName }: PieceListProps) {
         <EmptyState title="Nenhuma peça ainda" description="Crie a primeira peça desse projeto para enviar ao cliente." />
       ) : (
         <div className="space-y-3">
-          {pieces.map(piece => <PieceCard key={piece.id} piece={piece} onRefresh={fetchPieces} />)}
+          {pieces.map(piece => <PieceCard key={piece.id} piece={piece} onRefresh={fetchPieces} onSendToClient={() => {}} />)}
         </div>
       )}
     </div>
