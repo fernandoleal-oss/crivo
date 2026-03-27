@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crivo
+
+Creative review and approval platform for advertising agencies. Replaces the chaos of WhatsApp approvals with a clean, traceable flow.
+
+## Problem
+
+Approval of creative pieces in agencies happens through WhatsApp, email, and voice messages — no one knows which version was approved, who approved it, or when. Crivo organizes this into a clean, auditable workflow.
+
+## Features
+
+- **Project management** — create and organize projects by client
+- **Piece versioning** — upload multiple versions of any creative piece
+- **Public review links** — share a passwordless link with clients for review
+- **Pin comments** — click anywhere on an image to leave position-based feedback
+- **Version comparison** — side-by-side diff of any two versions
+- **Approval workflow** — approve or request revision, with full history
+- **Real-time updates** — Supabase Realtime pushes status changes instantly
+- **WhatsApp notifications** — n8n webhook sends approval/revision alerts via Evolution API
+
+## Stack
+
+- **Frontend:** Next.js 14 (App Router) + TypeScript + Tailwind CSS + shadcn/ui
+- **Backend/DB/Storage:** Supabase (PostgreSQL + Storage + Realtime)
+- **Notifications:** n8n webhook → WhatsApp (Evolution API)
+- **Deploy:** Vercel + Supabase Cloud
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- Supabase project
+- n8n instance (optional, for WhatsApp notifications)
+
+### Setup
 
 ```bash
+npm install
+cp .env.local.example .env.local
+# Fill in your Supabase credentials
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+N8N_WEBHOOK_URL=https://your-n8n.com/webhook/crivo-notify
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Database
 
-## Learn More
+Run the SQL migrations from `docs/` against your Supabase project to create the schema:
 
-To learn more about Next.js, take a look at the following resources:
+- `projects` — client projects
+- `pieces` — creative pieces with status and public token
+- `piece_versions` — versioned file uploads
+- `comments` — position-based annotations per version
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### n8n Notification Workflow
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The `Crivo_Notify` workflow receives POST requests at `/webhook/crivo-notify` with:
 
-## Deploy on Vercel
+```json
+{
+  "decision": "approved | revision_requested",
+  "pieceName": "Banner Homepage",
+  "projectName": "Acme Corp",
+  "decidedBy": "João Silva",
+  "feedback": "Please fix the typography",
+  "ownerPhone": "5511999999999"
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run test     # Run tests
+npm run lint     # Lint
+```
+
+## Architecture
+
+**Hybrid Server + Client Components (Next.js App Router):**
+
+- **Server Components** — initial data fetch for projects, pieces, versions, comments (no loading flicker)
+- **Client Components** — Realtime subscriptions, modals, file upload, pin comments
+- **No authentication** — public review links use random tokens (nanoid, 10 chars)
+
+## License
+
+MIT
