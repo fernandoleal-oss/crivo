@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { ProjectCard } from './ProjectCard'
 import { NewProjectModal } from './NewProjectModal'
@@ -67,6 +68,11 @@ export function ProjectGrid() {
           {filtered.map(project => <ProjectCard key={project.id} project={project} />)}
         </div>
       )}
+      <div className="mt-8 pt-4 border-t border-slate-100 text-center">
+        <Link href="/integrations" className="text-sm text-slate-400 hover:text-indigo-600 transition-colors">
+          🔌 Ver integrações disponíveis
+        </Link>
+      </div>
     </div>
   )
 }
