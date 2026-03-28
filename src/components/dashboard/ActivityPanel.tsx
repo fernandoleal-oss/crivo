@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { TrendingUp, Clock } from 'lucide-react'
+import { Clock } from 'lucide-react'
+import { PersonAvatar } from '@/components/ui/PersonAvatar'
 
 interface ApprovalRow {
   decision: 'approved' | 'revision_requested'
@@ -153,17 +154,20 @@ export function ActivityPanel({ totalPieces, approvedPieces }: { totalPieces: nu
             <div className="space-y-2">
               {[1,2,3].map(i => <div key={i} className="h-8 bg-slate-100 rounded-lg animate-pulse" />)}
             </div>
-          ) : activity.slice(0, 3).map((a, i) => (
+          ) : activity.slice(0, 4).map((a, i) => (
             <div key={i} className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-                a.decision === 'approved' ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-700'
-              }`}>
-                {a.decided_by.charAt(0).toUpperCase()}
-              </div>
+              <PersonAvatar name={a.decided_by} size={24} />
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] text-slate-700 truncate font-medium">{a.pieces?.title ?? '—'}</p>
-                <p className="text-[10px] text-slate-400">{relativeTime(a.decided_at)}</p>
+                <p className="text-[10px] text-slate-400">
+                  {a.decided_by} · {relativeTime(a.decided_at)}
+                </p>
               </div>
+              <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 ${
+                a.decision === 'approved' ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-700'
+              }`}>
+                {a.decision === 'approved' ? '✓' : '↩'}
+              </span>
             </div>
           ))}
         </div>

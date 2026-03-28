@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { NewProjectModal } from './NewProjectModal'
 import { WelcomeHero } from './WelcomeHero'
 import { ActivityPanel } from './ActivityPanel'
+import { AvatarStack, PersonAvatar } from '@/components/ui/PersonAvatar'
 import type { ProjectWithCounts } from '@/lib/types'
 import { useRole } from '@/lib/role-context'
 import { CampaignPanel } from './CampaignPanel'
@@ -19,7 +19,6 @@ const USER_BY_ROLE = {
   midia: 'Fabi',
 }
 
-// Greet based on hour
 function greeting() {
   const h = new Date().getHours()
   if (h < 12) return 'Bom dia'
@@ -27,19 +26,17 @@ function greeting() {
   return 'Boa noite'
 }
 
-function approvalRate(project: ProjectWithCounts) {
+function calcApprovalRate(project: ProjectWithCounts) {
   const pieces = project.pieces ?? []
   if (!pieces.length) return 0
-  const approved = pieces.filter(p => p.status === 'approved').length
-  return Math.round((approved / pieces.length) * 100)
+  return Math.round((pieces.filter(p => p.status === 'approved').length / pieces.length) * 100)
 }
 
-// Rotate through accent colors for cards
 const CARD_ACCENTS = [
-  { bg: 'bg-indigo-100', text: 'text-indigo-900', rate: 'text-indigo-500', badge: 'bg-indigo-200 text-indigo-800' },
-  { bg: 'bg-rose-100', text: 'text-rose-900', rate: 'text-rose-500', badge: 'bg-rose-200 text-rose-800' },
+  { bg: 'bg-indigo-100', text: 'text-indigo-900', rate: 'text-indigo-400', badge: 'bg-indigo-200 text-indigo-800' },
   { bg: 'bg-[#e8f5c8]', text: 'text-[#2d5000]', rate: 'text-[#4a8a00]', badge: 'bg-[#c8e56d] text-[#2a4600]' },
-  { bg: 'bg-violet-100', text: 'text-violet-900', rate: 'text-violet-500', badge: 'bg-violet-200 text-violet-800' },
+  { bg: 'bg-rose-100', text: 'text-rose-900', rate: 'text-rose-400', badge: 'bg-rose-200 text-rose-800' },
+  { bg: 'bg-violet-100', text: 'text-violet-900', rate: 'text-violet-400', badge: 'bg-violet-200 text-violet-800' },
 ]
 
 const STATUS_STYLE: Record<string, string> = {
@@ -47,7 +44,6 @@ const STATUS_STYLE: Record<string, string> = {
   approved: 'bg-green-50 text-green-700 border-green-200',
   revision_requested: 'bg-rose-50 text-rose-700 border-rose-200',
 }
-
 const STATUS_LABEL: Record<string, string> = {
   pending: 'Pendente',
   approved: 'Aprovada',
@@ -62,9 +58,29 @@ interface PieceRow {
   project_id: string
   projects: { name: string; client_name: string } | null
   piece_versions: { file_url: string; version_number: number }[]
+  approvals: { decided_by: string; decision: string }[]
 }
 
 type Tab = 'pending' | 'revision_requested' | 'approved'
+
+// Extract unique approver names from a project's pieces' approvals
+function projectApprovers(project: ProjectWithCounts, pieces: PieceRow[]): string[] {
+  const projectPieces = pieces.filter(p => p.project_id === project.id)
+  const names = new Set<string>()
+  for (const piece of projectPieces) {
+    for (const a of piece.approvals ?? []) {
+      if (a.decided_by) names.add(a.decided_by)
+    }
+  }
+  // Also add the briefing aprovador if present
+  const aprovador = (project as any).briefing_data?.aprovador
+  if (aprovador) {
+    // "Camila Torres (Head de Marketing)" → "Camila Torres"
+    const clean = aprovador.replace(/\s*\(.*\)/, '').trim()
+    if (clean) names.add(clean)
+  }
+  return Array.from(names)
+}
 
 export function ProjectGrid() {
   const { role } = useRole()
@@ -85,7 +101,7 @@ export function ProjectGrid() {
         .order('created_at', { ascending: false }),
       supabase
         .from('pieces')
-        .select('id, title, status, deadline, project_id, projects(name, client_name), piece_versions(file_url, version_number)')
+        .select('id, title, status, deadline, project_id, projects(name, client_name), piece_versions(file_url, version_number), approvals(decided_by, decision)')
         .order('updated_at', { ascending: false })
         .limit(30),
     ])
@@ -102,13 +118,10 @@ export function ProjectGrid() {
 
   const isFirstTime = !loading && projects.length === 0
 
-  // Split projects into LineUp (top 2) and Trending (next 3)
   const lineUp = projects.slice(0, 2)
   const trending = projects.slice(2, 5)
 
-  // Filter pieces by tab
   const filteredPieces = pieces.filter(p => p.status === tab)
-
   const tabCounts = {
     pending: pieces.filter(p => p.status === 'pending').length,
     revision_requested: pieces.filter(p => p.status === 'revision_requested').length,
@@ -126,7 +139,7 @@ export function ProjectGrid() {
 
   return (
     <div className="px-6 py-8 min-h-screen">
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
@@ -137,76 +150,96 @@ export function ProjectGrid() {
           </p>
         </div>
         <div className="flex items-center gap-6">
-          <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-slate-900 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-slate-800 transition-colors">
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-slate-900 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-slate-800 transition-colors"
+          >
             <Plus size={15} />
             Novo projeto
           </button>
-          <div className="text-center">
+          <div className="text-center cursor-default">
             <p className="text-2xl font-bold text-slate-900">{projects.length}</p>
-            <p className="text-xs text-slate-400 flex items-center gap-1">Projetos <ArrowUpRight size={10} /></p>
+            <p className="text-xs text-slate-400 flex items-center gap-0.5">Projetos <ArrowUpRight size={10} /></p>
           </div>
-          <div className="text-center">
+          <div className="text-center cursor-default">
             <p className="text-2xl font-bold text-slate-900">{totalPieces}</p>
-            <p className="text-xs text-slate-400 flex items-center gap-1">Peças <ArrowUpRight size={10} /></p>
+            <p className="text-xs text-slate-400 flex items-center gap-0.5">Peças <ArrowUpRight size={10} /></p>
           </div>
         </div>
       </div>
 
       <div className="flex gap-6 items-start">
-        {/* ── Main content ── */}
         <div className="flex-1 min-w-0 space-y-8">
 
-          {/* LineUp */}
+          {/* LineUp — top 2 projetos */}
           {lineUp.length > 0 && (
             <section>
-              <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
                 Em andamento ({lineUp.length})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {lineUp.map((project, i) => {
                   const accent = CARD_ACCENTS[i % CARD_ACCENTS.length]
-                  const rate = approvalRate(project)
+                  const rate = calcApprovalRate(project)
                   const pcs = project.pieces ?? []
-                  const cover = (pieces.find(p => p.project_id === project.id)?.piece_versions ?? [])
+                  const cover = pieces
+                    .filter(p => p.project_id === project.id)
+                    .flatMap(p => p.piece_versions)
                     .find(v => v.version_number === 1)?.file_url
+                  const approvers = projectApprovers(project, pieces)
                   return (
                     <motion.div
                       key={project.id}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.06, type: 'spring', stiffness: 280, damping: 26 }}
-                      className={cn('rounded-2xl p-5 flex flex-col gap-4', accent.bg)}
+                      className={cn('rounded-2xl p-5 flex flex-col gap-3', accent.bg)}
                     >
+                      {/* Top row */}
                       <div className="flex items-start justify-between">
-                        <div>
-                          <p className={cn('text-xs font-semibold opacity-60 mb-0.5', accent.text)}>{project.client_name}</p>
+                        <div className="flex-1 min-w-0 pr-4">
+                          <p className={cn('text-[11px] font-semibold opacity-60 mb-0.5 uppercase tracking-wide', accent.text)}>
+                            {project.client_name}
+                          </p>
                           <p className={cn('text-base font-bold leading-tight', accent.text)}>{project.name}</p>
                         </div>
-                        <span className={cn('text-4xl font-black tracking-tight', accent.rate)}>{rate}%</span>
+                        <span className={cn('text-4xl font-black tracking-tight flex-shrink-0', accent.rate)}>
+                          {rate}%
+                        </span>
                       </div>
 
-                      {/* Photo strip */}
+                      {/* Cover photo */}
                       {cover && (
-                        <div className="h-24 rounded-xl overflow-hidden">
+                        <div className="h-28 rounded-xl overflow-hidden">
                           <img src={cover} alt={project.name} className="w-full h-full object-cover" />
                         </div>
                       )}
 
-                      {/* Stats row */}
+                      {/* Bottom row: avatars + stats */}
                       <div className="flex items-center justify-between">
-                        <div className="flex gap-3 text-xs">
+                        <div className="flex flex-col gap-1">
+                          {approvers.length > 0 && (
+                            <AvatarStack names={approvers} size={26} />
+                          )}
+                          {approvers.length > 0 && (
+                            <p className={cn('text-[10px] opacity-50', accent.text)}>
+                              {approvers[0]}{approvers.length > 1 ? ` +${approvers.length - 1}` : ''}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-3 text-[11px]">
                           <span className={cn('flex items-center gap-1', accent.text, 'opacity-70')}>
                             <CheckCircle2 size={11} />
-                            {pcs.filter(p => p.status === 'approved').length} aprovadas
+                            {pcs.filter(p => p.status === 'approved').length}
                           </span>
                           <span className={cn('flex items-center gap-1', accent.text, 'opacity-70')}>
                             <Clock size={11} />
-                            {pcs.filter(p => p.status === 'pending').length} aguardando
+                            {pcs.filter(p => p.status === 'pending').length}
+                          </span>
+                          <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', accent.badge)}>
+                            {pcs.length} peça{pcs.length !== 1 ? 's' : ''}
                           </span>
                         </div>
-                        <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', accent.badge)}>
-                          {pcs.length} peça{pcs.length !== 1 ? 's' : ''}
-                        </span>
                       </div>
                     </motion.div>
                   )
@@ -215,17 +248,18 @@ export function ProjectGrid() {
             </section>
           )}
 
-          {/* Trending */}
+          {/* Trending — próximos projetos */}
           {trending.length > 0 && (
             <section>
-              <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
                 Outros projetos ({trending.length})
               </h2>
               <div className="grid grid-cols-3 gap-3">
                 {trending.map((project, i) => {
                   const accent = CARD_ACCENTS[(i + 2) % CARD_ACCENTS.length]
-                  const rate = approvalRate(project)
+                  const rate = calcApprovalRate(project)
                   const pcs = project.pieces ?? []
+                  const approvers = projectApprovers(project, pieces)
                   return (
                     <motion.div
                       key={project.id}
@@ -234,12 +268,19 @@ export function ProjectGrid() {
                       transition={{ delay: 0.12 + i * 0.05, type: 'spring', stiffness: 280, damping: 26 }}
                       className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col gap-2"
                     >
-                      <p className="text-xs text-slate-400 font-medium truncate">{project.client_name}</p>
+                      <p className="text-[10px] text-slate-400 font-medium truncate uppercase tracking-wide">{project.client_name}</p>
                       <p className="text-sm font-bold text-slate-800 leading-tight truncate">{project.name}</p>
                       <span className={cn('text-2xl font-black', accent.rate)}>{rate}%</span>
-                      <div className="flex items-center gap-1 text-[10px] text-slate-400">
-                        <Clock size={9} />
-                        {pcs.filter(p => p.status === 'pending').length} pendentes
+                      <div className="flex items-center justify-between mt-1">
+                        {approvers.length > 0 ? (
+                          <AvatarStack names={approvers} size={22} />
+                        ) : (
+                          <span className="text-[10px] text-slate-300">Sem aprovadores</span>
+                        )}
+                        <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                          <Clock size={9} />
+                          {pcs.filter(p => p.status === 'pending').length} pend.
+                        </span>
                       </div>
                     </motion.div>
                   )
@@ -251,18 +292,17 @@ export function ProjectGrid() {
           {/* My Work — Peças com tabs */}
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                 Peças ({pieces.length})
               </h2>
             </div>
 
-            {/* Tabs */}
             <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 w-fit mb-4">
               {([
-                { key: 'pending', label: 'Pendentes', icon: Clock },
-                { key: 'revision_requested', label: 'Em revisão', icon: RefreshCw },
-                { key: 'approved', label: 'Aprovadas', icon: CheckCircle2 },
-              ] as { key: Tab; label: string; icon: any }[]).map(({ key, label, icon: Icon }) => (
+                { key: 'pending' as Tab, label: 'Pendentes', icon: Clock },
+                { key: 'revision_requested' as Tab, label: 'Em revisão', icon: RefreshCw },
+                { key: 'approved' as Tab, label: 'Aprovadas', icon: CheckCircle2 },
+              ]).map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
                   onClick={() => setTab(key)}
@@ -273,18 +313,17 @@ export function ProjectGrid() {
                 >
                   <Icon size={11} />
                   {label}
-                  <span className={cn('rounded-full px-1.5 py-0.5 text-[10px]', tab === key ? 'bg-slate-100' : 'bg-slate-200')}>
+                  <span className={cn('rounded-full px-1.5 text-[10px]', tab === key ? 'bg-slate-100' : 'bg-slate-200')}>
                     {tabCounts[key]}
                   </span>
                 </button>
               ))}
             </div>
 
-            {/* Pieces list */}
             <div className="space-y-2">
               {loading ? (
                 Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-14 bg-slate-100 rounded-xl animate-pulse" />
+                  <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />
                 ))
               ) : filteredPieces.length === 0 ? (
                 <div className="text-sm text-slate-400 text-center py-8">
@@ -293,6 +332,7 @@ export function ProjectGrid() {
               ) : (
                 filteredPieces.map((piece, i) => {
                   const cover = (piece.piece_versions ?? []).find(v => v.version_number === 1)?.file_url
+                  const pieceApprovers = (piece.approvals ?? []).map(a => a.decided_by).filter(Boolean)
                   return (
                     <motion.div
                       key={piece.id}
@@ -301,17 +341,31 @@ export function ProjectGrid() {
                       transition={{ delay: i * 0.04 }}
                       className="bg-white rounded-xl border border-slate-100 px-4 py-3 flex items-center gap-4 hover:shadow-sm transition-shadow"
                     >
-                      {cover && (
-                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                      {/* Thumbnail */}
+                      {cover ? (
+                        <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0">
                           <img src={cover} alt={piece.title} className="w-full h-full object-cover" />
                         </div>
+                      ) : (
+                        <div className="w-11 h-11 rounded-lg bg-slate-100 flex-shrink-0" />
                       )}
+
+                      {/* Info */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-slate-800 truncate">{piece.title}</p>
                         <p className="text-xs text-slate-400 truncate">
                           {piece.projects?.name ?? '—'} · {piece.projects?.client_name ?? '—'}
                         </p>
                       </div>
+
+                      {/* Approvers avatars */}
+                      {pieceApprovers.length > 0 && (
+                        <div className="flex-shrink-0">
+                          <AvatarStack names={pieceApprovers} size={24} />
+                        </div>
+                      )}
+
+                      {/* Deadline + status */}
                       <div className="flex items-center gap-3 flex-shrink-0">
                         {piece.deadline && (
                           <span className="text-xs text-slate-400">
@@ -330,7 +384,7 @@ export function ProjectGrid() {
           </section>
         </div>
 
-        {/* ── Right Panel ── */}
+        {/* Right Panel */}
         {!loading && (
           <ActivityPanel totalPieces={totalPieces} approvedPieces={approvedCount} />
         )}
