@@ -18,10 +18,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link href={`/project/${project.id}`}>
       <motion.div
-        whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(79,70,229,0.10)' }}
+        whileHover={{ y: -3, boxShadow: '0 12px 32px rgba(0,0,0,0.08)' }}
         whileTap={{ scale: 0.98 }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        className="bg-white border border-slate-200 rounded-lg p-4 cursor-pointer"
+        className="bg-white border border-stone-100 rounded-2xl p-5 cursor-pointer shadow-sm"
       >
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-semibold text-slate-900 leading-tight">{project.name}</h3>

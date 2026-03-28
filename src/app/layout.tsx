@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.className} bg-slate-50 text-slate-900`}>
+      <body className={`${inter.className} text-slate-900`} style={{ backgroundColor: '#F5F3EF' }}>
         <RoleProvider>
           <ConditionalNav />
           <main className="min-h-[calc(100vh-48px)]">

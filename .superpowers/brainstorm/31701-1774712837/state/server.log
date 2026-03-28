@@ -1,0 +1,6 @@
+{"type":"server-started","port":62216,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:62216","screen_dir":"/Users/fsleal/crivo/.superpowers/brainstorm/31701-1774712837/content","state_dir":"/Users/fsleal/crivo/.superpowers/brainstorm/31701-1774712837/state"}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/31701-1774712837/content/narrativa.html"}
+{"source":"user-event","type":"click","text":"C\n    \n      As duas — narrativa em camadas\n      Começa com a dor simples (WhatsApp), resolve com o core, depois mostra \"e ainda fiz isso\" (personas + IA)\n      \n      Argumento central: \"Comecei pelo problema mais óbvio e fui além.\"\n      \n      ✦ Mais rico · estrutura de storytelling natural · funciona se o tempo permitir","choice":"c","id":null,"timestamp":1774712943658}
+{"type":"screen-added","file":"/Users/fsleal/crivo/.superpowers/brainstorm/31701-1774712837/content/readme-structure.html"}
+{"source":"user-event","type":"click","text":"✓\n    \n      Estrutura aprovada\n      Vamos escrever o README com essa estrutura","choice":"approve","id":null,"timestamp":1774713381419}
+{"type":"server-stopped","reason":"idle timeout"}

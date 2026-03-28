@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>crivo — demo interativo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  .pin-dot { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: #4F46E5; color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transform: translate(-50%, -50%); box-shadow: 0 2px 8px rgba(79,70,229,0.5); border: 2px solid white; transition: transform 0.15s; z-index: 10; }
+  .pin-dot:hover { transform: translate(-50%, -50%) scale(1.2); }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .fade-in { animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; }
+  .modal-box { background: white; border-radius: 16px; padding: 28px; width: 420px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; z-index: 999; animation: toastIn 0.3s ease; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .piece-expanded { display: none; }
+  .piece-expanded.open { display: block; }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar" class="bg-slate-900 text-white px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+  <div class="flex items-center gap-3">
+    <button onclick="goTo('dashboard')" class="font-bold text-lg tracking-tight text-indigo-400 hover:text-indigo-300 transition-colors">crivo</button>
+    <span class="text-xs text-slate-500 hidden sm:block">Aprovação de peças sem WhatsApp, sem confusão.</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <a href="#" onclick="goTo('integrations')" class="text-slate-400 hover:text-white text-sm transition-colors">Integrações</a>
+    <button onclick="goTo('login')" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">Sair</button>
+  </div>
+</nav>
+
+<!-- ===== LOGIN ===== -->
+<div id="screen-login" class="screen active">
+  <div class="min-h-screen bg-slate-50 flex items-center justify-center px-4" style="margin-top: -52px; padding-top: 52px;">
+    <div class="w-full max-w-sm">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-indigo-600 mb-1">crivo</h1>
+        <p class="text-slate-500 text-sm">Aprovação de peças sem WhatsApp, sem confusão.</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+        <h2 class="text-lg font-semibold text-slate-900 mb-6">Entrar</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+            <input id="login-email" type="email" placeholder="demo@crivo.app" value="demo@crivo.app" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Senha</label>
+            <input id="login-pass" type="password" placeholder="••••••••" value="crivo2026" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <button onclick="doLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm">Entrar</button>
+          <button onclick="goTo('dashboard')" class="w-full border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium py-2.5 rounded-lg transition-colors text-sm">Entrar como visitante</button>
+        </div>
+        <p class="text-xs text-slate-400 text-center mt-4">demo@crivo.app / crivo2026</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="screen-dashboard" class="screen">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+    <!-- Counters -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <p class="text-2xl font-bold text-slate-900">3</p>
+        <p class="text-xs text-slate-500 mt-0.5">Projetos</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <p class="text-2xl font-bold text-green-600">5</p>
+        <p class="text-xs text-slate-500 mt-0.5">Aprovadas</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <p class="text-2xl font-bold text-amber-500">2</p>
+        <p class="text-xs text-slate-500 mt-0.5">Revisão</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <p class="text-2xl font-bold text-slate-400">3</p>
+        <p class="text-xs text-slate-500 mt-0.5">Aguardando</p>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-xl font-semibold text-slate-900">Projetos</h1>
+        <p class="text-sm text-slate-500 mt-0.5">3 projetos · 8 peças em andamento</p>
+      </div>
+      <button onclick="openModal('modal-new-project')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        Novo Projeto
+      </button>
+    </div>
+
+    <!-- Sector Tabs -->
+    <div class="flex gap-2 mb-6 flex-wrap">
+      <button onclick="setTab(this,'todos')" class="tab-btn active px-3 py-1.5 rounded-full text-sm font-medium bg-indigo-600 text-white transition-colors">Todos</button>
+      <button onclick="setTab(this,'criacao')" class="tab-btn px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">Criação</button>
+      <button onclick="setTab(this,'atendimento')" class="tab-btn px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">Atendimento</button>
+      <button onclick="setTab(this,'rtv')" class="tab-btn px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">RTV</button>
+      <button onclick="setTab(this,'midia')" class="tab-btn px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">Mídia</button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all cursor-pointer" onclick="goTo('project-1')">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-purple-50 text-purple-700">Criação</span>
+          <span class="text-xs text-slate-400">Jan 2026</span>
+        </div>
+        <h3 class="font-semibold text-slate-900 mb-1">Campanha Janeiro 2026</h3>
+        <p class="text-sm text-slate-500 mb-4">EMS Pharma</p>
+        <div class="flex gap-2">
+          <span class="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 font-medium">1 aprovada</span>
+          <span class="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700 font-medium">1 revisão</span>
+          <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-medium">1 pendente</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all cursor-pointer" onclick="goTo('project-2')">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">Atendimento</span>
+          <span class="text-xs text-slate-400">Jan 2026</span>
+        </div>
+        <h3 class="font-semibold text-slate-900 mb-1">Rebranding Q1</h3>
+        <p class="text-sm text-slate-500 mb-4">Nubank</p>
+        <div class="flex gap-2">
+          <span class="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 font-medium">1 aprovada</span>
+          <span class="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700 font-medium">1 revisão</span>
+          <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-medium">1 pendente</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all cursor-pointer" onclick="goTo('project-3')">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-50 text-orange-700">Mídia</span>
+          <span class="text-xs text-slate-400">Mar 2026</span>
+        </div>
+        <h3 class="font-semibold text-slate-900 mb-1">Black Friday 2026</h3>
+        <p class="text-sm text-slate-500 mb-4">Magazine Luiza</p>
+        <div class="flex gap-2">
+          <span class="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 font-medium">1 aprovada</span>
+          <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-medium">1 pendente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROJECT DETAIL ===== -->
+<div id="screen-project-1" class="screen">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+      <button onclick="goTo('dashboard')" class="hover:text-indigo-600 transition-colors">Projetos</button>
+      <span>/</span>
+      <span class="text-slate-900 font-medium">Campanha Janeiro 2026</span>
+    </div>
+
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-xl font-semibold text-slate-900">Campanha Janeiro 2026</h1>
+        <p class="text-sm text-slate-500 mt-0.5">EMS Pharma · <span class="text-purple-600 font-medium">Criação</span></p>
+      </div>
+      <button onclick="openModal('modal-new-piece')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        Nova Peça
+      </button>
+    </div>
+
+    <div class="space-y-3">
+      <!-- Piece 1 — Aprovada -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div class="flex items-center gap-4 p-4 cursor-pointer" onclick="togglePiece('p1')">
+          <div class="w-20 h-16 rounded-lg bg-gradient-to-br from-indigo-100 to-purple-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+            <div class="text-2xl">💊</div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-slate-900 text-sm">Banner Instagram 1080×1080</p>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">Aprovado</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">há 2 dias</p>
+            <div class="flex gap-2 mt-1 flex-wrap">
+              <span class="text-xs text-indigo-500 flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                Enviado há 4 dias
+              </span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Visualizado</span>
+            </div>
+          </div>
+          <svg id="chevron-p1" class="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+        <div id="expanded-p1" class="piece-expanded border-t border-slate-100 px-4 pb-4 pt-3">
+          <div class="flex gap-2 flex-wrap mb-3">
+            <button onclick="showToast('Link copiado!')" class="border border-slate-200 text-slate-700 text-sm px-3 py-1.5 rounded-lg hover:bg-slate-50 flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Copiar link
+            </button>
+            <button onclick="openModal('modal-send-client')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+              Reenviar para cliente
+            </button>
+          </div>
+          <div class="bg-green-50 rounded-lg p-3 border border-green-100">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Decisão do cliente</p>
+            <p class="text-sm text-green-700 font-medium flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Aprovado
+            </p>
+            <p class="text-xs text-slate-500 mt-0.5">por <strong>Carlos Mendes</strong> — 16 Jan 2026</p>
+            <p class="text-slate-600 text-xs mt-1 italic">"Ficou excelente! Pode publicar."</p>
+          </div>
+          <div class="mt-3">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Versões</p>
+            <div class="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 rounded-lg px-3 py-2">
+              <span class="font-medium text-indigo-600">v1</span>
+              <span class="text-slate-400">·</span>
+              <span>há 4 dias</span>
+              <span class="ml-auto"><button onclick="goTo('review')" class="text-indigo-600 hover:underline">Ver revisão →</button></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Piece 2 — Revisão -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div class="flex items-center gap-4 p-4 cursor-pointer" onclick="togglePiece('p2')">
+          <div class="w-20 h-16 rounded-lg bg-gradient-to-br from-amber-50 to-orange-100 flex-shrink-0 flex items-center justify-center">
+            <div class="text-2xl">📸</div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-slate-900 text-sm">Post Feed — Produto Destaque</p>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">Revisão solicitada</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">há 1 dia</p>
+            <span class="text-xs text-indigo-500 flex items-center gap-0.5 mt-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Enviado há 3 dias
+            </span>
+          </div>
+          <svg id="chevron-p2" class="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+        <div id="expanded-p2" class="piece-expanded border-t border-slate-100 px-4 pb-4 pt-3">
+          <div class="flex gap-2 flex-wrap mb-3">
+            <button onclick="showToast('Link copiado!')" class="border border-slate-200 text-slate-700 text-sm px-3 py-1.5 rounded-lg hover:bg-slate-50 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Copiar link
+            </button>
+            <button onclick="openModal('modal-upload-version')" class="border border-slate-200 text-slate-700 text-sm px-3 py-1.5 rounded-lg hover:bg-slate-50 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              Nova versão
+            </button>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-3 border border-amber-100">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Decisão do cliente</p>
+            <p class="text-sm text-amber-700 font-medium flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Revisão solicitada
+            </p>
+            <p class="text-xs text-slate-500 mt-0.5">por <strong>Ana Beatriz</strong> — 20 Jan 2026</p>
+            <p class="text-slate-600 text-xs mt-1 italic">"A fonte está pequena demais no mobile. Aumentar para 18px."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Piece 3 — Pendente -->
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div class="flex items-center gap-4 p-4 cursor-pointer" onclick="togglePiece('p3')">
+          <div class="w-20 h-16 rounded-lg bg-slate-50 flex-shrink-0 flex items-center justify-center">
+            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-slate-900 text-sm">Story 9:16 — Promoção</p>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">Pendente</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">há 2 dias</p>
+            <span class="text-xs text-indigo-500 flex items-center gap-0.5 mt-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Enviado há 2 dias
+            </span>
+          </div>
+          <svg id="chevron-p3" class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+        <div id="expanded-p3" class="piece-expanded border-t border-slate-100 px-4 pb-4 pt-3">
+          <div class="flex gap-2 flex-wrap mb-3">
+            <button onclick="showToast('Link copiado!')" class="border border-slate-200 text-slate-700 text-sm px-3 py-1.5 rounded-lg hover:bg-slate-50 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Copiar link
+            </button>
+            <button onclick="openModal('modal-send-client')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+              Reenviar para cliente
+            </button>
+          </div>
+          <p class="text-xs text-slate-500">Aguardando decisão do cliente. Não houve visualização ainda.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REVIEW PAGE (visão do cliente) ===== -->
+<div id="screen-review" class="screen">
+  <div id="review-navbar" class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between sticky top-0 z-40">
+    <div>
+      <p class="text-xs text-slate-500">Campanha Janeiro 2026</p>
+      <p class="font-semibold text-slate-900 text-sm">Banner Instagram 1080×1080</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-medium">v1 de 1</span>
+    </div>
+  </div>
+
+  <div id="review-onboarding" class="bg-indigo-50 border-b border-indigo-100 px-6 py-3">
+    <div class="max-w-5xl mx-auto flex items-start justify-between gap-4">
+      <div>
+        <p class="text-sm font-semibold text-indigo-900 mb-1">Bem-vindo à revisão!</p>
+        <div class="space-y-1 text-xs text-indigo-800">
+          <p><strong>Comentar na imagem:</strong> Clique em qualquer ponto para fixar um comentário.</p>
+          <p><strong>Comentário geral:</strong> Use o painel lateral para observações gerais.</p>
+          <p><strong>Quando terminar:</strong> Clique em <strong>"Aprovar"</strong> ou <strong>"Pedir Revisão"</strong>.</p>
+        </div>
+      </div>
+      <button onclick="document.getElementById('review-onboarding').remove()" class="text-indigo-400 hover:text-indigo-600 text-lg flex-shrink-0">×</button>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+    <!-- Image Viewer -->
+    <div class="flex-1">
+      <div class="relative bg-white rounded-xl border border-slate-200 overflow-hidden" style="min-height: 380px;">
+        <!-- Simulated image -->
+        <div id="piece-image" onclick="addPin(event)" class="relative w-full cursor-crosshair"
+             style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 40%, #ddd6fe 100%); min-height: 380px; display: flex; align-items: center; justify-content: center;">
+          <div class="text-center select-none pointer-events-none">
+            <div class="text-6xl mb-3">💊</div>
+            <p class="text-indigo-700 font-semibold text-lg">Banner EMS Pharma</p>
+            <p class="text-indigo-500 text-sm">1080 × 1080px</p>
+          </div>
+          <!-- Existing pin -->
+          <div class="pin-dot" style="left: 35%; top: 20%;" onclick="event.stopPropagation(); showToast('Pin 1: Logo bem posicionado ✓')">1</div>
+          <div id="new-pins"></div>
+        </div>
+        <div class="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-white">
+          <span id="pin-hint" class="text-indigo-500 text-xs bg-indigo-50 px-2 py-1 rounded-full flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+            Clique na imagem para fixar um comentário
+          </span>
+          <a href="#" class="text-xs text-indigo-600 hover:underline flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download original
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment Panel + Approval -->
+    <div class="w-full lg:w-80 flex-shrink-0">
+      <!-- Approval buttons -->
+      <div id="approval-actions">
+        <div class="flex gap-2 mb-4">
+          <button onclick="openModal('modal-approve')" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-sm shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Aprovar
+          </button>
+          <button onclick="openModal('modal-revision')" class="flex-1 border border-amber-400 text-amber-700 hover:bg-amber-50 font-medium py-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Pedir Revisão
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 text-center mb-4">Revise a peça e deixe seus comentários antes de decidir.</p>
+      </div>
+
+      <!-- Comments -->
+      <div class="bg-white rounded-xl border border-slate-200">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+          <p class="font-medium text-slate-900 text-sm">Comentários</p>
+          <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full" id="comment-count">1</span>
+        </div>
+
+        <div id="comments-list" class="divide-y divide-slate-50">
+          <div class="px-4 py-3">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-medium">Pin 1</span>
+              <span class="text-xs font-medium text-slate-700">Carlos Mendes</span>
+              <span class="text-xs text-slate-400 ml-auto">há 2 dias</span>
+            </div>
+            <p class="text-sm text-slate-600">Logo bem posicionado ✓</p>
+          </div>
+        </div>
+
+        <div class="px-4 py-3 border-t border-slate-100">
+          <textarea id="new-comment" rows="2" placeholder="Deixar um comentário geral..." class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+          <div class="flex items-center gap-2 mt-2">
+            <input id="comment-author" placeholder="Seu nome" class="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button onclick="addComment()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-lg transition-colors">Enviar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back to agency -->
+      <button onclick="goTo('project-1')" class="mt-4 w-full text-xs text-slate-400 hover:text-slate-600 transition-colors">← Voltar para o dashboard (demo)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== INTEGRATIONS ===== -->
+<div id="screen-integrations" class="screen">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <button onclick="goTo('dashboard')" class="flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 mb-6 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Voltar
+    </button>
+    <h1 class="text-xl font-semibold text-slate-900 mb-1">Integrações</h1>
+    <p class="text-sm text-slate-500 mb-8">Conecte o Crivo às suas ferramentas.</p>
+
+    <h2 class="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-3">Ativas</h2>
+    <div class="grid gap-4 mb-8">
+      <div class="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="font-semibold text-slate-900 text-sm">WhatsApp</h3>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">Ativo</span>
+          </div>
+          <p class="text-sm text-slate-500">Notificações automáticas de aprovação e revisão para a equipe.</p>
+          <p class="text-xs text-slate-400 mt-2 bg-slate-50 rounded-lg px-3 py-2"><strong>Como funciona:</strong> Configurado via n8n → Evolution API.</p>
+        </div>
+      </div>
+      <div class="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="font-semibold text-slate-900 text-sm">Gmail</h3>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">Ativo</span>
+          </div>
+          <p class="text-sm text-slate-500">Envio de email para o cliente com link de revisão.</p>
+          <p class="text-xs text-slate-400 mt-2 bg-slate-50 rounded-lg px-3 py-2"><strong>Como funciona:</strong> Acionado pelo botão "Enviar para cliente".</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-3">Em breve</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      ${['Taskrow','Monday.com','Asana','Slack','Google Drive','Notion'].map(name => `
+      <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-start gap-3 opacity-70">
+        <div class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2"><h3 class="font-semibold text-slate-700 text-sm">${name}</h3><span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">Em breve</span></div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- New Project -->
+<div id="modal-new-project" class="modal-overlay hidden">
+  <div class="modal-box fade-in">
+    <h2 class="text-lg font-semibold text-slate-900 mb-5">Novo Projeto</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Nome do projeto</label>
+        <input placeholder="Ex: Campanha Black Friday 2026" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Nome do cliente</label>
+        <input placeholder="Ex: Magazine Luiza" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Setor responsável</label>
+        <select class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="geral">Geral</option>
+          <option value="criacao">Criação</option>
+          <option value="atendimento">Atendimento</option>
+          <option value="rtv">RTV</option>
+          <option value="midia">Mídia</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-new-project')" class="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="closeModal('modal-new-project'); showToast('Projeto criado!')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm transition-colors">Criar Projeto</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Piece -->
+<div id="modal-new-piece" class="modal-overlay hidden">
+  <div class="modal-box fade-in">
+    <h2 class="text-lg font-semibold text-slate-900 mb-5">Nova Peça</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Título</label>
+        <input placeholder="Ex: Banner Instagram 1080×1080" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Descrição (opcional)</label>
+        <textarea rows="2" placeholder="Contexto da peça..." class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Arquivo</label>
+        <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50 transition-colors" onclick="simulateUpload()">
+          <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          <p class="text-sm text-slate-500">Clique para selecionar</p>
+          <p class="text-xs text-slate-400 mt-1">PNG, JPG ou PDF · max 10MB</p>
+        </div>
+        <div id="upload-progress-bar" class="hidden mt-3">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+            <span>banner_instagram.png</span>
+            <span id="upload-pct">0%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5">
+            <div id="upload-fill" class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-new-piece')" class="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="closeModal('modal-new-piece'); showToast('Peça criada!')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm transition-colors">Criar Peça</button>
+    </div>
+  </div>
+</div>
+
+<!-- Send to Client -->
+<div id="modal-send-client" class="modal-overlay hidden">
+  <div class="modal-box fade-in">
+    <h2 class="text-lg font-semibold text-slate-900 mb-1">Enviar para cliente</h2>
+    <p class="text-sm text-slate-500 mb-5">O cliente recebe um email com o link de revisão. Não precisa criar conta.</p>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Nome do cliente</label>
+        <input placeholder="Ex: Carlos Mendes" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Email do cliente</label>
+        <input type="email" placeholder="carlos@empresa.com.br" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div class="bg-indigo-50 rounded-lg px-4 py-3 text-xs text-indigo-700 flex items-start gap-2">
+        <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Um link único será enviado por email. O cliente visualiza, comenta e aprova direto no navegador.</span>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-send-client')" class="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="closeModal('modal-send-client'); showToast('Email enviado para o cliente!')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        Enviar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Approve -->
+<div id="modal-approve" class="modal-overlay hidden">
+  <div class="modal-box fade-in">
+    <h2 class="text-lg font-semibold text-slate-900 mb-5 flex items-center gap-2">
+      <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Aprovar peça
+    </h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Seu nome</label>
+        <input placeholder="Ex: Carlos Mendes" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Feedback (opcional)</label>
+        <textarea rows="3" placeholder="Tudo certo! Aprovado." class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-approve')" class="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="doApprove()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm transition-colors">Confirmar aprovação</button>
+    </div>
+  </div>
+</div>
+
+<!-- Revision -->
+<div id="modal-revision" class="modal-overlay hidden">
+  <div class="modal-box fade-in">
+    <h2 class="text-lg font-semibold text-slate-900 mb-5 flex items-center gap-2">
+      <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Pedir revisão
+    </h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">Seu nome</label>
+        <input placeholder="Ex: Carlos Mendes" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">O que precisa mudar? <span class="text-red-500">*</span></label>
+        <textarea rows="3" placeholder="Descreva os ajustes necessários..." class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-revision')" class="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="doRevision()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg text-sm transition-colors">Enviar revisão</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upload new version -->
+<div id="modal-upload-version" class="modal-overlay hidden">
+  <div class="modal-box fade-in">
+    <h2 class="text-lg font-semibold text-slate-900 mb-5">Enviar nova versão</h2>
+    <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50 transition-colors" onclick="simulateUpload()">
+      <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+      <p class="text-sm text-slate-500">Selecionar arquivo</p>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-upload-version')" class="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="closeModal('modal-upload-version'); showToast('v3 enviada!')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm transition-colors">Enviar v3</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pin comment modal -->
+<div id="modal-pin" class="modal-overlay hidden">
+  <div class="modal-box fade-in" style="width: 360px;">
+    <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <span id="pin-number-label" class="text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full font-bold">Pin 2</span>
+      Comentário na imagem
+    </h2>
+    <textarea id="pin-comment-text" rows="3" placeholder="O que você quer comentar nesse ponto?" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-3"></textarea>
+    <input id="pin-author" placeholder="Seu nome" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4">
+    <div class="flex gap-3">
+      <button onclick="closeModal('modal-pin')" class="flex-1 border border-slate-200 text-slate-700 py-2 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancelar</button>
+      <button onclick="confirmPin()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-sm transition-colors">Fixar comentário</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentScreen = 'login';
+  let pinCount = 1;
+  let pendingPinX, pendingPinY;
+
+  function goTo(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('screen-' + screen);
+    if (el) {
+      el.classList.add('active');
+      el.classList.add('fade-in');
+    }
+    const navbar = document.getElementById('navbar');
+    if (screen === 'review') {
+      navbar.style.display = 'none';
+      document.getElementById('review-navbar').style.display = 'flex';
+    } else {
+      navbar.style.display = 'flex';
+      if (document.getElementById('review-navbar')) {
+        document.getElementById('review-navbar').style.display = 'none';
+      }
+    }
+    window.scrollTo(0, 0);
+    currentScreen = screen;
+  }
+
+  function doLogin() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+    if (email === 'demo@crivo.app' && pass === 'crivo2026') {
+      goTo('dashboard');
+      showToast('Bem-vindo ao Crivo!');
+    } else {
+      showToast('Email ou senha incorretos.');
+    }
+  }
+
+  function setTab(btn, sector) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('bg-indigo-600', 'text-white');
+      b.classList.add('bg-white', 'border', 'border-slate-200', 'text-slate-600');
+    });
+    btn.classList.remove('bg-white', 'border', 'border-slate-200', 'text-slate-600');
+    btn.classList.add('bg-indigo-600', 'text-white');
+    showToast('Filtro: ' + (sector === 'todos' ? 'Todos os projetos' : sector.charAt(0).toUpperCase() + sector.slice(1)));
+  }
+
+  function togglePiece(id) {
+    const el = document.getElementById('expanded-' + id);
+    const chevron = document.getElementById('chevron-' + id);
+    el.classList.toggle('open');
+    if (chevron) chevron.style.transform = el.classList.contains('open') ? 'rotate(180deg)' : '';
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+  }
+
+  // Click outside modal to close
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.add('hidden');
+    });
+  });
+
+  function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+
+  function simulateUpload() {
+    const bar = document.getElementById('upload-progress-bar');
+    const fill = document.getElementById('upload-fill');
+    const pct = document.getElementById('upload-pct');
+    bar.classList.remove('hidden');
+    let p = 0;
+    const iv = setInterval(() => {
+      p += Math.random() * 15;
+      if (p >= 100) { p = 100; clearInterval(iv); }
+      fill.style.width = p + '%';
+      pct.textContent = Math.round(p) + '%';
+    }, 150);
+  }
+
+  // Pin on image
+  let pendingPinEl = null;
+  function addPin(e) {
+    const img = document.getElementById('piece-image');
+    const rect = img.getBoundingClientRect();
+    pendingPinX = ((e.clientX - rect.left) / rect.width) * 100;
+    pendingPinY = ((e.clientY - rect.top) / rect.height) * 100;
+    pinCount++;
+    document.getElementById('pin-number-label').textContent = 'Pin ' + pinCount;
+
+    // Show temp dot
+    if (pendingPinEl) pendingPinEl.remove();
+    pendingPinEl = document.createElement('div');
+    pendingPinEl.className = 'pin-dot';
+    pendingPinEl.style.left = pendingPinX + '%';
+    pendingPinEl.style.top = pendingPinY + '%';
+    pendingPinEl.style.opacity = '0.5';
+    pendingPinEl.textContent = pinCount;
+    document.getElementById('new-pins').appendChild(pendingPinEl);
+
+    openModal('modal-pin');
+  }
+
+  function confirmPin() {
+    const text = document.getElementById('pin-comment-text').value.trim();
+    const author = document.getElementById('pin-author').value.trim() || 'Visitante';
+    if (!text) { showToast('Escreva um comentário primeiro.'); return; }
+
+    // Solidify the pin dot
+    if (pendingPinEl) pendingPinEl.style.opacity = '1';
+    pendingPinEl = null;
+
+    // Add to comment list
+    const list = document.getElementById('comments-list');
+    const div = document.createElement('div');
+    div.className = 'px-4 py-3';
+    div.innerHTML = `
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-medium">Pin ${pinCount}</span>
+        <span class="text-xs font-medium text-slate-700">${author}</span>
+        <span class="text-xs text-slate-400 ml-auto">agora</span>
+      </div>
+      <p class="text-sm text-slate-600">${text}</p>`;
+    list.appendChild(div);
+
+    const count = document.getElementById('comment-count');
+    count.textContent = parseInt(count.textContent) + 1;
+
+    document.getElementById('pin-comment-text').value = '';
+    closeModal('modal-pin');
+    showToast('Pin ' + pinCount + ' adicionado!');
+  }
+
+  function addComment() {
+    const text = document.getElementById('new-comment').value.trim();
+    const author = document.getElementById('comment-author').value.trim() || 'Visitante';
+    if (!text) { showToast('Escreva um comentário.'); return; }
+
+    const list = document.getElementById('comments-list');
+    const div = document.createElement('div');
+    div.className = 'px-4 py-3';
+    div.innerHTML = `
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs font-medium text-slate-700">${author}</span>
+        <span class="text-xs text-slate-400 ml-auto">agora</span>
+      </div>
+      <p class="text-sm text-slate-600">${text}</p>`;
+    list.appendChild(div);
+
+    const count = document.getElementById('comment-count');
+    count.textContent = parseInt(count.textContent) + 1;
+    document.getElementById('new-comment').value = '';
+    showToast('Comentário adicionado!');
+  }
+
+  function doApprove() {
+    closeModal('modal-approve');
+    document.getElementById('approval-actions').innerHTML = `
+      <div class="text-center bg-green-50 border border-green-200 rounded-xl p-5 mb-4">
+        <svg class="w-10 h-10 text-green-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="font-bold text-green-700 text-base">Aprovado!</p>
+        <p class="text-sm text-green-600 mt-1">A agência foi notificada.</p>
+        <p class="text-xs text-slate-400 mt-2">Você ainda pode deixar comentários.</p>
+      </div>`;
+    document.getElementById('pin-hint').remove();
+    showToast('Aprovação registrada! Agência notificada via WhatsApp.');
+  }
+
+  function doRevision() {
+    closeModal('modal-revision');
+    document.getElementById('approval-actions').innerHTML = `
+      <div class="text-center bg-amber-50 border border-amber-200 rounded-xl p-5 mb-4">
+        <svg class="w-10 h-10 text-amber-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <p class="font-bold text-amber-700 text-base">Revisão solicitada!</p>
+        <p class="text-sm text-amber-600 mt-1">A agência foi notificada.</p>
+        <p class="text-xs text-slate-400 mt-2">Você ainda pode deixar comentários.</p>
+      </div>`;
+    showToast('Revisão enviada! Agência notificada via WhatsApp.');
+  }
+
+  // Init: hide review navbar
+  goTo('login');
+  if (document.getElementById('review-navbar')) document.getElementById('review-navbar').style.display = 'none';
+</script>
+</body>
+</html>

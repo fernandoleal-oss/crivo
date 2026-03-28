@@ -31,7 +31,7 @@ export function ConditionalNav() {
           />
         )}
       </AnimatePresence>
-      <nav className={`bg-slate-900 text-white px-6 py-3 flex items-center justify-between ${isViewingAs ? 'mt-10' : ''}`}>
+      <nav className={`bg-white border-b border-stone-200 px-6 py-3 flex items-center justify-between ${isViewingAs ? 'mt-10' : ''}`}>
         <a href="/" className="flex items-center gap-2.5 group">
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
             <rect width="32" height="32" rx="10" fill="#4F46E5"/>
@@ -41,8 +41,8 @@ export function ConditionalNav() {
             <line x1="15" y1="20" x2="23" y2="20" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
           <div className="flex flex-col">
-            <span className="font-bold text-lg leading-none text-white group-hover:text-indigo-300 transition-colors">Crivo</span>
-            <span className="text-xs text-slate-500 italic hidden sm:block leading-none mt-0.5">Aprovação criativa sem caos.</span>
+            <span className="font-bold text-lg leading-none text-slate-900 group-hover:text-indigo-600 transition-colors">Crivo</span>
+            <span className="text-xs text-slate-400 italic hidden sm:block leading-none mt-0.5">Aprovação criativa sem caos.</span>
           </div>
         </a>
         <RoleSwitcher

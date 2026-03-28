@@ -1,0 +1,57 @@
+<h2>Estrutura do README — pitch em camadas</h2>
+<p class="subtitle">Cada seção tem um trabalho específico a fazer. Clique para selecionar se aprovar.</p>
+
+<div class="mockup">
+  <div class="mockup-header">README.md — visão do recrutador</div>
+  <div class="mockup-body">
+
+    <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #6366f1; background: #f5f3ff;">
+      <div class="label" style="color:#6366f1">Seção 1 — O problema (3 parágrafos)</div>
+      <p style="margin:0.5rem 0 0.25rem"><strong>Frase de abertura que todo atendimento reconhece:</strong></p>
+      <p style="color:#555;font-size:0.9rem;margin:0">"Aprova essa versão?" — enviado no grupo do WhatsApp, junto com 47 outras mensagens, 3 áudios e uma imagem de gato."</p>
+      <p style="color:#888;font-size:0.8rem;margin-top:0.5rem">→ Descreve a dor real · cita consequências (versão errada aprovada, cliente frustrado, retrabalho) · termina com a pergunta: "qual processo é mais manual do que deveria ser?"</p>
+    </div>
+
+    <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #10b981; background: #f0fdf4;">
+      <div class="label" style="color:#10b981">Seção 2 — A solução core</div>
+      <p style="color:#555;font-size:0.9rem;margin:0.5rem 0 0.25rem"><strong>O Crivo em 2 frases + o que o recrutador vai ver no demo</strong></p>
+      <p style="color:#888;font-size:0.8rem;margin:0">Criação envia link → cliente abre no celular sem instalar nada → aprova ou pede revisão → agência recebe no WhatsApp em tempo real</p>
+      <p style="color:#888;font-size:0.8rem;margin-top:0.5rem">→ GIF ou screenshot do fluxo · link direto pro app · "abra e explore os projetos de demo"</p>
+    </div>
+
+    <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #f59e0b; background: #fffbeb;">
+      <div class="label" style="color:#d97706">Seção 3 — E fui além (personas reais)</div>
+      <p style="color:#555;font-size:0.9rem;margin:0.5rem 0 0.25rem"><strong>Mapeei 3 papéis reais e construí uma visão para cada um</strong></p>
+      <p style="color:#888;font-size:0.8rem;margin:0">Desirre (atendimento): extração de briefing por IA · Fabi (mídia): painel de campanhas com exports CSV/TXT · Bruno (criação): visão focada em peças e revisões</p>
+      <p style="color:#888;font-size:0.8rem;margin-top:0.5rem">→ RoleSwitcher na navbar permite trocar entre as visões · integração real com Claude API</p>
+    </div>
+
+    <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #64748b; background: #f8fafc;">
+      <div class="label" style="color:#64748b">Seção 4 — Decisões técnicas (para quem quiser se aprofundar)</div>
+      <p style="color:#888;font-size:0.8rem;margin:0.5rem 0">Stack · por que Supabase Realtime em vez de polling · por que link público sem auth · como o n8n integra com WhatsApp · estrutura de dados (projetos → peças → versões → comentários)</p>
+    </div>
+
+    <div style="padding: 1rem; border-left: 3px solid #e2e8f0; background: #f8fafc;">
+      <div class="label" style="color:#94a3b8">Seção 5 — Como rodar localmente (padrão)</div>
+      <p style="color:#888;font-size:0.8rem;margin:0.5rem 0">Setup mínimo · variáveis de ambiente · migrations</p>
+    </div>
+
+  </div>
+</div>
+
+<div style="margin-top:1.5rem" class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Estrutura aprovada</h3>
+      <p>Vamos escrever o README com essa estrutura</p>
+    </div>
+  </div>
+  <div class="option" data-choice="adjust" onclick="toggleSelect(this)">
+    <div class="letter">↺</div>
+    <div class="content">
+      <h3>Quero ajustar algo</h3>
+      <p>Me diz o que mudar antes de escrever</p>
+    </div>
+  </div>
+</div>

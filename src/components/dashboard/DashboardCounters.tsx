@@ -1,34 +1,63 @@
-import { LayoutGrid, CheckCircle2, RefreshCw, Clock } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import { CheckCircle2, RefreshCw, Clock, TrendingUp } from 'lucide-react'
 
 interface DashboardCountersProps {
   total: number; approved: number; revision: number; pending: number
 }
 
-interface CounterItem {
-  label: string; subtitle: string; value: number; color: string; bg: string; Icon: LucideIcon; iconColor: string
-}
-
 export function DashboardCounters({ total, approved, revision, pending }: DashboardCountersProps) {
-  const items: CounterItem[] = [
-    { label: 'Total de peças', subtitle: 'Todas as peças', value: total, color: 'text-slate-700', bg: 'bg-slate-50', Icon: LayoutGrid, iconColor: 'text-slate-500' },
-    { label: 'Aprovadas', subtitle: 'Cliente aprovou', value: approved, color: 'text-green-600', bg: 'bg-green-50', Icon: CheckCircle2, iconColor: 'text-green-500' },
-    { label: 'Em revisão', subtitle: 'Ajustes solicitados', value: revision, color: 'text-amber-600', bg: 'bg-amber-50', Icon: RefreshCw, iconColor: 'text-amber-500' },
-    { label: 'Pendentes', subtitle: 'Aguardando cliente', value: pending, color: 'text-slate-500', bg: 'bg-slate-50', Icon: Clock, iconColor: 'text-slate-400' },
-  ]
+  const approvalRate = total > 0 ? Math.round((approved / total) * 100) : 0
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-      {items.map(({ label, subtitle, value, color, bg, Icon, iconColor }) => (
-        <div key={label} className={`${bg} border border-slate-200 rounded-lg p-3`}>
-          <div className="flex items-center gap-2 mb-1">
-            <Icon size={14} className={iconColor} />
-            <span className="text-xs text-slate-500">{label}</span>
-          </div>
-          <div className={`text-2xl font-bold ${color}`}>{value}</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">{subtitle}</div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+      {/* Hero card escuro */}
+      <div className="lg:col-span-1 bg-slate-900 rounded-2xl p-6 text-white flex flex-col justify-between min-h-[140px]">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-slate-400 text-sm font-medium">Total de peças</span>
+          <TrendingUp size={16} className="text-slate-500" />
         </div>
-      ))}
+        <div>
+          <div className="text-5xl font-bold tracking-tight">{total}</div>
+          <div className="text-slate-400 text-sm mt-1">
+            {approvalRate}% taxa de aprovação
+          </div>
+        </div>
+      </div>
+
+      {/* Cards claros */}
+      <div className="lg:col-span-2 grid grid-cols-3 gap-4">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
+              <CheckCircle2 size={14} className="text-green-600" />
+            </div>
+            <span className="text-xs text-slate-500 font-medium">Aprovadas</span>
+          </div>
+          <div className="text-3xl font-bold text-slate-900">{approved}</div>
+          <div className="text-[11px] text-slate-400 mt-1">Cliente aprovou</div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+              <RefreshCw size={14} className="text-amber-600" />
+            </div>
+            <span className="text-xs text-slate-500 font-medium">Em revisão</span>
+          </div>
+          <div className="text-3xl font-bold text-slate-900">{revision}</div>
+          <div className="text-[11px] text-slate-400 mt-1">Ajustes pedidos</div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-stone-50 rounded-lg flex items-center justify-center">
+              <Clock size={14} className="text-slate-500" />
+            </div>
+            <span className="text-xs text-slate-500 font-medium">Pendentes</span>
+          </div>
+          <div className="text-3xl font-bold text-slate-900">{pending}</div>
+          <div className="text-[11px] text-slate-400 mt-1">Aguardando cliente</div>
+        </div>
+      </div>
     </div>
   )
 }

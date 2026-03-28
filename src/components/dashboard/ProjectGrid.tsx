@@ -79,13 +79,14 @@ export function ProjectGrid() {
         />
       )}
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-end justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Projetos</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 font-medium mb-1">Olá, {role === 'ceo' ? 'Desirre' : role === 'criacao' ? 'Bruno' : 'Fabi'} 👋</p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+          <p className="text-sm text-slate-400 mt-1">
             {isFirstTime
-              ? 'Comece criando seu primeiro projeto para organizar as peças e enviá-las ao cliente.'
-              : `Gerencie aprovações de peças criativas com seus clientes. ${projects.length} projeto${projects.length !== 1 ? 's' : ''} no total.`
+              ? 'Crie seu primeiro projeto para começar.'
+              : `${projects.length} projeto${projects.length !== 1 ? 's' : ''} ativos`
             }
           </p>
         </div>
