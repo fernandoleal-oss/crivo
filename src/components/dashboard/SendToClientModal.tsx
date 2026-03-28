@@ -25,7 +25,7 @@ export function SendToClientModal({ open, piece, projectName, briefingScore = 10
   const [confirmedIncomplete, setConfirmedIncomplete] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const briefingIncompleto = briefingScore < 80 && briefingScore > 0
+  const briefingIncompleto = briefingScore < 80
   const canSend = !briefingIncompleto || confirmedIncomplete
 
   async function handleSubmit(e: React.FormEvent) {

@@ -11,7 +11,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const revision = pieces.filter(p => p.status === 'revision_requested').length
   const pending = pieces.filter(p => p.status === 'pending').length
   const sectorInfo = SECTORS.find(s => s.value === project.sector)
-  const briefingIncompleto = (project.briefing_score ?? 0) < 80 && (project.briefing_score ?? 0) > 0
+  const briefingIncompleto = project.briefing_score !== null && project.briefing_score !== undefined && project.briefing_score < 80
 
   return (
     <Link href={`/project/${project.id}`}>
