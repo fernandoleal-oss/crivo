@@ -1,4 +1,5 @@
 'use server'
+
 import type { NotifyDecisionPayload, SendToClientPayload } from './types'
 
 async function postWebhook(path: string, payload: unknown): Promise<void> {
