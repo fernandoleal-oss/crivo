@@ -17,6 +17,8 @@ import type { ProjectWithCounts } from '@/lib/types'
 import type { Sector } from '@/lib/types'
 import { useRole } from '@/lib/role-context'
 import { CampaignPanel } from './CampaignPanel'
+import { UpcomingDeadlines } from './UpcomingDeadlines'
+import { RecentActivity } from './RecentActivity'
 
 export function ProjectGrid() {
   const { role } = useRole()
@@ -93,61 +95,72 @@ export function ProjectGrid() {
         <NewProjectModal open={showModal} onOpenChange={setShowModal} onCreated={fetchProjects} />
       </div>
 
-      {!isFirstTime && (
-        <>
-          <DashboardCounters {...counters} />
+      <div className="flex gap-6 items-start">
+        <div className="flex-1 min-w-0">
+          {!isFirstTime && (
+            <>
+              <DashboardCounters {...counters} />
 
-          {/* Counters explainer for new users */}
-          {counters.total === 0 && (
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4 text-xs text-slate-500">
-              📊 Os contadores acima refletem o status das peças em todos os seus projetos. Quando você subir peças e enviar para clientes, os números se atualizam automaticamente.
-            </div>
+              {/* Counters explainer for new users */}
+              {counters.total === 0 && (
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4 text-xs text-slate-500">
+                  📊 Os contadores acima refletem o status das peças em todos os seus projetos. Quando você subir peças e enviar para clientes, os números se atualizam automaticamente.
+                </div>
+              )}
+
+              <SectorTabs value={sector} onChange={setSector} />
+
+              <div className="mb-4">
+                <Input
+                  placeholder="🔍 Buscar por nome do projeto ou cliente..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="max-w-sm"
+                />
+              </div>
+            </>
           )}
 
-          <SectorTabs value={sector} onChange={setSector} />
-
-          <div className="mb-4">
-            <Input
-              placeholder="🔍 Buscar por nome do projeto ou cliente..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="max-w-sm"
+          {loading ? (
+            <ProjectGridSkeleton />
+          ) : filtered.length === 0 && !isFirstTime ? (
+            <EmptyState
+              title={search ? 'Nenhum projeto encontrado' : 'Nenhum projeto ainda.'}
+              description={
+                search
+                  ? 'Tente outro termo de busca ou limpe o filtro para ver todos os projetos.'
+                  : 'Crie o primeiro para começar a organizar aprovações.'
+              }
+              actionLabel={search ? 'Limpar busca' : undefined}
+              onAction={search ? () => setSearch('') : undefined}
             />
-          </div>
-        </>
-      )}
-
-      {loading ? (
-        <ProjectGridSkeleton />
-      ) : filtered.length === 0 && !isFirstTime ? (
-        <EmptyState
-          title={search ? 'Nenhum projeto encontrado' : 'Nenhum projeto ainda.'}
-          description={
-            search
-              ? 'Tente outro termo de busca ou limpe o filtro para ver todos os projetos.'
-              : 'Crie o primeiro para começar a organizar aprovações.'
-          }
-          actionLabel={search ? 'Limpar busca' : undefined}
-          onAction={search ? () => setSearch('') : undefined}
-        />
-      ) : !isFirstTime ? (
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
-        >
-          {filtered.map(project => (
+          ) : !isFirstTime ? (
             <motion.div
-              key={project.id}
-              variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
             >
-              <ProjectCard project={project} />
+              {filtered.map(project => (
+                <motion.div
+                  key={project.id}
+                  variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                >
+                  <ProjectCard project={project} />
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
-      ) : null}
+          ) : null}
+        </div>
+
+        {!isFirstTime && !loading && (
+          <div className="w-72 flex-shrink-0 flex flex-col gap-4">
+            <UpcomingDeadlines />
+            <RecentActivity />
+          </div>
+        )}
+      </div>
 
       <div className="mt-8 pt-4 border-t border-slate-100 text-center">
         <Link href="/integrations" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors">
