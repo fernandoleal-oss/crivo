@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
-import { notifyDecision } from '@/lib/n8n'
+import { notifyDecision } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

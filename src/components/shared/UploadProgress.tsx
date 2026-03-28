@@ -38,7 +38,7 @@ export function UploadProgress({ progress, fileName, error, onRetry }: UploadPro
         />
       </div>
       {progress < 100 && (
-        <p className="text-xs text-slate-400 mt-1">Enviando para o servidor...</p>
+        <p className="text-xs text-slate-500 mt-1">Enviando para o servidor...</p>
       )}
     </div>
   )

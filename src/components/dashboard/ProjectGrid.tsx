@@ -131,7 +131,7 @@ export function ProjectGrid() {
       ) : null}
 
       <div className="mt-8 pt-4 border-t border-slate-100 text-center">
-        <Link href="/integrations" className="text-sm text-slate-400 hover:text-indigo-600 transition-colors">
+        <Link href="/integrations" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors">
           🔌 Ver integrações disponíveis (WhatsApp, Gmail e mais)
         </Link>
       </div>

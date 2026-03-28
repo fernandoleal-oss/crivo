@@ -95,7 +95,7 @@ export default function IntegrationsPage() {
 
       <section>
         <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-          Em breve <span className="text-slate-400">({COMING_INTEGRATIONS.length})</span>
+          Em breve <span className="text-slate-500">({COMING_INTEGRATIONS.length})</span>
         </h2>
         <p className="text-sm text-slate-500 mb-3">
           Solicite acesso antecipado e seremos os primeiros a avisar quando estiverem disponíveis.

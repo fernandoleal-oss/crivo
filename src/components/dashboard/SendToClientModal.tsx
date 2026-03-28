@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
-import { notifySendClient } from '@/lib/n8n'
+import { notifySendClient } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -60,12 +60,12 @@ export function SendToClientModal({ open, piece, projectName, onClose, onSent }:
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div>
             <Label htmlFor="cname">Nome do cliente</Label>
-            <p className="text-xs text-slate-400 mb-1">Aparecerá no email de convite.</p>
+            <p className="text-xs text-slate-500 mb-1">Aparecerá no email de convite.</p>
             <Input id="cname" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Ex: João Silva" required />
           </div>
           <div>
             <Label htmlFor="cemail">Email do cliente</Label>
-            <p className="text-xs text-slate-400 mb-1">O link de revisão será enviado para este email.</p>
+            <p className="text-xs text-slate-500 mb-1">O link de revisão será enviado para este email.</p>
             <Input id="cemail" type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="joao@empresa.com" required />
           </div>
           <div className="flex gap-2">

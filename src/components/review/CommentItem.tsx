@@ -15,7 +15,7 @@ export function CommentItem({ comment, pinIndex, onPinHover }: CommentItemProps)
         </div>
       )}
       <p className="text-slate-700">{comment.content}</p>
-      <div className="flex items-center gap-1 mt-1.5 text-xs text-slate-400">
+      <div className="flex items-center gap-1 mt-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-500">{comment.author_name}</span>
         <span>·</span>
         <span>{formatRelativeTime(comment.created_at)}</span>

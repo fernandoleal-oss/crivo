@@ -42,7 +42,7 @@ export function GuidedTourBanner({ hasProjects, hasPieces, hasSentToClient, hasA
         </div>
         <button
           onClick={() => setDismissed(true)}
-          className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+          className="text-xs text-slate-500 hover:text-slate-600 transition-colors"
         >
           Dispensar
         </button>
@@ -66,7 +66,7 @@ export function GuidedTourBanner({ hasProjects, hasPieces, hasSentToClient, hasA
                 ? 'bg-green-50 text-green-700'
                 : i === completedCount
                 ? 'bg-indigo-50 text-indigo-700 font-medium'
-                : 'bg-slate-50 text-slate-400'
+                : 'bg-slate-50 text-slate-500'
             }`}
           >
             <span className="flex-shrink-0">

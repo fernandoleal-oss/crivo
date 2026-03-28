@@ -19,7 +19,7 @@ export function DashboardCounters({ total, approved, revision, pending }: Dashbo
             <span className="text-xs text-slate-500">{label}</span>
           </div>
           <div className={`text-2xl font-bold ${color}`}>{value}</div>
-          <div className="text-[10px] text-slate-400 mt-0.5">{subtitle}</div>
+          <div className="text-[10px] text-slate-500 mt-0.5">{subtitle}</div>
         </div>
       ))}
     </div>

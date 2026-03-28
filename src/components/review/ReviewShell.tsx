@@ -48,7 +48,7 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
       <div className="bg-white border-b border-slate-200 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-start justify-between flex-wrap gap-2">
           <div>
-            <p className="text-xs text-slate-400">{projectName}</p>
+            <p className="text-xs text-slate-500">{projectName}</p>
             <h1 className="font-semibold text-slate-900">{piece.title}</h1>
             {piece.description && <p className="text-sm text-slate-500 mt-0.5">{piece.description}</p>}
           </div>
@@ -104,7 +104,7 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
                     👆 Clique na imagem para fixar um comentário
                   </span>
                 )}
-                <p className="text-xs text-slate-400">v{currentVersion.version_number} · {formatRelativeTime(currentVersion.uploaded_at)}</p>
+                <p className="text-xs text-slate-500">v{currentVersion.version_number} · {formatRelativeTime(currentVersion.uploaded_at)}</p>
               </div>
               <a href={currentVersion.file_url} download className="text-xs text-indigo-600 hover:underline">⬇ Download original</a>
             </div>
@@ -120,7 +120,7 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
                   <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700 shadow-sm">✅ Aprovar</Button>
                   <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700 hover:bg-amber-50">↩ Pedir Revisão</Button>
                 </div>
-                <p className="text-xs text-slate-400 text-center mb-4">
+                <p className="text-xs text-slate-500 text-center mb-4">
                   Revise a peça e deixe seus comentários antes de decidir.
                 </p>
               </>

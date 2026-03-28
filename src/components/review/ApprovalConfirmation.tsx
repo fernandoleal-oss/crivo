@@ -20,7 +20,7 @@ export function ApprovalConfirmation({ decision }: ApprovalConfirmationProps) {
       <p className={`text-sm mt-1 ${isApproval ? 'text-green-600' : 'text-amber-600'}`}>
         A agência foi notificada.
       </p>
-      <p className="text-xs text-slate-400 mt-2">Você ainda pode deixar comentários.</p>
+      <p className="text-xs text-slate-500 mt-2">Você ainda pode deixar comentários.</p>
     </div>
   )
 }

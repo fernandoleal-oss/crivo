@@ -41,7 +41,7 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
               sizes="(max-width: 768px) 100vw, 400px"
             />
           ) : isPdf ? (
-            <div className="flex items-center justify-center h-full gap-2 text-slate-400">
+            <div className="flex items-center justify-center h-full gap-2 text-slate-500">
               <span className="text-3xl">📄</span>
               <span className="text-sm">PDF</span>
             </div>
@@ -59,7 +59,7 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
           <h3 className="font-medium text-slate-900">{piece.title}</h3>
           {piece.description && <p className="text-sm text-slate-500 mt-0.5">{piece.description}</p>}
           <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <p className="text-xs text-slate-400">{formatRelativeTime(piece.updated_at)}</p>
+            <p className="text-xs text-slate-500">{formatRelativeTime(piece.updated_at)}</p>
             {piece.notified_at && (
               <span className="text-xs text-indigo-500">✉ Enviado {formatRelativeTime(piece.notified_at)}</span>
             )}
@@ -83,13 +83,13 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
               {piece.notified_at ? '📨 Reenviar para cliente' : '📨 Enviar para cliente'}
             </Button>
           </div>
-          <p className="text-xs text-slate-400 mt-1">O cliente acessa o link, revisa a peça e aprova direto pelo navegador.</p>
+          <p className="text-xs text-slate-500 mt-1">O cliente acessa o link, revisa a peça e aprova direto pelo navegador.</p>
           <div className="mt-3">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Versões ({(piece.piece_versions ?? []).length})</p>
             {(piece.piece_versions ?? []).map(v => (
               <div key={v.id} className="flex items-center gap-2 text-sm text-slate-600">
                 <span>v{v.version_number}</span>
-                <span className="text-slate-400">·</span>
+                <span className="text-slate-500">·</span>
                 <span>{formatRelativeTime(v.uploaded_at)}</span>
                 <a href={v.file_url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline text-xs">Abrir</a>
               </div>

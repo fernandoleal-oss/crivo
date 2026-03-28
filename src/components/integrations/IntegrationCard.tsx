@@ -25,7 +25,7 @@ export function IntegrationCard({ name, description, icon, status, howItWorks, o
         </div>
         <p className="text-sm text-slate-500 mt-1">{description}</p>
         {howItWorks && (
-          <p className="text-xs text-slate-400 mt-2 bg-slate-50 rounded-lg px-3 py-2">
+          <p className="text-xs text-slate-500 mt-2 bg-slate-50 rounded-lg px-3 py-2">
             ⚙️ <strong>Como funciona:</strong> {howItWorks}
           </p>
         )}

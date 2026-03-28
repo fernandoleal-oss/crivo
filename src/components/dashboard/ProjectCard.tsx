@@ -18,15 +18,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <h3 className="font-semibold text-slate-900 leading-tight mb-1">{project.name}</h3>
         <p className="text-sm text-slate-500 mb-1">{project.client_name}</p>
         {sectorInfo && sectorInfo.value !== 'all' && (
-          <span className="text-xs text-slate-400 block mb-2">{sectorInfo.icon} {sectorInfo.label}</span>
+          <span className="text-xs text-slate-500 block mb-2">{sectorInfo.icon} {sectorInfo.label}</span>
         )}
         <div className="flex gap-2 flex-wrap">
           {approved > 0 && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{approved} aprovada{approved > 1 ? 's' : ''}</span>}
           {revision > 0 && <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{revision} revisão</span>}
           {pending > 0 && <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{pending} pendente{pending > 1 ? 's' : ''}</span>}
-          {pieces.length === 0 && <span className="text-xs text-slate-400">Sem peças</span>}
+          {pieces.length === 0 && <span className="text-xs text-slate-500">Sem peças</span>}
         </div>
-        <p className="text-xs text-slate-400 mt-3">{formatRelativeTime(project.created_at)}</p>
+        <p className="text-xs text-slate-500 mt-3">{formatRelativeTime(project.created_at)}</p>
       </div>
     </Link>
   )

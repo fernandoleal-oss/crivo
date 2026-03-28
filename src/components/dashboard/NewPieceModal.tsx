@@ -111,12 +111,12 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
             <div>
               <Label htmlFor="title">Título da peça</Label>
-              <p className="text-xs text-slate-400 mb-1">Nome descritivo que o cliente verá na tela de revisão.</p>
+              <p className="text-xs text-slate-500 mb-1">Nome descritivo que o cliente verá na tela de revisão.</p>
               <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Banner Instagram 1080x1080" required />
             </div>
             <div>
               <Label htmlFor="desc">Descrição (opcional)</Label>
-              <p className="text-xs text-slate-400 mb-1">Instruções ou contexto para o cliente entender a peça. Ex: &quot;Versão com fundo azul conforme briefing&quot;.</p>
+              <p className="text-xs text-slate-500 mb-1">Instruções ou contexto para o cliente entender a peça. Ex: &quot;Versão com fundo azul conforme briefing&quot;.</p>
               <Textarea id="desc" value={description} onChange={e => setDescription(e.target.value)} placeholder="Orientações para o cliente..." rows={2} />
             </div>
             <div>
@@ -125,7 +125,7 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
               <div onClick={() => fileRef.current?.click()} className="border-2 border-dashed border-slate-200 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-300 transition-colors mt-1">
                 {file
                   ? <p className="text-sm text-slate-700">{file.name} — {formatFileSize(file.size)}</p>
-                  : <p className="text-sm text-slate-400">Clique para selecionar</p>}
+                  : <p className="text-sm text-slate-500">Clique para selecionar</p>}
               </div>
               <UploadProgress
                 progress={progress}
