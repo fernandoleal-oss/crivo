@@ -52,7 +52,6 @@ export function PieceList({ projectId, projectName }: PieceListProps) {
         <EmptyState
           title="Nenhuma peça nesse projeto"
           description='Clique em "+ Nova Peça" acima para fazer upload de uma imagem ou PDF. Cada peça ganha um link único que você envia pro cliente revisar.'
-          icon="🎨"
           tip="Formatos aceitos: JPG, PNG e PDF (até 10MB). Você pode subir várias versões depois."
         />
       ) : (

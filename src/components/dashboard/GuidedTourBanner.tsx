@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { Target, CheckCircle2, ArrowRight, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface GuidedTourBannerProps {
   hasProjects: boolean
@@ -10,10 +12,10 @@ interface GuidedTourBannerProps {
 }
 
 const TOUR_STEPS = [
-  { key: 'project', label: 'Criar projeto', done: false },
-  { key: 'piece', label: 'Subir peça', done: false },
-  { key: 'send', label: 'Enviar ao cliente', done: false },
-  { key: 'approval', label: 'Receber aprovação', done: false },
+  { key: 'project', label: 'Criar projeto' },
+  { key: 'piece', label: 'Subir peça' },
+  { key: 'send', label: 'Enviar ao cliente' },
+  { key: 'approval', label: 'Receber aprovação' },
 ]
 
 export function GuidedTourBanner({ hasProjects, hasPieces, hasSentToClient, hasApproval }: GuidedTourBannerProps) {
@@ -37,15 +39,17 @@ export function GuidedTourBanner({ hasProjects, hasPieces, hasSentToClient, hasA
     <div className="bg-white border border-indigo-200 rounded-xl p-4 mb-6">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-lg">🎯</span>
+          <Target size={16} className="text-indigo-600" />
           <p className="text-sm font-semibold text-slate-800">Seu progresso no Crivo</p>
         </div>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => setDismissed(true)}
-          className="text-xs text-slate-500 hover:text-slate-600 transition-colors"
+          className="h-auto p-1 text-slate-500 hover:text-slate-700"
         >
-          Dispensar
-        </button>
+          <X size={14} />
+        </Button>
       </div>
 
       {/* Progress bar */}
@@ -70,7 +74,11 @@ export function GuidedTourBanner({ hasProjects, hasPieces, hasSentToClient, hasA
             }`}
           >
             <span className="flex-shrink-0">
-              {step.done ? '✅' : i === completedCount ? '👉' : `${i + 1}.`}
+              {step.done
+                ? <CheckCircle2 size={14} />
+                : i === completedCount
+                ? <ArrowRight size={14} />
+                : <span className="text-xs">{i + 1}.</span>}
             </span>
             <span>{step.label}</span>
           </div>

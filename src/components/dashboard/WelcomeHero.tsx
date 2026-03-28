@@ -1,55 +1,37 @@
 'use client'
+import { FolderOpen, Palette, Link2, CheckCircle2, Lightbulb } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface WelcomeHeroProps {
   onCreateProject: () => void
 }
 
 const STEPS = [
-  {
-    number: '1',
-    icon: '📂',
-    title: 'Crie um projeto',
-    description: 'Organize as peças por cliente e campanha. Dê um nome, escolha o setor responsável e pronto.',
-  },
-  {
-    number: '2',
-    icon: '🎨',
-    title: 'Suba as peças',
-    description: 'Faça upload de imagens (JPG, PNG) ou PDFs. Cada peça ganha um link único de revisão.',
-  },
-  {
-    number: '3',
-    icon: '🔗',
-    title: 'Envie para o cliente',
-    description: 'O cliente recebe um email com o link. Sem app, sem cadastro — ele abre e revisa direto.',
-  },
-  {
-    number: '4',
-    icon: '✅',
-    title: 'Receba a aprovação',
-    description: 'O cliente aprova ou pede revisão com comentários. Você recebe aviso no WhatsApp em tempo real.',
-  },
+  { number: '1', Icon: FolderOpen, title: 'Crie um projeto', description: 'Organize as peças por cliente e campanha. Dê um nome, escolha o setor responsável e pronto.' },
+  { number: '2', Icon: Palette, title: 'Suba as peças', description: 'Faça upload de imagens (JPG, PNG) ou PDFs. Cada peça ganha um link único de revisão.' },
+  { number: '3', Icon: Link2, title: 'Envie para o cliente', description: 'O cliente recebe um email com o link. Sem app, sem cadastro — ele abre e revisa direto.' },
+  { number: '4', Icon: CheckCircle2, title: 'Receba a aprovação', description: 'O cliente aprova ou pede revisão com comentários. Você recebe aviso no WhatsApp em tempo real.' },
 ]
 
 export function WelcomeHero({ onCreateProject }: WelcomeHeroProps) {
   return (
     <div className="mb-8">
       {/* Hero banner */}
-      <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-2xl p-8 text-white mb-8">
+      <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-8 text-white mb-8">
         <div className="max-w-2xl">
           <h1 className="text-3xl font-bold mb-3">
-            Aprovação de peças criativas sem WhatsApp, sem confusão.
+            Aprovação de peças sem WhatsApp, sem confusão.
           </h1>
           <p className="text-indigo-100 text-lg mb-6">
             O <strong>Crivo</strong> organiza todo o fluxo de aprovação entre agência e cliente em um só lugar.
             Crie projetos, suba peças, envie links e receba aprovações com feedback — tudo rastreável e profissional.
           </p>
-          <button
+          <Button
             onClick={onCreateProject}
-            className="bg-white text-indigo-700 font-semibold px-6 py-3 rounded-xl hover:bg-indigo-50 transition-colors shadow-lg"
+            className="bg-white text-indigo-700 font-semibold hover:bg-indigo-50 shadow-lg"
           >
             Criar meu primeiro projeto
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -65,7 +47,7 @@ export function WelcomeHero({ onCreateProject }: WelcomeHeroProps) {
               <span className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
                 {step.number}
               </span>
-              <span className="text-2xl">{step.icon}</span>
+              <step.Icon size={20} className="text-indigo-500" />
             </div>
             <h3 className="font-semibold text-slate-900 mb-1">{step.title}</h3>
             <p className="text-sm text-slate-500">{step.description}</p>
@@ -75,7 +57,7 @@ export function WelcomeHero({ onCreateProject }: WelcomeHeroProps) {
 
       {/* Demo callout */}
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-        <span className="text-xl flex-shrink-0">💡</span>
+        <Lightbulb size={20} className="text-amber-500 flex-shrink-0 mt-0.5" />
         <div>
           <p className="text-sm text-amber-800 font-medium">Quer ver como funciona antes de criar?</p>
           <p className="text-sm text-amber-700 mt-0.5">

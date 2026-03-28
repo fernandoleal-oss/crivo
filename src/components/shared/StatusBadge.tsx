@@ -1,3 +1,4 @@
+import { CheckCircle2, RefreshCw, Clock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { PieceStatus } from '@/lib/types'
 import { getStatusLabel } from '@/lib/utils'
@@ -10,6 +11,17 @@ const statusStyles: Record<PieceStatus, string> = {
   revision_requested: 'bg-amber-100 text-amber-700 hover:bg-amber-100',
 }
 
+const statusIcons: Record<PieceStatus, React.ReactNode> = {
+  approved: <CheckCircle2 size={12} />,
+  revision_requested: <RefreshCw size={12} />,
+  pending: <Clock size={12} />,
+}
+
 export function StatusBadge({ status }: StatusBadgeProps) {
-  return <Badge className={statusStyles[status]}>{getStatusLabel(status)}</Badge>
+  return (
+    <Badge className={`${statusStyles[status]} flex items-center gap-1`}>
+      {statusIcons[status]}
+      {getStatusLabel(status)}
+    </Badge>
+  )
 }
