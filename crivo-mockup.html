@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crivo — Premium Design System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+    body { background: #f8fafc; color: #0f172a; -webkit-font-smoothing: antialiased; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+
+    /* ── Nav ── */
+    .nav { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .nav-link { color: rgba(255,255,255,0.55); font-size: 13px; padding: 6px 12px; border-radius: 6px; transition: all 0.15s; font-weight: 500; }
+    .nav-link:hover { color: white; background: rgba(255,255,255,0.08); }
+    .nav-link.active { color: white; background: rgba(99,102,241,0.25); }
+
+    /* ── Role pills ── */
+    .role-bar { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 3px; }
+    .role-pill { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 7px; cursor: pointer; transition: all 0.15s; color: rgba(255,255,255,0.45); letter-spacing: 0.01em; }
+    .role-pill.active-ceo { background: #4f46e5; color: white; box-shadow: 0 2px 8px rgba(79,70,229,0.45); }
+    .role-pill.active-criacao { background: #7c3aed; color: white; box-shadow: 0 2px 8px rgba(124,58,237,0.45); }
+    .role-pill.active-midia { background: #0d9488; color: white; box-shadow: 0 2px 8px rgba(13,148,136,0.45); }
+
+    /* ── KPI Cards ── */
+    .kpi { background: white; border: 1px solid #f1f5f9; border-radius: 16px; padding: 22px 24px; transition: all 0.2s; cursor: default; }
+    .kpi:hover { border-color: #e0e7ff; box-shadow: 0 4px 24px rgba(79,70,229,0.07); transform: translateY(-1px); }
+    .kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .kpi-value { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; color: #0f172a; line-height: 1; }
+    .kpi-label { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .kpi-delta { font-size: 12px; font-weight: 600; margin-top: 6px; }
+
+    /* ── Sector tabs ── */
+    .sector-tab { font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; color: #64748b; border: 1px solid transparent; }
+    .sector-tab:hover { color: #334155; background: #f8fafc; }
+    .sector-tab.active { color: #4f46e5; background: #eef2ff; border-color: #e0e7ff; font-weight: 600; }
+
+    /* ── Cards ── */
+    .card { background: white; border: 1px solid #f1f5f9; border-radius: 16px; transition: all 0.2s; }
+    .card:hover { border-color: #e0e7ff; box-shadow: 0 8px 32px rgba(79,70,229,0.08); transform: translateY(-2px); }
+    .card-inner { background: white; border: 1px solid #f1f5f9; border-radius: 12px; }
+
+    /* ── Badges ── */
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; letter-spacing: 0.01em; }
+    .badge-approved { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-pending { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+    .badge-revision { background: #fffbeb; color: #a16207; border: 1px solid #fde68a; }
+    .badge-dl-red { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+    .badge-dl-green { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-dl-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .sector-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── Tool tags ── */
+    .tool { font-size: 11px; font-weight: 500; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; padding: 2px 8px; border-radius: 5px; display: inline-flex; align-items: center; gap: 3px; }
+
+    /* ── Progress ── */
+    .prog-track { height: 4px; background: #f1f5f9; border-radius: 99px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); }
+
+    /* ── Buttons ── */
+    .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 9px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; box-shadow: 0 2px 8px rgba(79,70,229,0.3); }
+    .btn-primary:hover { box-shadow: 0 4px 16px rgba(79,70,229,0.4); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: #475569; font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 9px; border: 1px solid #e2e8f0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+    .btn-ghost:hover { background: #f8fafc; color: #0f172a; border-color: #cbd5e1; }
+    .btn-approve { background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); color: white; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; box-shadow: 0 2px 8px rgba(22,163,74,0.3); flex: 1; }
+    .btn-revision { background: white; color: #b45309; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 10px; border: 1.5px solid #fcd34d; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; flex: 1; }
+    .btn-revision:hover { background: #fffbeb; }
+
+    /* ── Timeline ── */
+    .timeline-dot { width: 10px; height: 10px; border-radius: 99px; flex-shrink: 0; margin-top: 4px; border: 2px solid white; box-shadow: 0 0 0 1px currentColor; }
+
+    /* ── Input ── */
+    .input { width: 100%; font-size: 13px; color: #0f172a; background: white; border: 1.5px solid #e2e8f0; border-radius: 9px; padding: 9px 12px; outline: none; transition: border-color 0.15s; }
+    .input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+    .input::placeholder { color: #94a3b8; }
+
+    /* ── Thumbnail ── */
+    .thumb-gradient-criacao { background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 50%, #ddd6fe 100%); }
+    .thumb-gradient-midia { background: linear-gradient(135deg, #ecfeff 0%, #cffafe 50%, #a5f3fc 100%); }
+    .thumb-gradient-atendimento { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%); }
+    .thumb-gradient-rtv { background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%); }
+
+    /* ── AI card ── */
+    .ai-card { background: white; border: 1px solid #ede9fe; border-radius: 16px; transition: all 0.2s; }
+    .ai-card:hover { border-color: #c4b5fd; box-shadow: 0 8px 32px rgba(124,58,237,0.08); transform: translateY(-2px); }
+    .ai-disclaimer { background: linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%); border: 1px solid #fde68a; border-radius: 12px; padding: 14px 16px; }
+
+    /* ── Claquete ── */
+    .clapperboard { background: #0a0a0a; border-radius: 16px; overflow: hidden; font-family: 'Courier New', monospace; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .clap-stripe { background: repeating-linear-gradient(90deg, #000 0, #000 18px, #fff 18px, #fff 36px); }
+    .clap-row { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .clap-label { color: rgba(255,255,255,0.35); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+    .clap-value { color: white; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
+
+    /* ── News card ── */
+    .news-card { background: white; border: 1px solid #f1f5f9; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.15s; }
+    .news-card:hover { border-color: #c7d2fe; box-shadow: 0 4px 16px rgba(79,70,229,0.06); }
+
+    /* ── Learn card ── */
+    .learn-card { background: white; border: 1px solid #f1f5f9; border-radius: 12px; padding: 14px; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; }
+    .learn-card:hover { border-color: #e0e7ff; background: #fafbff; }
+    .learn-card.active { border-color: #c7d2fe; background: #eef2ff; }
+
+    /* ── Supplier card ── */
+    .supplier-card { background: white; border: 1px solid #f1f5f9; border-radius: 12px; padding: 16px; transition: all 0.15s; }
+    .supplier-card:hover { border-color: #e0e7ff; box-shadow: 0 4px 16px rgba(79,70,229,0.05); }
+
+    /* ── Separador de seção ── */
+    .section-label { font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 16px 6px; }
+
+    /* ── Avatar ── */
+    .avatar { width: 34px; height: 34px; border-radius: 99px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* ── Pin ── */
+    .pin { width: 28px; height: 28px; border-radius: 99px; background: #4f46e5; color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(79,70,229,0.5), 0 0 0 3px rgba(79,70,229,0.2); cursor: pointer; transition: all 0.15s; position: absolute; }
+    .pin:hover { transform: scale(1.15); box-shadow: 0 4px 16px rgba(79,70,229,0.6), 0 0 0 4px rgba(79,70,229,0.2); }
+
+    /* ── Approval ── */
+    .approval-green { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; border-radius: 20px; }
+    .approval-amber { background: linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%); border: 1px solid #fcd34d; border-radius: 20px; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(79,70,229,0.4); } 70% { box-shadow: 0 0 0 8px rgba(79,70,229,0); } 100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); } }
+    .pulse { animation: pulse-ring 2s infinite; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid #f1f5f9; }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+    .breadcrumb a { color: #4f46e5; font-weight: 500; }
+    .breadcrumb span { color: #94a3b8; }
+    .breadcrumb .current { color: #0f172a; font-weight: 600; }
+
+    /* ── Scrollable ── */
+    .scroll-x { overflow-x: auto; }
+    .scroll-x::-webkit-scrollbar { height: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  SCREEN 1 — DASHBOARD                                  ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="section-label">① Dashboard — CEO / Atendimento</div>
+
+<div class="nav mx-4 rounded-2xl mb-1 overflow-hidden">
+  <div class="px-5 py-3 flex items-center justify-between">
+    <!-- Brand -->
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2.5">
+        <div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span style="font-size:17px;font-weight:800;color:white;letter-spacing:-0.03em;">crivo</span>
+      </div>
+      <nav class="flex items-center gap-1">
+        <a class="nav-link active">Dashboard</a>
+        <a class="nav-link">Projetos</a>
+        <a class="nav-link">IA</a>
+        <a class="nav-link">Aprendizado</a>
+        <a class="nav-link">Fornecedores</a>
+      </nav>
+    </div>
+    <!-- Right controls -->
+    <div class="flex items-center gap-3">
+      <div class="role-bar flex items-center">
+        <div class="role-pill active-ceo">CEO</div>
+        <div class="role-pill">Criação</div>
+        <div class="role-pill">Mídia</div>
+      </div>
+      <button class="btn-ghost" style="padding:7px 12px;border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);background:transparent;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span style="width:6px;height:6px;background:#ef4444;border-radius:99px;position:absolute;top:8px;right:8px;"></span>
+      </button>
+      <div class="avatar">F</div>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard body -->
+<div class="px-4 pb-4">
+
+  <!-- Header row -->
+  <div class="flex items-center justify-between pt-5 pb-4">
+    <div>
+      <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-0.03em;">Bom dia, Fernando.</h1>
+      <p style="font-size:14px;color:#64748b;margin-top:2px;">Você tem <strong style="color:#4f46e5;">3 peças</strong> aguardando resposta do cliente há mais de 48h.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Buscar...
+      </button>
+      <button class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo Projeto
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+    <div class="kpi">
+      <div class="kpi-icon" style="background:#eef2ff;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="kpi-label">Aguardando cliente</div>
+      <div class="kpi-value">12</div>
+      <div class="kpi-delta" style="color:#f59e0b;">↑ 3 esta semana</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon" style="background:#f0fdf4;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="kpi-label">Aprovadas</div>
+      <div class="kpi-value">48</div>
+      <div class="kpi-delta" style="color:#16a34a;">80% taxa este mês</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon" style="background:#fffbeb;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>
+      </div>
+      <div class="kpi-label">Em revisão</div>
+      <div class="kpi-value">7</div>
+      <div class="kpi-delta" style="color:#ef4444;">2 atrasadas</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon" style="background:#f5f3ff;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="kpi-label">Projetos ativos</div>
+      <div class="kpi-value">4</div>
+      <div class="kpi-delta" style="color:#7c3aed;">2 clientes aguardam</div>
+    </div>
+  </div>
+
+  <!-- Sector tabs -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-1 p-1 rounded-xl" style="background:#f8fafc;border:1px solid #f1f5f9;">
+      <div class="sector-tab active">Todos</div>
+      <div class="sector-tab">
+        <span style="width:6px;height:6px;background:#7c3aed;border-radius:99px;display:inline-block;margin-right:5px;"></span>Criação
+      </div>
+      <div class="sector-tab">
+        <span style="width:6px;height:6px;background:#4f46e5;border-radius:99px;display:inline-block;margin-right:5px;"></span>Atendimento
+      </div>
+      <div class="sector-tab">
+        <span style="width:6px;height:6px;background:#0d9488;border-radius:99px;display:inline-block;margin-right:5px;"></span>Mídia
+      </div>
+      <div class="sector-tab">
+        <span style="width:6px;height:6px;background:#e11d48;border-radius:99px;display:inline-block;margin-right:5px;"></span>RTV
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="btn-ghost" style="font-size:12px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Lista
+      </button>
+    </div>
+  </div>
+
+  <!-- Project Grid — 2 cols -->
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+
+    <!-- Card 1: Coca-Cola / Criação -->
+    <div class="card cursor-pointer" style="padding:0;overflow:hidden;">
+      <div class="thumb-gradient-criacao" style="height:120px;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.35);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <span style="font-size:12px;color:#4338ca;font-weight:600;">4 peças</span>
+        </div>
+        <div style="position:absolute;top:12px;left:12px;"><span class="sector-badge" style="background:rgba(124,58,237,0.15);color:#7c3aed;">Criação</span></div>
+        <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.5);border-radius:99px;padding:3px 8px;backdrop-filter:blur(4px);">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span style="font-size:10px;color:white;font-weight:600;">há 2 dias</span>
+        </div>
+      </div>
+      <div style="padding:16px 18px 18px;">
+        <div style="margin-bottom:12px;">
+          <h3 style="font-size:15px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;margin-bottom:2px;">Campanha Verão 2026</h3>
+          <p style="font-size:13px;color:#64748b;font-weight:500;">Coca-Cola Brasil</p>
+        </div>
+        <!-- Pieces list -->
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px;space-y:6px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;font-weight:500;">Banner Hero</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="badge badge-dl-red">Atrasado</span>
+              <span class="badge badge-approved">Aprovado</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;font-weight:500;">Story 9:16</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="badge badge-dl-blue">Em 5 dias</span>
+              <span class="badge badge-pending">Pendente</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;">
+            <span style="font-size:12px;color:#475569;font-weight:500;">Post Carrossel</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="badge badge-dl-green">Hoje</span>
+              <span class="badge badge-revision">Revisão</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tools -->
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+          <span class="tool">Figma</span>
+          <span class="tool">Photoshop</span>
+          <span class="tool">After Effects</span>
+        </div>
+        <!-- Progress -->
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:11px;color:#94a3b8;font-weight:500;">Progresso</span>
+            <span style="font-size:11px;color:#4f46e5;font-weight:700;">55%</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" style="width:55%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Nubank / Atendimento -->
+    <div class="card cursor-pointer" style="padding:0;overflow:hidden;">
+      <div class="thumb-gradient-atendimento" style="height:120px;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.35);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <span style="font-size:12px;color:#1d4ed8;font-weight:600;">3 peças</span>
+        </div>
+        <div style="position:absolute;top:12px;left:12px;"><span class="sector-badge" style="background:rgba(79,70,229,0.15);color:#4338ca;">Atendimento</span></div>
+        <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.5);border-radius:99px;padding:3px 8px;backdrop-filter:blur(4px);">
+          <div style="width:5px;height:5px;background:#22c55e;border-radius:99px;"></div>
+          <span style="font-size:10px;color:white;font-weight:600;">Visualizado</span>
+        </div>
+      </div>
+      <div style="padding:16px 18px 18px;">
+        <div style="margin-bottom:12px;">
+          <h3 style="font-size:15px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;margin-bottom:2px;">Rebranding Q1 2026</h3>
+          <p style="font-size:13px;color:#64748b;font-weight:500;">Nubank</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;font-weight:500;">Logo Horizontal</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-blue">Em 10 dias</span><span class="badge badge-approved">Aprovado</span></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;font-weight:500;">Manual de Marca</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-blue">Em 8 dias</span><span class="badge badge-pending">Pendente</span></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;">
+            <span style="font-size:12px;color:#475569;font-weight:500;">Paleta de Cores</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-green">Hoje</span><span class="badge badge-revision">Revisão</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+          <span class="tool">Illustrator</span><span class="tool">Figma</span><span class="tool">Canva</span>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:11px;color:#94a3b8;font-weight:500;">Progresso</span>
+            <span style="font-size:11px;color:#4f46e5;font-weight:700;">33%</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" style="width:33%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Mag Luiza / Mídia -->
+    <div class="card cursor-pointer" style="padding:0;overflow:hidden;">
+      <div class="thumb-gradient-midia" style="height:120px;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.35);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <span style="font-size:12px;color:#0d9488;font-weight:600;">4 peças</span>
+        </div>
+        <div style="position:absolute;top:12px;left:12px;"><span class="sector-badge" style="background:rgba(13,148,136,0.15);color:#0d9488;">Mídia</span></div>
+        <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(190,18,60,0.6);border-radius:99px;padding:3px 8px;backdrop-filter:blur(4px);">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:10px;color:white;font-weight:700;">2 atrasadas</span>
+        </div>
+      </div>
+      <div style="padding:16px 18px 18px;">
+        <div style="margin-bottom:12px;">
+          <h3 style="font-size:15px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;margin-bottom:2px;">Black Friday 2026</h3>
+          <p style="font-size:13px;color:#64748b;font-weight:500;">Magazine Luiza</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;">Banner Display</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-red">Atrasado</span><span class="badge badge-revision">Revisão</span></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;">Email Marketing</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-blue">Em 3 dias</span><span class="badge badge-pending">Pendente</span></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;">
+            <span style="font-size:12px;color:#475569;">Vídeo 15s</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-red">Atrasado</span><span class="badge badge-pending">Pendente</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+          <span class="tool">Google Ads</span><span class="tool">Meta Ads</span><span class="tool">DV360</span>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:11px;color:#94a3b8;font-weight:500;">Progresso</span>
+            <span style="font-size:11px;color:#ef4444;font-weight:700;">20%</span>
+          </div>
+          <div class="prog-track"><div style="height:100%;border-radius:99px;background:linear-gradient(90deg,#ef4444,#f97316);width:20%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Natura / RTV -->
+    <div class="card cursor-pointer" style="padding:0;overflow:hidden;">
+      <div class="thumb-gradient-rtv" style="height:120px;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.35);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#be123c" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          </div>
+          <span style="font-size:12px;color:#be123c;font-weight:600;">2 peças</span>
+        </div>
+        <div style="position:absolute;top:12px;left:12px;"><span class="sector-badge" style="background:rgba(225,29,72,0.12);color:#e11d48;">RTV</span></div>
+        <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.5);border-radius:99px;padding:3px 8px;backdrop-filter:blur(4px);">
+          <span style="font-size:10px;color:white;font-weight:600;">hoje</span>
+        </div>
+      </div>
+      <div style="padding:16px 18px 18px;">
+        <div style="margin-bottom:12px;">
+          <h3 style="font-size:15px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;margin-bottom:2px;">TVC Verão Natura</h3>
+          <p style="font-size:13px;color:#64748b;font-weight:500;">Natura &Co</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;margin-bottom:6px;">
+            <span style="font-size:12px;color:#475569;">Roteiro Claquete</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-blue">Em 7 dias</span><span class="badge badge-approved">Aprovado</span></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;">
+            <span style="font-size:12px;color:#475569;">Vídeo Final 30s</span>
+            <div style="display:flex;gap:6px;"><span class="badge badge-dl-blue">Em 12 dias</span><span class="badge badge-pending">Pendente</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+          <span class="tool">Premiere</span><span class="tool">DaVinci</span><span class="tool">Frame.io</span>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:11px;color:#94a3b8;font-weight:500;">Progresso</span>
+            <span style="font-size:11px;color:#4f46e5;font-weight:700;">50%</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" style="width:50%"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- News widget rodapé -->
+<div style="margin:0 16px 8px;padding:16px;background:white;border:1px solid #f1f5f9;border-radius:16px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:6px;height:6px;background:#4f46e5;border-radius:99px;animation:pulse-ring 2s infinite;"></div>
+      <span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:-0.01em;">Mercado Publicitário</span>
+    </div>
+    <a style="font-size:12px;color:#6366f1;font-weight:600;cursor:pointer;">Ver tudo →</a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+    <div class="news-card">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:700;background:#eef2ff;color:#4338ca;padding:2px 7px;border-radius:5px;">AdNews</span>
+        <span style="font-size:11px;color:#94a3b8;">há 2h</span>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:#0f172a;line-height:1.4;margin-bottom:4px;">Cannes Lions 2026: agências brasileiras avançam com campanhas de propósito</p>
+      <p style="font-size:12px;color:#64748b;line-height:1.4;">Shortlists anunciados. Brasil tem 14 inscrições confirmadas em Film.</p>
+    </div>
+    <div class="news-card">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:700;background:#f5f3ff;color:#6d28d9;padding:2px 7px;border-radius:5px;">Meio&Mens.</span>
+        <span style="font-size:11px;color:#94a3b8;">há 4h</span>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:#0f172a;line-height:1.4;margin-bottom:4px;">Meta lança ferramentas de IA para criação de anúncios no Brasil</p>
+      <p style="font-size:12px;color:#64748b;line-height:1.4;">Novos recursos no Gerenciador de Anúncios chegam em abril.</p>
+    </div>
+    <div class="news-card">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:700;background:#fff7ed;color:#c2410c;padding:2px 7px;border-radius:5px;">Propmark</span>
+        <span style="font-size:11px;color:#94a3b8;">há 6h</span>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:#0f172a;line-height:1.4;margin-bottom:4px;">Investimento em digital cresce 31% no 1T 2026 no Brasil</p>
+      <p style="font-size:12px;color:#64748b;line-height:1.4;">Mobile lidera com 62% do total. Social media com maior crescimento.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  SCREEN 2 — PROJECT PAGE                               ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="section-label" style="margin-top:24px;">② Projeto — Detalhe com breadcrumb e timeline</div>
+
+<div style="background:white;border:1px solid #f1f5f9;border-radius:20px;margin:0 16px 8px;overflow:hidden;">
+
+  <!-- Breadcrumb bar -->
+  <div style="background:#f8fafc;border-bottom:1px solid #f1f5f9;padding:10px 20px;">
+    <div class="breadcrumb">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <a href="#">Dashboard</a>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Campanha Verão 2026</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current">Coca-Cola Brasil</span>
+    </div>
+  </div>
+
+  <div style="padding:24px;">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="sector-badge" style="background:#f5f3ff;color:#7c3aed;">Criação</span>
+          <span style="font-size:12px;color:#94a3b8;">Coca-Cola Brasil · 4 peças · Criado há 3 dias</span>
+        </div>
+        <h2 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-0.03em;margin-bottom:4px;">Campanha Verão 2026</h2>
+        <p style="font-size:14px;color:#64748b;">Materiais digitais para redes sociais + display — entrega final 02/04</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Exportar
+        </button>
+        <button class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nova Peça
+        </button>
+      </div>
+    </div>
+
+    <!-- Contextual tip -->
+    <div style="background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #e0e7ff;border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;">
+      <div style="width:32px;height:32px;background:#4f46e5;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:700;color:#312e81;margin-bottom:2px;">Dica para CEO</p>
+        <p style="font-size:13px;color:#4338ca;line-height:1.5;">Você tem <strong>2 peças com prazo vencido</strong>. Entre em contato com Mariana (Coca-Cola) para priorizar o <strong>Banner Hero 1080×1080</strong>.</p>
+      </div>
+      <button style="margin-left:auto;color:#a5b4fc;background:none;border:none;cursor:pointer;flex-shrink:0;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Piece cards grid + Timeline -->
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+        <!-- Piece: Banner Hero -->
+        <div class="card-inner cursor-pointer" style="overflow:hidden;">
+          <div class="thumb-gradient-criacao" style="height:110px;position:relative;display:flex;align-items:center;justify-content:center;">
+            <div style="width:40px;height:40px;background:rgba(255,255,255,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div style="position:absolute;top:8px;right:8px;"><span class="badge badge-approved" style="font-size:10px;">Aprovado</span></div>
+            <div style="position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.9);border-radius:99px;padding:2px 8px;">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span style="font-size:10px;color:#15803d;font-weight:600;">Visualizado</span>
+            </div>
+          </div>
+          <div style="padding:12px 14px 14px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+              <h4 style="font-size:13px;font-weight:700;color:#0f172a;line-height:1.3;">Banner Hero<br/>1080×1080</h4>
+              <span class="badge badge-dl-red" style="font-size:10px;margin-left:4px;flex-shrink:0;">Atrasado</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;">
+              <span class="tool" style="font-size:10px;">Figma</span><span class="tool" style="font-size:10px;">Photoshop</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#94a3b8;">
+              <span>v3 · há 1 dia</span>
+              <span style="color:#16a34a;font-weight:600;">Ana Lima</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Piece: Story -->
+        <div class="card-inner cursor-pointer" style="overflow:hidden;">
+          <div class="thumb-gradient-midia" style="height:110px;position:relative;display:flex;align-items:center;justify-content:center;">
+            <div style="width:40px;height:40px;background:rgba(255,255,255,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+            </div>
+            <div style="position:absolute;top:8px;right:8px;"><span class="badge badge-pending" style="font-size:10px;">Pendente</span></div>
+            <div style="position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.9);border-radius:99px;padding:2px 8px;">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/></svg>
+              <span style="font-size:10px;color:#94a3b8;font-weight:600;">Não visualizado</span>
+            </div>
+          </div>
+          <div style="padding:12px 14px 14px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+              <h4 style="font-size:13px;font-weight:700;color:#0f172a;line-height:1.3;">Story<br/>9:16</h4>
+              <span class="badge badge-dl-blue" style="font-size:10px;margin-left:4px;flex-shrink:0;">Em 5 dias</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;">
+              <span class="tool" style="font-size:10px;">After Effects</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;">
+              <span style="color:#94a3b8;">v1 · há 2 dias</span>
+              <button class="btn-primary" style="font-size:10px;padding:4px 10px;border-radius:6px;">Enviar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Piece: Post Carrossel -->
+        <div class="card-inner cursor-pointer" style="overflow:hidden;">
+          <div style="height:110px;background:linear-gradient(135deg,#fef9c3,#fef3c7);position:relative;display:flex;align-items:center;justify-content:center;">
+            <div style="width:40px;height:40px;background:rgba(255,255,255,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div style="position:absolute;top:8px;right:8px;"><span class="badge badge-revision" style="font-size:10px;">Revisão</span></div>
+          </div>
+          <div style="padding:12px 14px 14px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+              <h4 style="font-size:13px;font-weight:700;color:#0f172a;">Post Carrossel</h4>
+              <span class="badge badge-dl-green" style="font-size:10px;margin-left:4px;">Hoje</span>
+            </div>
+            <div style="background:#fffbeb;border-radius:6px;padding:6px 8px;margin-bottom:8px;font-size:11px;color:#a16207;font-style:italic;border-left:2px solid #fcd34d;">"Fonte pequena no mobile"</div>
+            <div style="font-size:11px;color:#94a3b8;">v2 · há 5h · Mariana Costa</div>
+          </div>
+        </div>
+
+        <!-- Piece: Vídeo 15s -->
+        <div class="card-inner cursor-pointer" style="overflow:hidden;">
+          <div class="thumb-gradient-rtv" style="height:110px;position:relative;display:flex;align-items:center;justify-content:center;">
+            <div style="width:40px;height:40px;background:rgba(255,255,255,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#be123c" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div style="position:absolute;top:8px;right:8px;"><span class="badge badge-pending" style="font-size:10px;">Pendente</span></div>
+          </div>
+          <div style="padding:12px 14px 14px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+              <h4 style="font-size:13px;font-weight:700;color:#0f172a;">Vídeo 15s</h4>
+              <span class="badge badge-dl-blue" style="font-size:10px;margin-left:4px;">Em 7 dias</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;">
+              <span class="tool" style="font-size:10px;">Premiere Pro</span>
+            </div>
+            <div style="font-size:11px;color:#94a3b8;">v1 · ontem</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Activity Timeline -->
+      <div style="background:#fafbff;border:1px solid #eef2ff;border-radius:14px;padding:16px;">
+        <p style="font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">Atividade</p>
+        <ol style="position:relative;padding-left:18px;">
+          <div style="position:absolute;left:4px;top:4px;bottom:4px;width:1.5px;background:linear-gradient(to bottom,#c7d2fe,#f1f5f9);"></div>
+
+          <li style="margin-bottom:12px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;position:relative;">
+              <div class="timeline-dot" style="background:#16a34a;color:#16a34a;position:absolute;left:-21px;"></div>
+              <div>
+                <p style="font-size:12px;font-weight:600;color:#0f172a;line-height:1.4;">Banner aprovado por <span style="color:#16a34a;">Mariana</span></p>
+                <p style="font-size:11px;color:#94a3b8;">há 1 hora · "Ficou excelente!"</p>
+              </div>
+            </div>
+          </li>
+          <li style="margin-bottom:12px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;position:relative;">
+              <div class="timeline-dot" style="background:#6366f1;color:#6366f1;position:absolute;left:-21px;"></div>
+              <div>
+                <p style="font-size:12px;font-weight:600;color:#0f172a;">Story enviado ao cliente</p>
+                <p style="font-size:11px;color:#94a3b8;">há 2 horas</p>
+              </div>
+            </div>
+          </li>
+          <li style="margin-bottom:12px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;position:relative;">
+              <div class="timeline-dot" style="background:#f59e0b;color:#f59e0b;position:absolute;left:-21px;"></div>
+              <div>
+                <p style="font-size:12px;font-weight:600;color:#0f172a;">Revisão em Carrossel</p>
+                <p style="font-size:11px;color:#94a3b8;font-style:italic;">"Fonte pequena no mobile"</p>
+                <p style="font-size:11px;color:#94a3b8;">há 5 horas</p>
+              </div>
+            </div>
+          </li>
+          <li style="margin-bottom:12px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;position:relative;">
+              <div class="timeline-dot" style="background:#22c55e;color:#22c55e;position:absolute;left:-21px;"></div>
+              <div>
+                <p style="font-size:12px;font-weight:600;color:#0f172a;">Cliente visualizou Banner</p>
+                <p style="font-size:11px;color:#94a3b8;">há 8 horas · v3</p>
+              </div>
+            </div>
+          </li>
+          <li style="margin-bottom:12px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;position:relative;">
+              <div class="timeline-dot" style="background:#a78bfa;color:#a78bfa;position:absolute;left:-21px;"></div>
+              <div>
+                <p style="font-size:12px;font-weight:600;color:#0f172a;">v3 enviada</p>
+                <p style="font-size:11px;color:#94a3b8;">há 10 horas</p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div style="display:flex;align-items:flex-start;gap:8px;position:relative;">
+              <div class="timeline-dot" style="background:#cbd5e1;color:#cbd5e1;position:absolute;left:-21px;"></div>
+              <div>
+                <p style="font-size:12px;font-weight:600;color:#94a3b8;">Projeto criado</p>
+                <p style="font-size:11px;color:#94a3b8;">há 3 dias</p>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  SCREEN 3 — REVIEW PAGE (CLIENT)                       ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="section-label" style="margin-top:24px;">③ Revisão — Visão pública do cliente (sem navbar)</div>
+
+<div style="background:white;border:1px solid #f1f5f9;border-radius:20px;margin:0 16px 8px;overflow:hidden;">
+
+  <!-- Minimal header -->
+  <div style="border-bottom:1px solid #f1f5f9;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div>
+        <p style="font-size:11px;color:#94a3b8;font-weight:500;margin-bottom:1px;">Campanha Verão 2026 · Coca-Cola Brasil</p>
+        <h1 style="font-size:15px;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">Banner Hero 1080×1080</h1>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge badge-approved">Aprovado</span>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Versão 3 de 3
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome banner -->
+  <div style="margin:16px 20px 0;background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 50%,#e0f2fe 100%);border:1px solid #c7d2fe;border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+    <div>
+      <h3 style="font-size:13px;font-weight:700;color:#312e81;margin-bottom:6px;">Bem-vindo à revisão!</h3>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <p style="font-size:12px;color:#4338ca;"><strong>Clique na imagem</strong> para fixar um comentário exatamente no ponto.</p>
+        <p style="font-size:12px;color:#4338ca;">Use o <strong>painel lateral</strong> para observações gerais.</p>
+        <p style="font-size:12px;color:#4338ca;">Quando terminar, clique em <strong>Aprovar</strong> ou <strong>Pedir Revisão</strong>.</p>
+      </div>
+    </div>
+    <button style="color:#a5b4fc;background:none;border:none;cursor:pointer;flex-shrink:0;padding:2px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- Main review area -->
+  <div style="display:flex;gap:0;padding:16px 20px 20px;">
+
+    <!-- Image viewer -->
+    <div style="flex:1;margin-right:16px;">
+      <div style="background:#f1f5f9;border-radius:14px;height:320px;position:relative;overflow:hidden;cursor:crosshair;border:1.5px solid #e2e8f0;">
+        <div class="thumb-gradient-criacao" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+          <div style="text-align:center;">
+            <div style="width:56px;height:56px;background:rgba(255,255,255,0.4);border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <p style="font-size:14px;color:#312e81;font-weight:700;">Banner Hero 1080×1080</p>
+            <p style="font-size:12px;color:#6366f1;margin-top:3px;">Campanha Verão 2026</p>
+          </div>
+        </div>
+        <!-- Pins -->
+        <div class="pin pulse" style="top:32%;left:22%;">1</div>
+        <div class="pin" style="top:62%;left:68%;">2</div>
+        <!-- Zoom controls -->
+        <div style="position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:4px;">
+          <button style="width:30px;height:30px;background:white;border:1px solid #e2e8f0;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08);font-size:16px;font-weight:300;color:#475569;">+</button>
+          <button style="width:30px;height:30px;background:white;border:1px solid #e2e8f0;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.08);font-size:20px;font-weight:300;color:#475569;line-height:0;">−</button>
+        </div>
+        <!-- Hint chip -->
+        <div style="position:absolute;bottom:12px;left:12px;background:rgba(79,70,229,0.9);color:white;font-size:11px;font-weight:600;padding:5px 10px;border-radius:99px;backdrop-filter:blur(4px);">
+          Clique para fixar comentário
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+        <span style="font-size:12px;color:#94a3b8;">v3 · enviado há 10 horas</span>
+        <a style="font-size:12px;color:#6366f1;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download original
+        </a>
+      </div>
+    </div>
+
+    <!-- Comment panel -->
+    <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;">
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:8px;">
+        <button class="btn-approve">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Aprovar
+        </button>
+        <button class="btn-revision">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>
+          Pedir Revisão
+        </button>
+      </div>
+
+      <p style="font-size:11px;color:#94a3b8;text-align:center;">Revise a peça e deixe seus comentários antes de decidir.</p>
+
+      <!-- Comments -->
+      <div>
+        <p style="font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Comentários (2)</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 12px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+              <div style="width:20px;height:20px;background:#4f46e5;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;">1</div>
+              <span style="font-size:11px;color:#4f46e5;font-weight:600;">Comentário de posição</span>
+            </div>
+            <p style="font-size:13px;color:#374151;margin-bottom:6px;line-height:1.4;">O logo parece pequeno no canto superior esquerdo.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;color:#6b7280;"><strong>Mariana</strong> · há 2h</span>
+              <span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:99px;font-weight:600;">Resolvido</span>
+            </div>
+          </div>
+
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+              <div style="width:20px;height:20px;background:#4f46e5;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;">2</div>
+              <span style="font-size:11px;color:#4f46e5;font-weight:600;">Comentário de posição</span>
+            </div>
+            <p style="font-size:13px;color:#374151;margin-bottom:6px;line-height:1.4;">Texto da CTA muito pequeno para mobile.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;color:#6b7280;"><strong>João</strong> · há 1h</span>
+              <button style="font-size:10px;background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:99px;border:none;cursor:pointer;font-weight:600;">Resolver</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Add comment -->
+      <div style="border-top:1px solid #f1f5f9;padding-top:10px;">
+        <input class="input" placeholder="Seu nome" style="margin-bottom:6px;" />
+        <textarea class="input" placeholder="Adicionar comentário geral..." style="height:72px;resize:none;margin-bottom:6px;"></textarea>
+        <button style="width:100%;background:#0f172a;color:white;font-size:12px;font-weight:600;padding:9px;border-radius:8px;border:none;cursor:pointer;">Enviar comentário</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  SCREEN 4 — AI HUB                                     ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="section-label" style="margin-top:24px;">④ IA — Hub com disclaimer obrigatório</div>
+
+<div style="background:white;border:1px solid #f1f5f9;border-radius:20px;margin:0 16px 8px;padding:24px;">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <h2 style="font-size:20px;font-weight:800;color:#0f172a;letter-spacing:-0.03em;">Inteligência Artificial</h2>
+        <span style="font-size:10px;font-weight:700;background:linear-gradient(135deg,#ede9fe,#dbeafe);color:#4338ca;border:1px solid #c7d2fe;padding:3px 10px;border-radius:99px;letter-spacing:0.04em;">BETA</span>
+      </div>
+      <p style="font-size:13px;color:#64748b;">Ferramentas de apoio — a decisão final é sempre humana.</p>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="ai-disclaimer" style="margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;">
+    <div style="width:32px;height:32px;background:#fef3c7;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <p style="font-size:13px;color:#92400e;line-height:1.5;"><strong>Aviso:</strong> As sugestões geradas pela IA são referências de apoio e <strong>não substituem</strong> a análise criativa, o julgamento estratégico ou a expertise da equipe. Use como ponto de partida — a decisão final é sempre humana.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+
+    <!-- Brief Analyzer -->
+    <div class="ai-card" style="padding:20px;">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;">Analisador de Brief</h3>
+      <p style="font-size:12px;color:#64748b;line-height:1.5;margin-bottom:14px;">Envie um PDF, DOCX ou planilha. A IA extrai objetivos, público-alvo e pontos críticos.</p>
+      <div style="border:2px dashed #e0e7ff;border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#e0e7ff'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2" style="margin:0 auto 6px;display:block;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p style="font-size:12px;color:#94a3b8;font-weight:500;">Arraste ou clique para enviar</p>
+        <p style="font-size:10px;color:#cbd5e1;margin-top:2px;">PDF, DOCX, XLSX · max 10MB</p>
+      </div>
+    </div>
+
+    <!-- Creative Review -->
+    <div class="ai-card" style="padding:20px;">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;">Revisão Criativa</h3>
+      <p style="font-size:12px;color:#64748b;line-height:1.5;margin-bottom:14px;">Analisa composição, contraste, hierarquia visual e aderência ao brief.</p>
+      <div style="background:#fafbff;border-radius:10px;padding:12px;border:1px solid #ede9fe;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:8px;height:8px;background:#22c55e;border-radius:99px;"></div>
+            <span style="font-size:12px;color:#374151;font-weight:500;">Hierarquia visual</span>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:#16a34a;">92/100</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:8px;height:8px;background:#f59e0b;border-radius:99px;"></div>
+            <span style="font-size:12px;color:#374151;font-weight:500;">Contraste CTA</span>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:#d97706;">61/100</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:8px;height:8px;background:#ef4444;border-radius:99px;"></div>
+            <span style="font-size:12px;color:#374151;font-weight:500;">Densidade de texto</span>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:#dc2626;">38/100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campaign Insights -->
+    <div class="ai-card" style="padding:20px;">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;">Insights de Campanha</h3>
+      <p style="font-size:12px;color:#64748b;line-height:1.5;margin-bottom:14px;">Benchmarks do setor, tendências e sugestões baseadas no histórico de campanhas.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;background:#f0fdf4;border-radius:8px;padding:9px 10px;border:1px solid #bbf7d0;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" style="flex-shrink:0;margin-top:1px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span style="font-size:11px;color:#166534;line-height:1.4;">Verão: +22% engajamento histórico neste setor</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;background:#fffbeb;border-radius:8px;padding:9px 10px;border:1px solid #fde68a;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:11px;color:#92400e;line-height:1.4;">CTR médio display: 0.35% — seu histórico: 0.28%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  SCREEN 5 — CLAQUETE + ROLES + LEARN                   ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="section-label" style="margin-top:24px;">⑤ Claquete Digital · Roles · Learning Center</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 16px 8px;">
+
+  <!-- Claquete -->
+  <div style="background:white;border:1px solid #f1f5f9;border-radius:20px;padding:24px;">
+    <div style="margin-bottom:16px;">
+      <h2 style="font-size:17px;font-weight:800;color:#0f172a;letter-spacing:-0.02em;margin-bottom:3px;">Claquete Digital</h2>
+      <p style="font-size:12px;color:#64748b;">Formato padrão Zarpa / Peach para produções audiovisuais.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">PRODUTORA</label>
+        <input class="input" value="Zarpa Filmes" />
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">AGÊNCIA</label>
+        <input class="input" value="AgênciaX" />
+      </div>
+      <div style="grid-column:span 2;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">PROJETO</label>
+        <input class="input" value="TVC Verão Natura — 30s" />
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">CENA</label>
+        <input class="input" value="3" />
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">TAKE</label>
+        <input class="input" value="1" />
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">DIRETOR(A)</label>
+        <input class="input" value="Renata Souza" />
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;letter-spacing:0.03em;">DATA</label>
+        <input class="input" value="28/03/2026" />
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Gerar e Baixar PDF
+    </button>
+    <!-- Preview -->
+    <div class="clapperboard" style="margin-top:16px;">
+      <div class="clap-stripe" style="height:28px;"></div>
+      <div class="clap-row"><span class="clap-label">PRODUTORA</span><span class="clap-value" style="font-size:14px;font-weight:800;letter-spacing:0.1em;">ZARPA FILMES</span></div>
+      <div class="clap-row"><span class="clap-label">PROJETO</span><span class="clap-value" style="font-size:12px;">TVC Verão Natura — 30s</span></div>
+      <div class="clap-row"><span class="clap-label">AGÊNCIA</span><span class="clap-value" style="font-size:12px;">AgênciaX</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div style="padding:12px 14px;border-right:1px solid rgba(255,255,255,0.08);">
+          <span class="clap-label">CENA</span>
+          <div style="font-size:28px;font-weight:900;color:white;font-family:'Courier New',monospace;line-height:1;">3</div>
+        </div>
+        <div style="padding:12px 14px;border-right:1px solid rgba(255,255,255,0.08);">
+          <span class="clap-label">TAKE</span>
+          <div style="font-size:28px;font-weight:900;color:white;font-family:'Courier New',monospace;line-height:1;">1</div>
+        </div>
+        <div style="padding:12px 14px;">
+          <span class="clap-label">DATA</span>
+          <div style="font-size:12px;font-weight:700;color:white;margin-top:4px;">28/03/26</div>
+        </div>
+      </div>
+      <div class="clap-row"><span class="clap-label">DIRETOR(A)</span><span class="clap-value" style="font-size:12px;">Renata Souza</span></div>
+      <div class="clap-stripe" style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- Roles + Learning -->
+  <div style="display:flex;flex-direction:column;gap:14px;">
+
+    <!-- Roles -->
+    <div style="background:white;border:1px solid #f1f5f9;border-radius:20px;padding:20px;">
+      <h3 style="font-size:14px;font-weight:800;color:#0f172a;letter-spacing:-0.02em;margin-bottom:12px;">Perfis de Acesso</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1.5px solid #c7d2fe;border-radius:12px;padding:14px 16px;position:relative;cursor:pointer;">
+          <div style="position:absolute;top:12px;right:12px;width:20px;height:20px;background:#4f46e5;border-radius:99px;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="font-size:13px;font-weight:700;color:#312e81;margin-bottom:2px;">CEO / Atendimento</p>
+          <p style="font-size:11px;color:#6366f1;margin-bottom:6px;">Visão estratégica, gestão de clientes e pipeline</p>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            <span style="font-size:10px;background:rgba(79,70,229,0.1);color:#4f46e5;padding:2px 7px;border-radius:5px;font-weight:600;">KPIs</span>
+            <span style="font-size:10px;background:rgba(79,70,229,0.1);color:#4f46e5;padding:2px 7px;border-radius:5px;font-weight:600;">Relatórios</span>
+            <span style="font-size:10px;background:rgba(79,70,229,0.1);color:#4f46e5;padding:2px 7px;border-radius:5px;font-weight:600;">Ver como outro role</span>
+          </div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:12px;padding:14px 16px;cursor:pointer;" onmouseover="this.style.borderColor='#ddd6fe'" onmouseout="this.style.borderColor='#f1f5f9'">
+          <p style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:2px;">Criação / Dir. de Arte</p>
+          <p style="font-size:11px;color:#64748b;margin-bottom:6px;">Upload, versionamento, feedback e comentários</p>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            <span class="tool">Fila kanban</span><span class="tool">Pins</span><span class="tool">Versões</span>
+          </div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:12px;padding:14px 16px;cursor:pointer;" onmouseover="this.style.borderColor='#99f6e4'" onmouseout="this.style.borderColor='#f1f5f9'">
+          <p style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:2px;">Mídia / RTV</p>
+          <p style="font-size:11px;color:#64748b;margin-bottom:6px;">Go-live, claquete, aprovação técnica e veiculação</p>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            <span class="tool">Go-live</span><span class="tool">Specs técnicas</span><span class="tool">Claquete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning -->
+    <div style="background:white;border:1px solid #f1f5f9;border-radius:20px;padding:20px;flex:1;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <h3 style="font-size:14px;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">Centro de Aprendizado</h3>
+        <a style="font-size:12px;color:#6366f1;font-weight:600;cursor:pointer;">Ver trilha →</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="learn-card active">
+          <div style="width:34px;height:34px;background:#eef2ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          </div>
+          <div style="flex:1;">
+            <p style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:2px;">Como usar o Crivo com clientes</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;color:#64748b;">5 min · CEO</span>
+              <span style="font-size:10px;font-weight:700;color:#16a34a;background:#dcfce7;padding:1px 7px;border-radius:99px;">Concluído</span>
+            </div>
+            <div class="prog-track" style="margin-top:5px;"><div class="prog-fill" style="width:100%"></div></div>
+          </div>
+        </div>
+        <div class="learn-card">
+          <div style="width:34px;height:34px;background:#f5f3ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div style="flex:1;">
+            <p style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:2px;">Pins e revisão no PieceViewer</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;color:#64748b;">8 min · Criação</span>
+              <span style="font-size:10px;font-weight:700;color:#d97706;background:#fef9c3;padding:1px 7px;border-radius:99px;">Em andamento</span>
+            </div>
+            <div class="prog-track" style="margin-top:5px;"><div class="prog-fill" style="width:60%"></div></div>
+          </div>
+        </div>
+        <div class="learn-card">
+          <div style="width:34px;height:34px;background:#fff7ed;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div style="flex:1;">
+            <p style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:2px;">Claquete digital para RTV</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:11px;color:#64748b;">12 min · Mídia/RTV</span>
+              <span style="font-size:10px;font-weight:700;color:#94a3b8;background:#f1f5f9;padding:1px 7px;border-radius:99px;">Não iniciado</span>
+            </div>
+            <div class="prog-track" style="margin-top:5px;"><div class="prog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  SCREEN 6 — APPROVAL CONFIRMATION                      ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="section-label" style="margin-top:24px;">⑥ Pós-decisão — Confirmação</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 16px 32px;">
+
+  <!-- Approved -->
+  <div class="approval-green" style="padding:32px;text-align:center;">
+    <div style="width:64px;height:64px;background:white;border-radius:99px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(22,163,74,0.2);">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2 style="font-size:22px;font-weight:800;color:#14532d;letter-spacing:-0.03em;margin-bottom:8px;">Peça Aprovada!</h2>
+    <p style="font-size:13px;color:#15803d;line-height:1.6;margin-bottom:20px;">Aprovação registrada. A equipe foi notificada e continuará a produção.</p>
+    <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:14px 16px;text-align:left;border:1px solid rgba(134,239,172,0.5);">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+        <span style="color:#16a34a;">Peça</span><strong style="color:#14532d;">Banner Hero 1080×1080</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+        <span style="color:#16a34a;">Versão</span><strong style="color:#14532d;">v3</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+        <span style="color:#16a34a;">Aprovado por</span><strong style="color:#14532d;">Mariana Costa</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;">
+        <span style="color:#16a34a;">Horário</span><strong style="color:#14532d;">agora mesmo</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revision -->
+  <div class="approval-amber" style="padding:32px;text-align:center;">
+    <div style="width:64px;height:64px;background:white;border-radius:99px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(217,119,6,0.2);">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>
+    </div>
+    <h2 style="font-size:22px;font-weight:800;color:#78350f;letter-spacing:-0.03em;margin-bottom:8px;">Revisão Solicitada</h2>
+    <p style="font-size:13px;color:#a16207;line-height:1.6;margin-bottom:20px;">Seu feedback foi registrado. A equipe criativa enviará uma nova versão em breve.</p>
+    <div style="background:rgba(255,255,255,0.6);border-radius:12px;padding:14px 16px;text-align:left;border:1px solid rgba(252,211,77,0.5);">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+        <span style="color:#d97706;">Peça</span><strong style="color:#78350f;">Story 9:16</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+        <span style="color:#d97706;">Feedback</span><strong style="color:#78350f;">"Texto pequeno no mobile"</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;">
+        <span style="color:#d97706;">Próximo passo</span><strong style="color:#78350f;">Nova versão em breve</strong>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
