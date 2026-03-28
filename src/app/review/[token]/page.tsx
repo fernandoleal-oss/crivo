@@ -15,8 +15,12 @@ export async function generateMetadata({ params }: Props) {
 export default async function ReviewPage({ params }: Props) {
   const { token } = await params
   const supabase = await createClient()
-  const { data: piece } = await supabase.from('pieces').select('*, piece_versions(*), approvals(*)')
-    .eq('public_token', token).single()
+  const { data: piece } = await supabase.from('pieces')
+    .select('*, piece_versions(*), approvals(*)')
+    .eq('public_token', token)
+    .order('version_number', { referencedTable: 'piece_versions', ascending: true })
+    .order('decided_at', { referencedTable: 'approvals', ascending: true })
+    .single()
   if (!piece) notFound()
   if (!piece.first_opened_at) {
     await supabase.from('pieces').update({ first_opened_at: new Date().toISOString() }).eq('id', piece.id)

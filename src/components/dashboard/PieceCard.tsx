@@ -36,8 +36,8 @@ function DeadlineBadge({ deadline, status }: { deadline: string | null; status: 
 
 export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) {
   const [expanded, setExpanded] = useState(false)
-  const latestVersion = piece.piece_versions?.at(-1)
-  const approval = piece.approvals?.at(-1)
+  const latestVersion = [...(piece.piece_versions ?? [])].sort((a, b) => a.version_number - b.version_number).at(-1)
+  const approval = [...(piece.approvals ?? [])].sort((a, b) => new Date(a.decided_at).getTime() - new Date(b.decided_at).getTime()).at(-1)
   const isImage = latestVersion?.file_type.startsWith('image/')
   const isPdf = latestVersion?.file_type === 'application/pdf'
 
