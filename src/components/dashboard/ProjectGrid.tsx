@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { ProjectCard } from './ProjectCard'
@@ -129,9 +130,22 @@ export function ProjectGrid() {
           onAction={search ? () => setSearch('') : undefined}
         />
       ) : !isFirstTime ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(project => <ProjectCard key={project.id} project={project} />)}
-        </div>
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
+        >
+          {filtered.map(project => (
+            <motion.div
+              key={project.id}
+              variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            >
+              <ProjectCard project={project} />
+            </motion.div>
+          ))}
+        </motion.div>
       ) : null}
 
       <div className="mt-8 pt-4 border-t border-slate-100 text-center">

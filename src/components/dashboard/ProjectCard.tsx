@@ -1,3 +1,5 @@
+'use client'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import { formatRelativeTime } from '@/lib/utils'
 import type { ProjectWithCounts } from '@/lib/types'
@@ -15,7 +17,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/project/${project.id}`}>
-      <div className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer">
+      <motion.div
+        whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(79,70,229,0.10)' }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        className="bg-white border border-slate-200 rounded-lg p-4 cursor-pointer"
+      >
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-semibold text-slate-900 leading-tight">{project.name}</h3>
           {briefingIncompleto && (
@@ -35,7 +42,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {pieces.length === 0 && <span className="text-xs text-slate-500">Sem peças</span>}
         </div>
         <p className="text-xs text-slate-500 mt-3">{formatRelativeTime(project.created_at)}</p>
-      </div>
+      </motion.div>
     </Link>
   )
 }
