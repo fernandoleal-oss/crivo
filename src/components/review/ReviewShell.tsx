@@ -48,10 +48,23 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-start justify-between flex-wrap gap-2">
-          <div>
-            <p className="text-xs text-slate-500">{projectName}</p>
-            <h1 className="font-semibold text-slate-900">{piece.title}</h1>
-            {piece.description && <p className="text-sm text-slate-500 mt-0.5">{piece.description}</p>}
+          <div className="flex items-center gap-4">
+            <a href="/" className="flex items-center gap-1.5 flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="10" fill="#4F46E5"/>
+                <text x="7" y="21" fontFamily="sans-serif" fontWeight="700" fontSize="17" fill="white">C</text>
+                <line x1="15" y1="12" x2="25" y2="12" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+                <line x1="15" y1="16" x2="24" y2="16" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="15" y1="20" x2="23" y2="20" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              <span className="font-bold text-sm text-slate-900">Crivo</span>
+            </a>
+            <div className="w-px h-8 bg-slate-200" />
+            <div>
+              <p className="text-xs text-slate-500">{projectName}</p>
+              <h1 className="font-semibold text-slate-900">{piece.title}</h1>
+              {piece.description && <p className="text-sm text-slate-500 mt-0.5">{piece.description}</p>}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <StatusBadge status={piece.status} />

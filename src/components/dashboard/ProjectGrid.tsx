@@ -119,11 +119,11 @@ export function ProjectGrid() {
         <ProjectGridSkeleton />
       ) : filtered.length === 0 && !isFirstTime ? (
         <EmptyState
-          title={search ? 'Nenhum projeto encontrado' : 'Nenhum projeto neste filtro'}
+          title={search ? 'Nenhum projeto encontrado' : 'Nenhum projeto ainda.'}
           description={
             search
               ? 'Tente outro termo de busca ou limpe o filtro para ver todos os projetos.'
-              : 'Altere o setor selecionado ou crie um novo projeto clicando no botão acima.'
+              : 'Crie o primeiro para começar a organizar aprovações.'
           }
           actionLabel={search ? 'Limpar busca' : undefined}
           onAction={search ? () => setSearch('') : undefined}
