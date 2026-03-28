@@ -111,7 +111,7 @@ export function AISuggestionCard({
           <button
             onClick={handleDismiss}
             aria-label="Fechar sugestão"
-            className="absolute right-3 top-3 rounded-full p-1 text-slate-400 transition-colors hover:bg-black/5 hover:text-slate-600"
+            className="absolute right-3 top-3 rounded-full p-1 text-slate-500 transition-colors hover:bg-black/5 hover:text-slate-600"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -177,7 +177,7 @@ export function AISuggestionCard({
           </div>
 
           {/* Disclaimer */}
-          <p className="mt-3 pl-12 text-[11px] text-slate-400">
+          <p className="mt-3 pl-12 text-[11px] text-slate-500">
             ✦ Gerado por IA · Revisão humana recomendada
           </p>
         </motion.div>

@@ -138,7 +138,7 @@ export function LearningCard({
           >
             {targetRole}
           </span>
-          <span className="ml-auto flex items-center gap-1 text-[11px] text-slate-400">
+          <span className="ml-auto flex items-center gap-1 text-[11px] text-slate-500">
             <Clock className="h-3 w-3" />
             {duration}
           </span>

@@ -256,7 +256,7 @@ function ContactRow({
         <Icon className="h-3.5 w-3.5 text-slate-500" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
           {label}
         </p>
         <a

@@ -78,7 +78,7 @@ function NewsCard({ item }: { item: NewsItem }) {
         >
           {item.category}
         </span>
-        <span className="ml-auto text-[11px] text-slate-400">
+        <span className="ml-auto text-[11px] text-slate-500">
           Há {item.hoursAgo}h
         </span>
       </div>
@@ -173,7 +173,7 @@ export function NewsWidget({
                 <NewsSkeletonCard />
               </>
             ) : items.length === 0 ? (
-              <div className="px-4 py-6 text-center text-[13px] text-slate-400">
+              <div className="px-4 py-6 text-center text-[13px] text-slate-500">
                 Nenhuma novidade no momento.
               </div>
             ) : (

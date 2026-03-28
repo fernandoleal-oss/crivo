@@ -158,7 +158,7 @@ export function AIReviewScoreBadge({
             {/* Pointer */}
             <span className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r border-slate-200 bg-white" />
 
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
               Issues detectados
             </p>
             <ul className="space-y-1.5">
@@ -172,7 +172,7 @@ export function AIReviewScoreBadge({
                 </li>
               ))}
             </ul>
-            <p className="mt-2.5 text-[10px] text-slate-400">
+            <p className="mt-2.5 text-[10px] text-slate-500">
               ✦ Análise gerada por IA
             </p>
           </motion.div>

@@ -225,7 +225,7 @@ export function ClapperboardDigital({
 
         {/* ── Footer ────────────────────────────────── */}
         <div className="border-t border-slate-200 bg-white px-5 py-2 text-center">
-          <span className="text-[10px] uppercase tracking-widest text-slate-400">
+          <span className="text-[10px] uppercase tracking-widest text-slate-500">
             Gerado por Crivo · Documento de produção
           </span>
         </div>
@@ -255,7 +255,7 @@ function Section({
         className,
       )}
     >
-      <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">
+      <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">
         {label}
       </span>
       {children}

@@ -168,14 +168,14 @@ export default function DesignSystemPage() {
           <Section title="3 — Score de Prontidão da Peça">
             <div className="flex flex-wrap items-end gap-8 rounded-xl border border-slate-200 bg-white p-8">
               <div className="flex flex-col items-center gap-1">
-                <p className="mb-2 text-xs text-slate-400">Score 92</p>
+                <p className="mb-2 text-xs text-slate-500">Score 92</p>
                 <AIReviewScoreBadge
                   score={92}
                   issues={[]}
                 />
               </div>
               <div className="flex flex-col items-center gap-1">
-                <p className="mb-2 text-xs text-slate-400">Score 65</p>
+                <p className="mb-2 text-xs text-slate-500">Score 65</p>
                 <AIReviewScoreBadge
                   score={65}
                   issues={[
@@ -186,7 +186,7 @@ export default function DesignSystemPage() {
                 />
               </div>
               <div className="flex flex-col items-center gap-1">
-                <p className="mb-2 text-xs text-slate-400">Score 28</p>
+                <p className="mb-2 text-xs text-slate-500">Score 28</p>
                 <AIReviewScoreBadge
                   score={28}
                   issues={[
@@ -198,7 +198,7 @@ export default function DesignSystemPage() {
                 />
               </div>
               <div className="flex flex-col items-center gap-1">
-                <p className="mb-2 text-xs text-slate-400">sm — Score 78</p>
+                <p className="mb-2 text-xs text-slate-500">sm — Score 78</p>
                 <AIReviewScoreBadge score={78} size="sm" issues={['Verificar paleta de cores']} />
               </div>
             </div>

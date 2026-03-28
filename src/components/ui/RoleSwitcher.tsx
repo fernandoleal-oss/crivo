@@ -155,7 +155,7 @@ export function RoleSwitcher({
             className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60"
           >
             <div className="border-b border-slate-100 px-4 py-3">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Visualizar como
               </p>
             </div>
