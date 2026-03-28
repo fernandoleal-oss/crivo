@@ -14,16 +14,23 @@ interface PieceCardProps {
   onSendToClient: (piece: PieceWithVersions) => void
 }
 
+function getDeadlineBadge(deadline: string | null) {
+  if (!deadline) return null
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const dl = new Date(deadline)
+  dl.setHours(0, 0, 0, 0)
+  const diff = Math.round((dl.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  if (diff < 0) return { label: `Atrasado ${Math.abs(diff)}d`, cls: 'text-red-700 bg-red-50 border-red-200' }
+  if (diff === 0) return { label: 'Vence hoje', cls: 'text-green-700 bg-green-50 border-green-200' }
+  return { label: `${diff}d restantes`, cls: 'text-blue-700 bg-blue-50 border-blue-200' }
+}
+
 function DeadlineBadge({ deadline, status }: { deadline: string | null; status: string }) {
-  if (!deadline || status === 'approved') return null
-  const d = new Date(deadline)
-  const now = new Date()
-  const diffMs = d.getTime() - now.getTime()
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
-  if (diffDays < 0) return <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700">Atrasado</span>
-  if (diffDays === 0) return <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Vence hoje</span>
-  if (diffDays === 1) return <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Vence amanhã</span>
-  return <span className="text-xs text-slate-500">{d.toLocaleDateString('pt-BR')}</span>
+  if (status === 'approved') return null
+  const badge = getDeadlineBadge(deadline)
+  if (!badge) return null
+  return <span className={`text-xs border px-1.5 py-0.5 rounded-full ${badge.cls}`}>{badge.label}</span>
 }
 
 export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) {
