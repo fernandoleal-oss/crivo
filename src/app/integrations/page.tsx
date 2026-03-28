@@ -2,32 +2,33 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { MessageSquare, Mail, CheckCircle, ClipboardList, LayoutList, MessagesSquare, FolderOpen, Palette, FileText, Zap } from 'lucide-react'
 import { IntegrationCard } from '@/components/integrations/IntegrationCard'
 
 const ACTIVE_INTEGRATIONS = [
   {
     name: 'WhatsApp',
     description: 'Notificações automáticas de aprovação e revisão para a equipe via WhatsApp Business. Quando o cliente aprova ou pede revisão, a agência recebe um aviso instantâneo.',
-    icon: '💬',
+    icon: <MessageSquare className="w-5 h-5" />,
     howItWorks: 'Configurado via n8n → Evolução API. A mensagem é enviada automaticamente quando o cliente toma uma decisão na tela de revisão.',
   },
   {
     name: 'Gmail',
     description: 'Envio de email formal para o cliente com link de revisão e instruções. O cliente clica no link e revisa direto no navegador, sem precisar de app ou cadastro.',
-    icon: '✉️',
+    icon: <Mail className="w-5 h-5" />,
     howItWorks: 'Acionado pelo botão "Enviar para cliente" no dashboard. O email inclui o link exclusivo da peça.',
   },
 ]
 
 const COMING_INTEGRATIONS = [
-  { name: 'Taskrow', description: 'Atualiza o status da tarefa automaticamente quando uma peça é aprovada no Crivo.', icon: '✅' },
-  { name: 'Monday.com', description: 'Sincroniza aprovações com cards e atualiza status de projetos automaticamente.', icon: '📋' },
-  { name: 'Asana', description: 'Marca tarefas como concluídas ao receber aprovação do cliente.', icon: '🗂' },
-  { name: 'Slack', description: 'Notifica o canal do projeto quando cliente aprova ou pede revisão.', icon: '💼' },
-  { name: 'Google Drive', description: 'Salva automaticamente as peças aprovadas em pastas organizadas por cliente.', icon: '📁' },
-  { name: 'Adobe Creative Cloud', description: 'Acessa ativos diretamente do Creative Cloud para upload de novas versões.', icon: '🎨' },
-  { name: 'Notion', description: 'Registra aprovações e feedbacks em databases do Notion para histórico completo.', icon: '📝' },
-  { name: 'Zapier', description: 'Conecta o Crivo a qualquer ferramenta via automações personalizadas.', icon: '⚡' },
+  { name: 'Taskrow', description: 'Atualiza o status da tarefa automaticamente quando uma peça é aprovada no Crivo.', icon: <CheckCircle className="w-5 h-5" /> },
+  { name: 'Monday.com', description: 'Sincroniza aprovações com cards e atualiza status de projetos automaticamente.', icon: <ClipboardList className="w-5 h-5" /> },
+  { name: 'Asana', description: 'Marca tarefas como concluídas ao receber aprovação do cliente.', icon: <LayoutList className="w-5 h-5" /> },
+  { name: 'Slack', description: 'Notifica o canal do projeto quando cliente aprova ou pede revisão.', icon: <MessagesSquare className="w-5 h-5" /> },
+  { name: 'Google Drive', description: 'Salva automaticamente as peças aprovadas em pastas organizadas por cliente.', icon: <FolderOpen className="w-5 h-5" /> },
+  { name: 'Adobe Creative Cloud', description: 'Acessa ativos diretamente do Creative Cloud para upload de novas versões.', icon: <Palette className="w-5 h-5" /> },
+  { name: 'Notion', description: 'Registra aprovações e feedbacks em databases do Notion para histórico completo.', icon: <FileText className="w-5 h-5" /> },
+  { name: 'Zapier', description: 'Conecta o Crivo a qualquer ferramenta via automações personalizadas.', icon: <Zap className="w-5 h-5" /> },
 ]
 
 export default function IntegrationsPage() {

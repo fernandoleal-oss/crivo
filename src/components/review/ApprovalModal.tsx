@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { CheckCircle, RotateCcw } from 'lucide-react'
 import type { ApprovalDecision } from '@/lib/types'
 
 interface ApprovalModalProps {
@@ -51,7 +52,7 @@ export function ApprovalModal({ open, decision, pieceId, versionId, pieceName, p
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader><DialogTitle>{isApproval ? '✅ Aprovar peça' : '↩ Pedir revisão'}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle className="flex items-center gap-2">{isApproval ? <><CheckCircle className="w-5 h-5 text-green-600" /> Aprovar peça</> : <><RotateCcw className="w-5 h-5 text-amber-500" /> Pedir revisão</>}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div>
             <Label htmlFor="who">Seu nome</Label>

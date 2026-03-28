@@ -34,7 +34,7 @@ export function PieceList({ projectId, projectName }: PieceListProps) {
     const channel = supabase.channel(`project-${projectId}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'approvals' }, payload => {
         const decision = (payload.new as { decision: string }).decision
-        toast.info(decision === 'approved' ? '✅ Cliente aprovou uma peça!' : '↩ Cliente pediu revisão!')
+        toast.info(decision === 'approved' ? 'Cliente aprovou uma peça!' : 'Cliente pediu revisão!')
         fetchPieces()
       })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments' }, () => { fetchPieces() })

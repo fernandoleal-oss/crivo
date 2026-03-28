@@ -11,6 +11,7 @@ import { VersionCompare } from './VersionCompare'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { Button } from '@/components/ui/button'
 import { formatRelativeTime } from '@/lib/utils'
+import { MapPin, MessageSquare, RefreshCw, CheckCircle, RotateCcw, MousePointer, Download } from 'lucide-react'
 import type { PieceWithVersions, PieceVersion, Comment } from '@/lib/types'
 
 interface ReviewShellProps { piece: PieceWithVersions; projectName: string }
@@ -67,12 +68,12 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
               <div>
                 <h2 className="font-semibold text-indigo-900 mb-2">Bem-vindo à revisão!</h2>
                 <div className="space-y-1.5 text-sm text-indigo-800">
-                  <p>📌 <strong>Comentar na imagem:</strong> Clique em qualquer ponto {isPdf ? 'do PDF' : 'da imagem'} para fixar um comentário exatamente onde quiser.</p>
-                  <p>💬 <strong>Comentário geral:</strong> Use o painel lateral para deixar observações gerais sobre a peça.</p>
+                  <p><MapPin className="w-3.5 h-3.5 inline mr-1" /><strong>Comentar na imagem:</strong> Clique em qualquer ponto {isPdf ? 'do PDF' : 'da imagem'} para fixar um comentário exatamente onde quiser.</p>
+                  <p><MessageSquare className="w-3.5 h-3.5 inline mr-1" /><strong>Comentário geral:</strong> Use o painel lateral para deixar observações gerais sobre a peça.</p>
                   {versions.length > 1 && (
-                    <p>🔄 <strong>Comparar versões:</strong> Use os botões de versão acima para navegar entre as versões ou compará-las lado a lado.</p>
+                    <p><RefreshCw className="w-3.5 h-3.5 inline mr-1" /><strong>Comparar versões:</strong> Use os botões de versão acima para navegar entre as versões ou compará-las lado a lado.</p>
                   )}
-                  <p>✅ <strong>Quando terminar:</strong> Clique em <strong>&quot;Aprovar&quot;</strong> se a peça está ok, ou <strong>&quot;Pedir Revisão&quot;</strong> para solicitar ajustes.</p>
+                  <p><CheckCircle className="w-3.5 h-3.5 inline mr-1" /><strong>Quando terminar:</strong> Clique em <strong>&quot;Aprovar&quot;</strong> se a peça está ok, ou <strong>&quot;Pedir Revisão&quot;</strong> para solicitar ajustes.</p>
                 </div>
               </div>
               <button
@@ -100,13 +101,13 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
                 {!decidedWith && (
-                  <span className="text-indigo-500 text-xs bg-indigo-50 px-2 py-1 rounded-full">
-                    👆 Clique na imagem para fixar um comentário
+                  <span className="text-indigo-500 text-xs bg-indigo-50 px-2 py-1 rounded-full flex items-center gap-1">
+                    <MousePointer className="w-3 h-3 inline" /> Clique na imagem para fixar um comentário
                   </span>
                 )}
                 <p className="text-xs text-slate-500">v{currentVersion.version_number} · {formatRelativeTime(currentVersion.uploaded_at)}</p>
               </div>
-              <a href={currentVersion.file_url} download className="text-xs text-indigo-600 hover:underline">⬇ Download original</a>
+              <a href={currentVersion.file_url} download className="text-xs text-indigo-600 hover:underline flex items-center gap-1"><Download className="w-3 h-3 inline" /> Download original</a>
             </div>
           </div>
           <div className="w-full lg:w-80 flex-shrink-0">
@@ -117,8 +118,8 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
             ) : (
               <>
                 <div className="flex gap-2 mb-4">
-                  <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700 shadow-sm">✅ Aprovar</Button>
-                  <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700 hover:bg-amber-50">↩ Pedir Revisão</Button>
+                  <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700 shadow-sm flex items-center gap-1.5"><CheckCircle className="w-4 h-4" /> Aprovar</Button>
+                  <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700 hover:bg-amber-50 flex items-center gap-1.5"><RotateCcw className="w-4 h-4" /> Pedir Revisão</Button>
                 </div>
                 <p className="text-xs text-slate-500 text-center mb-4">
                   Revise a peça e deixe seus comentários antes de decidir.
@@ -131,8 +132,8 @@ export function ReviewShell({ piece, projectName }: ReviewShellProps) {
         </div>
         {!decidedWith && (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 flex gap-2 lg:hidden z-10">
-            <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700">✅ Aprovar</Button>
-            <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700">↩ Pedir Revisão</Button>
+            <Button onClick={() => setShowApprove(true)} className="flex-1 bg-green-600 hover:bg-green-700 flex items-center gap-1.5"><CheckCircle className="w-4 h-4" /> Aprovar</Button>
+            <Button onClick={() => setShowRevision(true)} variant="outline" className="flex-1 border-amber-400 text-amber-700 flex items-center gap-1.5"><RotateCcw className="w-4 h-4" /> Pedir Revisão</Button>
           </div>
         )}
       </div>

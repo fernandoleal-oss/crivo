@@ -1,3 +1,4 @@
+import { CheckCircle, RotateCcw } from 'lucide-react'
 import type { ApprovalDecision } from '@/lib/types'
 
 interface ApprovalConfirmationProps {
@@ -13,7 +14,7 @@ export function ApprovalConfirmation({ decision }: ApprovalConfirmationProps) {
         ? 'bg-green-50 border-green-200'
         : 'bg-amber-50 border-amber-200'
     }`}>
-      <div className="text-3xl mb-2">{isApproval ? '✅' : '↩'}</div>
+      <div className="flex justify-center mb-2">{isApproval ? <CheckCircle className="w-8 h-8 text-green-600" /> : <RotateCcw className="w-8 h-8 text-amber-500" />}</div>
       <p className={`font-bold text-base ${isApproval ? 'text-green-700' : 'text-amber-700'}`}>
         {isApproval ? 'Aprovado!' : 'Revisão solicitada!'}
       </p>

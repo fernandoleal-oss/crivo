@@ -6,6 +6,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { UploadNewVersion } from './UploadNewVersion'
 import { formatRelativeTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { FileText, Paperclip, ClipboardCopy, Send, CheckCircle, RotateCcw, ChevronUp, ChevronDown, Mail } from 'lucide-react'
 import type { PieceWithVersions } from '@/lib/types'
 
 interface PieceCardProps {
@@ -61,11 +62,11 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
             />
           ) : isPdf ? (
             <div className="flex items-center justify-center h-full gap-2 text-slate-500">
-              <span className="text-3xl">📄</span>
+              <FileText className="w-8 h-8 text-slate-400" />
               <span className="text-sm">PDF</span>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-300 text-2xl">📎</div>
+            <div className="flex items-center justify-center h-full text-slate-300"><Paperclip className="w-8 h-8" /></div>
           )}
           <div className="absolute top-2 right-2">
             <StatusBadge status={piece.status} />
@@ -80,7 +81,7 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             <p className="text-xs text-slate-500">{formatRelativeTime(piece.updated_at)}</p>
             {piece.notified_at && (
-              <span className="text-xs text-indigo-500">✉ Enviado {formatRelativeTime(piece.notified_at)}</span>
+              <span className="text-xs text-indigo-500 flex items-center gap-0.5"><Mail className="w-3 h-3" /> Enviado {formatRelativeTime(piece.notified_at)}</span>
             )}
             {piece.notified_at && piece.first_opened_at && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Visualizado</span>
@@ -92,21 +93,21 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
           </div>
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
-          <Button variant="ghost" size="sm" onClick={() => setExpanded(v => !v)}>{expanded ? '▲' : '▼'}</Button>
+          <Button variant="ghost" size="sm" onClick={() => setExpanded(v => !v)}>{expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</Button>
         </div>
       </div>
 
       {expanded && (
         <div className="border-t border-slate-100 px-4 pb-4 pt-3 space-y-3">
           <div className="flex gap-2 flex-wrap">
-            <Button variant="outline" size="sm" onClick={copyLink} title="Copia o link de revisão da peça para a área de transferência">📋 Copiar link</Button>
+            <Button variant="outline" size="sm" onClick={copyLink} title="Copia o link de revisão da peça para a área de transferência" className="flex items-center gap-1.5"><ClipboardCopy className="w-3.5 h-3.5" /> Copiar link</Button>
             <Button
               size="sm"
               onClick={() => onSendToClient(piece)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1.5"
               title="Envia um email para o cliente com o link de revisão"
             >
-              {piece.notified_at ? '📨 Reenviar para cliente' : '📨 Enviar para cliente'}
+              <Send className="w-3.5 h-3.5" />{piece.notified_at ? 'Reenviar para cliente' : 'Enviar para cliente'}
             </Button>
           </div>
           <p className="text-xs text-slate-500 mt-1">O cliente acessa o link, revisa a peça e aprova direto pelo navegador.</p>
@@ -127,7 +128,7 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Decisão do cliente</p>
               <div className="text-sm text-slate-700">
                 <span className={approval.decision === 'approved' ? 'text-green-600 font-medium' : 'text-amber-600 font-medium'}>
-                  {approval.decision === 'approved' ? '✅ Aprovado' : '↩ Revisão solicitada'}
+                  {approval.decision === 'approved' ? <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Aprovado</span> : <span className="flex items-center gap-1"><RotateCcw className="w-3.5 h-3.5" /> Revisão solicitada</span>}
                 </span>
                 {' '}por <strong>{approval.decided_by}</strong> — {formatRelativeTime(approval.decided_at)}
                 {approval.feedback && <p className="text-slate-500 mt-1 italic">&quot;{approval.feedback}&quot;</p>}

@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react'
+
 interface IntegrationCardProps {
   name: string
   description: string
-  icon: string
+  icon: ReactNode
   status: 'active' | 'coming_soon'
   howItWorks?: string
   onRequest?: () => void
@@ -13,7 +15,7 @@ export function IntegrationCard({ name, description, icon, status, howItWorks, o
     <div className={`bg-white border rounded-xl p-5 flex items-start gap-4 transition-colors ${
       status === 'active' ? 'border-green-200' : 'border-slate-200'
     }`}>
-      <div className="text-3xl flex-shrink-0">{icon}</div>
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <h3 className="font-semibold text-slate-900">{name}</h3>
@@ -26,7 +28,7 @@ export function IntegrationCard({ name, description, icon, status, howItWorks, o
         <p className="text-sm text-slate-500 mt-1">{description}</p>
         {howItWorks && (
           <p className="text-xs text-slate-500 mt-2 bg-slate-50 rounded-lg px-3 py-2">
-            ⚙️ <strong>Como funciona:</strong> {howItWorks}
+            <strong>Como funciona:</strong> {howItWorks}
           </p>
         )}
       </div>
