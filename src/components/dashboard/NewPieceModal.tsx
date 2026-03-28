@@ -59,8 +59,10 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
         if (xhr.status >= 200 && xhr.status < 300) {
           const { data } = supabase.storage.from(bucketName).getPublicUrl(path)
           resolve(data.publicUrl)
+        } else if (xhr.status === 404) {
+          reject(new Error('Bucket de armazenamento não encontrado. Crie o bucket "pieces" no painel do Supabase para habilitar uploads.'))
         } else {
-          reject(new Error('Upload falhou'))
+          reject(new Error(`Upload falhou (${xhr.status}). Tente novamente.`))
         }
       }
       xhr.onerror = () => reject(new Error('Falha na conexão. Tente novamente.'))

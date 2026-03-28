@@ -26,6 +26,16 @@ export function PinLayer({ pieceId, versionId, pinComments, hoveredPinIndex, onC
     setPending({ x, y })
   }
 
+  function handleTouchEnd(e: React.TouchEvent<HTMLDivElement>) {
+    if (disabled) return
+    e.preventDefault()
+    const touch = e.changedTouches[0]
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((touch.clientX - rect.left) / rect.width) * 100
+    const y = ((touch.clientY - rect.top) / rect.height) * 100
+    setPending({ x, y })
+  }
+
   async function handleSavePin(e: React.FormEvent) {
     e.preventDefault()
     if (!pending || !content.trim() || !authorName.trim()) return
@@ -43,7 +53,7 @@ export function PinLayer({ pieceId, versionId, pinComments, hoveredPinIndex, onC
   }
 
   return (
-    <div className="absolute inset-0 cursor-crosshair" onClick={handleClick}>
+    <div className="absolute inset-0 cursor-crosshair" onClick={handleClick} onTouchEnd={handleTouchEnd}>
       {pinComments.map((c, i) => (
         <div key={c.id} className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
           style={{ left: `${c.pin_x}%`, top: `${c.pin_y}%` }}>
