@@ -79,6 +79,8 @@ interface ClapperboardDigitalProps {
   initialData?: Partial<ClapperboardData>
   onExportPDF?: (data: ClapperboardData) => void
   onExportPNG?: (data: ClapperboardData) => void
+  onExportVeiculacao?: (data: ClapperboardData) => void
+  onExportTVSpec?: (data: ClapperboardData) => void
   className?: string
 }
 
@@ -86,6 +88,8 @@ export function ClapperboardDigital({
   initialData,
   onExportPDF,
   onExportPNG,
+  onExportVeiculacao,
+  onExportTVSpec,
   className,
 }: ClapperboardDigitalProps) {
   const [data, setData] = useState<ClapperboardData>({
@@ -118,6 +122,20 @@ export function ClapperboardDigital({
         >
           <Download className="h-3.5 w-3.5" />
           Exportar PDF
+        </button>
+        <button
+          onClick={() => onExportVeiculacao?.(data)}
+          className="flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
+        >
+          <Download className="h-3.5 w-3.5" />
+          Planilha Veiculação
+        </button>
+        <button
+          onClick={() => onExportTVSpec?.(data)}
+          className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors"
+        >
+          <Download className="h-3.5 w-3.5" />
+          Spec de TV
         </button>
       </div>
 

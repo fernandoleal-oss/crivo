@@ -11,11 +11,19 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const revision = pieces.filter(p => p.status === 'revision_requested').length
   const pending = pieces.filter(p => p.status === 'pending').length
   const sectorInfo = SECTORS.find(s => s.value === project.sector)
+  const briefingIncompleto = (project.briefing_score ?? 0) < 80 && (project.briefing_score ?? 0) > 0
 
   return (
     <Link href={`/project/${project.id}`}>
       <div className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer">
-        <h3 className="font-semibold text-slate-900 leading-tight mb-1">{project.name}</h3>
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h3 className="font-semibold text-slate-900 leading-tight">{project.name}</h3>
+          {briefingIncompleto && (
+            <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+              ⚠ Briefing {project.briefing_score}%
+            </span>
+          )}
+        </div>
         <p className="text-sm text-slate-500 mb-1">{project.client_name}</p>
         {sectorInfo && sectorInfo.value !== 'all' && (
           <span className="text-xs text-slate-500 flex items-center gap-1 mb-2"><sectorInfo.Icon size={12} /> {sectorInfo.label}</span>

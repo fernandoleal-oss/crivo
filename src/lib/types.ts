@@ -1,4 +1,16 @@
 export type PieceStatus = 'pending' | 'approved' | 'revision_requested'
+
+export interface BriefingData {
+  produto: string | null
+  verba: string | null
+  prazo: string | null
+  assets_necessarios: string[]
+  aprovador: string | null
+  observacoes: string | null
+  informacoes_faltando: string[]
+  resumo_executivo: string
+  confianca_analise: number
+}
 export type CommentType = 'general' | 'pin'
 export type ApprovalDecision = 'approved' | 'revision_requested'
 export type Sector = 'criacao' | 'rtv' | 'midia' | 'atendimento' | 'geral'
@@ -8,6 +20,8 @@ export interface Project {
   name: string
   client_name: string
   sector: Sector
+  briefing_data: BriefingData | null
+  briefing_score: number
   created_at: string
 }
 

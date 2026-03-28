@@ -14,8 +14,12 @@ import { GuidedTourBanner } from './GuidedTourBanner'
 import { Input } from '@/components/ui/input'
 import type { ProjectWithCounts } from '@/lib/types'
 import type { Sector } from '@/lib/types'
+import { useRole } from '@/lib/role-context'
+import { CampaignPanel } from './CampaignPanel'
 
 export function ProjectGrid() {
+  const { role } = useRole()
+  if (role === 'midia') return <CampaignPanel />
   const [projects, setProjects] = useState<ProjectWithCounts[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')

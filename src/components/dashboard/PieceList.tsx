@@ -9,9 +9,9 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { PieceListSkeleton } from '@/components/shared/LoadingSkeleton'
 import type { PieceWithVersions } from '@/lib/types'
 
-interface PieceListProps { projectId: string; projectName: string }
+interface PieceListProps { projectId: string; projectName: string; briefingScore?: number }
 
-export function PieceList({ projectId, projectName }: PieceListProps) {
+export function PieceList({ projectId, projectName, briefingScore }: PieceListProps) {
   const [pieces, setPieces] = useState<PieceWithVersions[]>([])
   const [loading, setLoading] = useState(true)
   const [sendTarget, setSendTarget] = useState<PieceWithVersions | null>(null)
@@ -63,6 +63,7 @@ export function PieceList({ projectId, projectName }: PieceListProps) {
         open={!!sendTarget}
         piece={sendTarget}
         projectName={projectName}
+        briefingScore={briefingScore}
         onClose={() => setSendTarget(null)}
         onSent={fetchPieces}
       />

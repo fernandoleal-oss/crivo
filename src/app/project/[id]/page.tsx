@@ -42,7 +42,7 @@ export default async function ProjectPage({ params }: Props) {
         </p>
       </div>
 
-      <PieceList projectId={project.id} projectName={project.name} />
+      <PieceList projectId={project.id} projectName={project.name} briefingScore={project.briefing_score ?? 0} />
 
       {pieces.length > 0 && (
         <div className="mt-8 bg-white border border-slate-200 rounded-lg p-6">
