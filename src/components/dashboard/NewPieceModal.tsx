@@ -22,6 +22,7 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [deadline, setDeadline] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [progress, setProgress] = useState(0)
   const [uploadError, setUploadError] = useState<string | undefined>()
@@ -39,7 +40,7 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
   }
 
   function reset() {
-    setTitle(''); setDescription(''); setFile(null)
+    setTitle(''); setDescription(''); setDeadline(''); setFile(null)
     setProgress(0); setUploadError(undefined); setLoading(false)
   }
 
@@ -79,7 +80,7 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
     const token = generateToken()
     const { data: piece, error: pieceErr } = await supabase
       .from('pieces')
-      .insert({ project_id: projectId, title: title.trim(), description: description.trim() || null, public_token: token })
+      .insert({ project_id: projectId, title: title.trim(), description: description.trim() || null, public_token: token, deadline: deadline || null })
       .select().single()
     if (pieceErr || !piece) { toast.error('Erro ao criar peça'); setLoading(false); return }
     const path = `${piece.id}/1/${file.name}`
@@ -118,6 +119,10 @@ export function NewPieceModal({ projectId, onCreated }: NewPieceModalProps) {
               <Label htmlFor="desc">Descrição (opcional)</Label>
               <p className="text-xs text-slate-500 mb-1">Instruções ou contexto para o cliente entender a peça. Ex: &quot;Versão com fundo azul conforme briefing&quot;.</p>
               <Textarea id="desc" value={description} onChange={e => setDescription(e.target.value)} placeholder="Orientações para o cliente..." rows={2} />
+            </div>
+            <div>
+              <Label htmlFor="deadline">Prazo de aprovação (opcional)</Label>
+              <Input id="deadline" type="date" value={deadline} onChange={e => setDeadline(e.target.value)} className="mt-1" />
             </div>
             <div>
               <Label>Arquivo (JPG, PNG ou PDF — máx. 10MB)</Label>

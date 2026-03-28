@@ -18,6 +18,9 @@ export default async function ReviewPage({ params }: Props) {
   const { data: piece } = await supabase.from('pieces').select('*, piece_versions(*), approvals(*)')
     .eq('public_token', token).single()
   if (!piece) notFound()
+  if (!piece.first_opened_at) {
+    await supabase.from('pieces').update({ first_opened_at: new Date().toISOString() }).eq('id', piece.id)
+  }
   const { data: project } = await supabase.from('projects').select('name, client_name').eq('id', piece.project_id).single()
   return <ReviewShell piece={piece as PieceWithVersions} projectName={project?.name ?? ''} />
 }

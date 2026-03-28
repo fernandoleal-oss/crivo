@@ -20,13 +20,17 @@ interface CommentPanelProps {
 
 export function CommentPanel({ pieceId, versionId, comments, onCommentAdded, onPinHover, isInternal = false }: CommentPanelProps) {
   const [content, setContent] = useState('')
-  const [authorName, setAuthorName] = useState('')
+  const [authorName, setAuthorName] = useState(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('crivo_author_name') ?? ''
+    return ''
+  })
   const [internal, setInternal] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const visibleComments = isInternal ? comments : comments.filter(c => !c.is_internal)
   const generalComments = visibleComments.filter(c => c.comment_type === 'general')
   const pinComments = visibleComments.filter(c => c.comment_type === 'pin')
+  const resolvedCount = visibleComments.filter(c => c.resolved).length
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -43,6 +47,7 @@ export function CommentPanel({ pieceId, versionId, comments, onCommentAdded, onP
     })
     setLoading(false)
     if (error) { toast.error('Erro ao enviar comentário'); return }
+    localStorage.setItem('crivo_author_name', authorName.trim())
     setContent('')
     toast.success('Comentário enviado!')
     onCommentAdded()
@@ -50,6 +55,9 @@ export function CommentPanel({ pieceId, versionId, comments, onCommentAdded, onP
 
   return (
     <div className="flex flex-col gap-4">
+      {visibleComments.length > 0 && (
+        <p className="text-xs text-slate-500">{visibleComments.length} comentário{visibleComments.length !== 1 ? 's' : ''}, {resolvedCount} resolvido{resolvedCount !== 1 ? 's' : ''}</p>
+      )}
       {pinComments.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Pins na imagem</p>
@@ -57,7 +65,7 @@ export function CommentPanel({ pieceId, versionId, comments, onCommentAdded, onP
             {pinComments.map((c, i) => (
               <div key={c.id} className="relative">
                 {c.is_internal && <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] px-1 rounded">Interno</span>}
-                <CommentItem comment={c} pinIndex={i} onPinHover={onPinHover} />
+                <CommentItem comment={c} pinIndex={i} onPinHover={onPinHover} onResolved={onCommentAdded} />
               </div>
             ))}
           </div>
@@ -70,7 +78,7 @@ export function CommentPanel({ pieceId, versionId, comments, onCommentAdded, onP
             {generalComments.map(c => (
               <div key={c.id} className="relative">
                 {c.is_internal && <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] px-1 rounded">Interno</span>}
-                <CommentItem comment={c} />
+                <CommentItem comment={c} onResolved={onCommentAdded} />
               </div>
             ))}
           </div>

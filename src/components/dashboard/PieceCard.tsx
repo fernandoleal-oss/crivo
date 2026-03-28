@@ -14,6 +14,18 @@ interface PieceCardProps {
   onSendToClient: (piece: PieceWithVersions) => void
 }
 
+function DeadlineBadge({ deadline, status }: { deadline: string | null; status: string }) {
+  if (!deadline || status === 'approved') return null
+  const d = new Date(deadline)
+  const now = new Date()
+  const diffMs = d.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+  if (diffDays < 0) return <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700">Atrasado</span>
+  if (diffDays === 0) return <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Vence hoje</span>
+  if (diffDays === 1) return <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Vence amanhã</span>
+  return <span className="text-xs text-slate-500">{d.toLocaleDateString('pt-BR')}</span>
+}
+
 export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) {
   const [expanded, setExpanded] = useState(false)
   const latestVersion = piece.piece_versions?.at(-1)
@@ -31,7 +43,7 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
     <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
       {/* Thumbnail */}
       {latestVersion && (
-        <div className="relative h-32 bg-slate-100">
+        <div className="relative h-44 bg-slate-100">
           {isImage ? (
             <Image
               src={latestVersion.file_url}
@@ -63,6 +75,13 @@ export function PieceCard({ piece, onRefresh, onSendToClient }: PieceCardProps) 
             {piece.notified_at && (
               <span className="text-xs text-indigo-500">✉ Enviado {formatRelativeTime(piece.notified_at)}</span>
             )}
+            {piece.notified_at && piece.first_opened_at && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Visualizado</span>
+            )}
+            {piece.notified_at && !piece.first_opened_at && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Não aberto</span>
+            )}
+            <DeadlineBadge deadline={piece.deadline} status={piece.status} />
           </div>
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">

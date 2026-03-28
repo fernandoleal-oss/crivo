@@ -12,7 +12,7 @@ export interface Project {
 }
 
 export interface ProjectWithCounts extends Project {
-  pieces: { status: PieceStatus }[]
+  pieces: { status: PieceStatus; first_opened_at: string | null; notified_at: string | null }[]
 }
 
 export interface Piece {
@@ -23,6 +23,8 @@ export interface Piece {
   status: PieceStatus
   public_token: string
   notified_at: string | null
+  first_opened_at: string | null
+  deadline: string | null
   created_at: string
   updated_at: string
 }
@@ -51,6 +53,7 @@ export interface Comment {
   pin_x: number | null
   pin_y: number | null
   is_internal: boolean
+  resolved: boolean
   created_at: string
 }
 

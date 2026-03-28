@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PieceList } from '@/components/dashboard/PieceList'
+import { ActivityTimeline } from '@/components/review/ActivityTimeline'
+import type { PieceWithVersions, Comment } from '@/lib/types'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -10,6 +12,14 @@ export default async function ProjectPage({ params }: Props) {
   const supabase = await createClient()
   const { data: project } = await supabase.from('projects').select('*').eq('id', id).single()
   if (!project) notFound()
+
+  const { data: piecesRaw } = await supabase
+    .from('pieces')
+    .select('*, piece_versions(*), approvals(*), comments(*)')
+    .eq('project_id', id)
+    .order('created_at', { ascending: false })
+
+  const pieces = (piecesRaw ?? []) as (PieceWithVersions & { comments: Comment[] })[]
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -33,6 +43,18 @@ export default async function ProjectPage({ params }: Props) {
       </div>
 
       <PieceList projectId={project.id} projectName={project.name} />
+
+      {pieces.length > 0 && (
+        <div className="mt-8 bg-white border border-slate-200 rounded-lg p-6">
+          <h2 className="text-sm font-semibold text-slate-800 mb-4">Atividade Recente</h2>
+          {pieces.map(piece => (
+            <div key={piece.id} className="mb-6 last:mb-0">
+              <p className="text-sm font-medium text-slate-700 mb-1">{piece.title}</p>
+              <ActivityTimeline piece={piece} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
