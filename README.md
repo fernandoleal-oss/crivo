@@ -32,6 +32,27 @@ Funcionalidades do core:
 
 ---
 
+## Como explorar o demo
+
+O app já tem projetos criados. Siga esse roteiro para ver as principais funcionalidades:
+
+**1. Briefing incompleto (gate de envio)**
+Abra o projeto **Magazine Luiza — Black Friday**. O briefing está zerado — o ProjectCard mostra o alerta âmbar. Tente enviar ao cliente e veja o bloqueio consciente.
+
+**2. Fluxo completo de aprovação**
+Abra o projeto **Nubank — Lançamento NuPay**. Clique na peça "Key Visual Principal". Copie o link público e abra numa aba anônima — essa é a visão do cliente. Clique em qualquer ponto da imagem para deixar um comentário ancorado. Veja as duas versões no histórico (a v1 teve revisão solicitada).
+
+**3. Projeto saudável**
+Abra **iFood — Campanha Dia das Mães**. Briefing 94%, duas peças aprovadas, uma pendente. O estado ideal de um projeto no Crivo.
+
+**4. Visão de Mídia (Fabi)**
+No canto superior direito, troque o role para **Mídia / RTV**. O dashboard vira um painel de campanhas com claquete digital e botões de export CSV e TXT.
+
+**5. Extração de briefing por IA**
+Crie um novo projeto. No segundo step, cole qualquer texto de briefing (pode ser inventado: "Precisamos de uma campanha para o lançamento do produto X. Verba: R$50.000. Prazo: 30/04."). Clique em "Analisar com IA" e veja os campos extraídos automaticamente.
+
+---
+
 ## E fui além: personas reais de agência
 
 Enquanto construía, percebi que o problema de aprovação é só a camada mais visível. Cada papel dentro de uma agência tem sua própria fricção diária.
