@@ -37,7 +37,11 @@ export function ApprovalModal({ open, decision, pieceId, versionId, pieceName, p
     })
     if (error) { toast.error('Erro ao registrar decisão'); setLoading(false); return }
     await supabase.from('pieces').update({ status: decision }).eq('id', pieceId)
-    await notifyDecision({ pieceName, projectName, clientName: decidedBy.trim(), decision, feedback: feedback.trim() || undefined, decidedBy: decidedBy.trim(), pieceToken })
+    try {
+      await notifyDecision({ pieceName, projectName, clientName: decidedBy.trim(), decision, feedback: feedback.trim() || undefined, decidedBy: decidedBy.trim(), pieceToken })
+    } catch (err) {
+      console.error('[ApprovalModal] notifyDecision webhook failed:', err)
+    }
     localStorage.setItem('crivo_author_name', decidedBy.trim())
     toast.success(isApproval ? 'Aprovação registrada!' : 'Revisão solicitada!')
     setFeedback(''); setDecidedBy(''); setLoading(false)

@@ -28,13 +28,17 @@ export function SendToClientModal({ open, piece, projectName, onClose, onSent }:
     setLoading(true)
 
     const reviewUrl = `${window.location.origin}/review/${piece.public_token}`
-    await notifySendClient({
-      pieceName: piece.title,
-      projectName,
-      clientName: clientName.trim(),
-      clientEmail: clientEmail.trim(),
-      reviewUrl,
-    })
+    try {
+      await notifySendClient({
+        pieceName: piece.title,
+        projectName,
+        clientName: clientName.trim(),
+        clientEmail: clientEmail.trim(),
+        reviewUrl,
+      })
+    } catch (err) {
+      console.error('[SendToClientModal] notifySendClient webhook failed:', err)
+    }
 
     const supabase = createClient()
     await supabase.from('pieces').update({ notified_at: new Date().toISOString() }).eq('id', piece.id)
