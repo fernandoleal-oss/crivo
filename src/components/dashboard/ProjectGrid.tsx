@@ -19,6 +19,7 @@ import { useRole } from '@/lib/role-context'
 import { CampaignPanel } from './CampaignPanel'
 import { UpcomingDeadlines } from './UpcomingDeadlines'
 import { RecentActivity } from './RecentActivity'
+import { WeeklyTimeline } from './WeeklyTimeline'
 
 export function ProjectGrid() {
   const { role } = useRole()
@@ -67,7 +68,7 @@ export function ProjectGrid() {
   const isFirstTime = !loading && projects.length === 0
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-6 py-8">
       {/* Show WelcomeHero only on first access (no projects yet) */}
       {isFirstTime && <WelcomeHero onCreateProject={() => setShowModal(true)} />}
 
@@ -83,8 +84,8 @@ export function ProjectGrid() {
 
       <div className="flex items-end justify-between mb-8">
         <div>
-          <p className="text-sm text-slate-400 font-medium mb-1">Olá, {role === 'ceo' ? 'Desirre' : role === 'criacao' ? 'Bruno' : 'Fabi'} 👋</p>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+          <p className="text-sm text-slate-500 font-medium mb-1">Boa tarde, {role === 'ceo' ? 'Desirre' : role === 'criacao' ? 'Bruno' : 'Fabi'} 👋</p>
+          <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Visão geral</h1>
           <p className="text-sm text-slate-400 mt-1">
             {isFirstTime
               ? 'Crie seu primeiro projeto para começar.'
@@ -100,6 +101,7 @@ export function ProjectGrid() {
           {!isFirstTime && (
             <>
               <DashboardCounters {...counters} />
+              <WeeklyTimeline />
 
               {/* Counters explainer for new users */}
               {counters.total === 0 && (

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ConditionalNav } from '@/components/layout/ConditionalNav'
+import { DarkSidebar } from '@/components/layout/DarkSidebar'
 import { RoleProvider } from '@/lib/role-context'
 import './globals.css'
 
@@ -18,8 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body className={`${inter.className} text-slate-900`} style={{ backgroundColor: '#F5F3EF' }}>
         <RoleProvider>
-          <ConditionalNav />
-          <main className="min-h-[calc(100vh-48px)]">
+          <DarkSidebar />
+          <main className="ml-52 min-h-screen">
             {children}
           </main>
         </RoleProvider>
