@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { useRole } from '@/lib/role-context'
 import type { AppRole } from '@/components/ui/RoleSwitcher'
-import { LayoutDashboard, Settings, Briefcase, Palette, Radio } from 'lucide-react'
+import { LayoutDashboard, Settings, Briefcase, Palette, Radio, Users } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -15,6 +15,7 @@ const PERSONAS: { role: AppRole; name: string; initial: string; color: string; i
 
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/fornecedores', label: 'Fornecedores', icon: Users },
   { href: '/integrations', label: 'Integrações', icon: Settings },
 ]
 

@@ -11,6 +11,7 @@ import type { ProjectWithCounts } from '@/lib/types'
 import { useRole } from '@/lib/role-context'
 import { CampaignPanel } from './CampaignPanel'
 import { Plus, ArrowUpRight, Clock, CheckCircle2, RefreshCw } from 'lucide-react'
+import { AIScoreBadge } from '@/components/ui/AIScoreBadge'
 import { cn } from '@/lib/utils'
 
 const USER_BY_ROLE = {
@@ -56,6 +57,8 @@ interface PieceRow {
   status: string
   deadline: string | null
   project_id: string
+  ai_score: number | null
+  ai_issues: string[] | null
   projects: { name: string; client_name: string } | null
   piece_versions: { file_url: string; version_number: number }[]
   approvals: { decided_by: string; decision: string }[]
@@ -101,7 +104,7 @@ export function ProjectGrid() {
         .order('created_at', { ascending: false }),
       supabase
         .from('pieces')
-        .select('id, title, status, deadline, project_id, projects(name, client_name), piece_versions(file_url, version_number), approvals(decided_by, decision)')
+        .select('id, title, status, deadline, project_id, ai_score, ai_issues, projects(name, client_name), piece_versions(file_url, version_number), approvals(decided_by, decision)')
         .order('updated_at', { ascending: false })
         .limit(30),
     ])
@@ -111,6 +114,16 @@ export function ProjectGrid() {
   }, [])
 
   useEffect(() => { fetchData() }, [fetchData])
+
+  useEffect(() => {
+    const supabase = createClient()
+    const channel = supabase
+      .channel('dashboard-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pieces' }, () => { fetchData() })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'approvals' }, () => { fetchData() })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [fetchData])
 
   const allPieces = projects.flatMap(p => p.pieces ?? [])
   const totalPieces = allPieces.length
@@ -372,9 +385,10 @@ export function ProjectGrid() {
                             {new Date(piece.deadline).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                           </span>
                         )}
-                        <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', STATUS_STYLE[piece.status])}>
+                        <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', STATUS_STYLE[piece.status], role === 'criacao' && piece.ai_score !== null && piece.ai_score < 50 ? 'ring-1 ring-red-400' : '')}>
                           {STATUS_LABEL[piece.status] ?? piece.status}
                         </span>
+                        {role === 'criacao' && <AIScoreBadge score={piece.ai_score} issues={piece.ai_issues} />}
                       </div>
                     </motion.div>
                   )
