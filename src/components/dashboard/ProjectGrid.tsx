@@ -19,8 +19,8 @@ import { cn } from '@/lib/utils'
 
 const USER_BY_ROLE = {
   ceo: 'Desirre',
-  criacao: 'Bruno',
-  midia: 'Fabi',
+  criacao: 'Desirre',
+  midia: 'Fabiana',
 }
 
 function greeting() {
