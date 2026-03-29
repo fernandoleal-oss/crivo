@@ -32,11 +32,26 @@ A insight central do Crivo: **o gargalo não é a revisão — é o envio.** O m
 
 ## O que foi construído
 
-### Fluxo core de aprovação
+### Fluxo de aprovação sequencial (v2)
 
 ```
-Criação sobe peça → gera link → envia pro cliente
-Cliente abre no celular → comenta na imagem → aprova ou pede revisão
+DA (produz) → Redator (aprova copy) → DC (aprova) → ECD (aprovação final)
+  → Atendimento (envia ao cliente) → Cliente (aprova/revisa)
+```
+
+Cada etapa só desbloqueia quando a anterior aprova. Qualquer rejeição volta para o DA refazer. Quando o ECD aprova, a peça fica "Pronta para envio" — o Atendimento escolhe o momento de enviar ao cliente.
+
+O **Card de Peça** (estilo C) mostra tudo de uma vez:
+- **Barra colorida no topo** — cada segmento = um aprovador (violeta DA, âmbar Redator, rosa DC, verde ECD), preenchida quando aprova
+- **Grid 4 colunas** — DA / Redator / DC / ECD com status visual (✅ aprovado, 👁️ aguardando, 🔒 bloqueado, ❌ revisão)
+- **Badge "Pronta para envio"** — aparece para Atendimento quando todos 4 internos aprovam
+- **AI Score** — badge no canto (verde ≥80, âmbar ≥50, vermelho <50)
+- **Thumbnail** da peça no centro
+
+### Fluxo core de aprovação (cliente)
+
+```
+Peça aprovada internamente → link público → cliente comenta/aprova
 Agência recebe no WhatsApp em tempo real → fecha o loop
 ```
 
@@ -45,7 +60,7 @@ Agência recebe no WhatsApp em tempo real → fecha o loop
 - **Comparação lado a lado de versões** — o cliente vê exatamente o que mudou entre v1 e v2
 - **Link público sem autenticação** — nanoID de 10 chars por peça, sem dado sensível exposto
 - **Aprovação com registro** — quem aprovou, quando, com qual feedback, vinculado à versão específica
-- **`first_opened_at` tracking** — "Visualizado" aparece no momento em que o cliente abre o link pela primeira vez, eliminando o e-mail passivo-agressivo de follow-up
+- **`first_opened_at` tracking** — "Visualizado" aparece no momento em que o cliente abre o link pela primeira vez
 - **Notificação WhatsApp em tempo real** — n8n + Evolution API entregam o status para a agência
 
 ### Dashboard role-aware (uma conta, três mundos)
@@ -70,16 +85,27 @@ Cada peça recebe um score 0–100 gerado pelo Claude (Haiku) no upload. No pape
 
 O efeito: a agência chega à conversa com o cliente já sabendo o que a IA sinalizou. Ou corrigiram (score alto) ou decidiram conscientemente que era aceitável (override). De qualquer forma, estão no controle da narrativa.
 
+### Transcrição de call → Briefing com IA
+
+O Atendimento cola a transcrição de uma call com o cliente. O Claude processa e gera automaticamente:
+
+- Produto, verba, prazo, aprovador, assets necessários
+- Score de confiança 0–100
+- Lista de informações faltando
+- Resumo executivo da call
+
+Projetos com transcrição processada exibem o badge "📞 Transcrição IA" no card. O botão "Colar transcrição" abre um modal onde a transcrição é enviada para a API `/api/transcription`, que usa o Anthropic SDK para gerar o briefing estruturado.
+
 ### Extração de briefing por IA
 
-No modal de criação de projeto, o atendimento cola o texto bruto do WhatsApp ou e-mail do cliente. O Claude (Haiku) extrai automaticamente:
+No modal de criação de projeto, o atendimento cola o texto bruto do WhatsApp ou e-mail do cliente. O Claude extrai automaticamente:
 
 - Produto, verba, prazo, aprovador, assets necessários
 - Score de completude 0–100
 - Lista de informações faltando
 - Resumo executivo
 
-O ProjectCard exibe o score com badge âmbar se < 70, bloqueando o envio ao cliente enquanto o briefing estiver incompleto. Isso evita o retrabalho mais caro da agência: a peça feita com briefing errado.
+O ProjectCard exibe o score com badge âmbar se < 70, bloqueando o envio ao cliente enquanto o briefing estiver incompleto.
 
 ### ClapperboardDigital (feature única no mercado)
 
@@ -145,22 +171,22 @@ O diferencial decisivo: Crivo tem um modelo mental de como agências brasileiras
 
 ## Como explorar o demo
 
-O app tem projetos criados. Siga esse roteiro para ver as principais funcionalidades:
+O app tem 5 projetos com dados realistas (iFood, Nubank, Magalu, Itaú, Ambev), 12 peças e aprovações sequenciais em diferentes estágios. 3 personas no seletor da sidebar.
 
-**1. Briefing incompleto (gate de envio)**
-Abra o projeto **Magazine Luiza — Black Friday**. O briefing está zerado — o ProjectCard mostra o alerta âmbar. Tente enviar ao cliente e veja o bloqueio consciente.
+**1. Fluxo de aprovação sequencial (Desirre — Atendimento)**
+Selecione a persona **Desirre** na sidebar. Veja os cards de peça com o grid de 4 colunas DA/Redator/DC/ECD. Peças totalmente aprovadas internamente mostram o badge "Pronta para envio".
 
-**2. Fluxo completo de aprovação**
-Abra **Nubank — Lançamento NuPay**. Clique na peça "Key Visual Principal". Copie o link público e abra numa aba anônima — essa é a visão do cliente. Clique em qualquer ponto da imagem para deixar um comentário ancorado. Veja as duas versões no histórico.
+**2. Visão de Criação (Bruno)**
+Troque para **Bruno**. Veja o AI Score badge em cada peça. Peças com score < 50 mostram gate de envio.
 
-**3. Projeto saudável**
-Abra **iFood — Campanha Dia das Mães**. Briefing 94%, duas peças aprovadas, uma pendente. O estado ideal de um projeto no Crivo.
+**3. Visão de Mídia (Fabi)**
+Troque para **Fabi**. O dashboard vira um painel de campanhas com claquete digital e botões de export.
 
-**4. Visão de Mídia (Fabi)**
-No canto superior esquerdo, na sidebar, troque o role para **Mídia / RTV**. O dashboard vira um painel de campanhas com claquete digital e botões de export CSV e TXT.
+**4. Transcrição IA**
+Como Desirre, clique em "+ Colar transcrição" em qualquer projeto. Cole um texto de reunião e clique "Gerar Briefing com IA" para ver o Claude extrair campos estruturados automaticamente.
 
-**5. Extração de briefing por IA**
-Crie um novo projeto. No segundo step, cole qualquer texto de briefing (inventado: "Campanha para lançamento do produto X. Verba: R$50.000. Prazo: 30/04. Aprovador: Carlos Silva."). Clique em "Analisar com IA" e veja os campos extraídos automaticamente com score de completude.
+**5. Peças em diferentes estágios**
+Na seção "Peças", use as tabs para ver: peças pendentes (mid-chain), em revisão (DC ou Redator rejeitou), e aprovadas (cadeia completa).
 
 ---
 
@@ -181,7 +207,7 @@ Crie um novo projeto. No segundo step, cole qualquer texto de briefing (inventad
 - **Next.js 14** (App Router) + TypeScript + Tailwind CSS + shadcn/ui
 - **Supabase** — PostgreSQL + Storage + Realtime subscriptions
 - **n8n** — workflows de notificação WhatsApp (Evolution API) e email
-- **Claude API** (Haiku) — AI Score de peças + extração de briefing
+- **Claude API** (Sonnet) — AI Score de peças + extração de briefing + transcrição de calls
 - **Vercel** — deploy com preview automático por PR
 - **motion/react** — animações de cards, modais e confirmações
 
