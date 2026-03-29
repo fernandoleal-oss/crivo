@@ -39,6 +39,7 @@ export interface Piece {
   notified_at: string | null
   first_opened_at: string | null
   deadline: string | null
+  internal_status?: string
   created_at: string
   updated_at: string
 }
@@ -79,6 +80,8 @@ export interface Approval {
   feedback: string | null
   decided_by: string
   decided_at: string
+  role?: string
+  step_order?: number
 }
 
 export interface NotifyDecisionPayload {

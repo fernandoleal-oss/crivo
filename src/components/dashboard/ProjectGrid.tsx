@@ -12,6 +12,8 @@ import { useRole } from '@/lib/role-context'
 import { CampaignPanel } from './CampaignPanel'
 import { Plus, ArrowUpRight, Clock, CheckCircle2, RefreshCw } from 'lucide-react'
 import { AIScoreBadge } from '@/components/ui/AIScoreBadge'
+import { ApprovalChain, isFullyApprovedInternally } from '@/components/ui/ApprovalChain'
+import TranscriptionModal from './TranscriptionModal'
 import { cn } from '@/lib/utils'
 
 const USER_BY_ROLE = {
@@ -61,7 +63,8 @@ interface PieceRow {
   ai_issues: string[] | null
   projects: { name: string; client_name: string } | null
   piece_versions: { file_url: string; version_number: number }[]
-  approvals: { decided_by: string; decision: string }[]
+  internal_status: string | null
+  approvals: { decided_by: string; decision: string; role?: string; step_order?: number }[]
 }
 
 type Tab = 'pending' | 'revision_requested' | 'approved'
@@ -94,6 +97,8 @@ export function ProjectGrid() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [tab, setTab] = useState<Tab>('pending')
+  const [showTranscription, setShowTranscription] = useState(false)
+  const [transcriptionProject, setTranscriptionProject] = useState<{id:string,name:string,client:string}|null>(null)
 
   const fetchData = useCallback(async () => {
     const supabase = createClient()
@@ -104,7 +109,7 @@ export function ProjectGrid() {
         .order('created_at', { ascending: false }),
       supabase
         .from('pieces')
-        .select('id, title, status, deadline, project_id, ai_score, ai_issues, projects(name, client_name), piece_versions(file_url, version_number), approvals(decided_by, decision)')
+        .select('id, title, status, deadline, project_id, ai_score, ai_issues, internal_status, projects(name, client_name), piece_versions(file_url, version_number), approvals(decided_by, decision, role, step_order)')
         .order('updated_at', { ascending: false })
         .limit(30),
     ])
@@ -254,6 +259,20 @@ export function ProjectGrid() {
                           </span>
                         </div>
                       </div>
+                      {/* Transcription indicators */}
+                      <div className="flex items-center gap-2 mt-1">
+                        {(project as any).briefing_data?.transcription_summary && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                            📞 Transcrição IA
+                          </span>
+                        )}
+                        {role === 'ceo' && (
+                          <button onClick={() => { setTranscriptionProject({id: project.id, name: project.name, client: project.client_name}); setShowTranscription(true) }}
+                            className="text-[10px] font-semibold text-indigo-600 hover:text-indigo-800">
+                            + Colar transcrição
+                          </button>
+                        )}
+                      </div>
                     </motion.div>
                   )
                 })}
@@ -294,6 +313,20 @@ export function ProjectGrid() {
                           <Clock size={9} />
                           {pcs.filter(p => p.status === 'pending').length} pend.
                         </span>
+                      </div>
+                      {/* Transcription indicators */}
+                      <div className="flex items-center gap-2 mt-1">
+                        {(project as any).briefing_data?.transcription_summary && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                            📞 Transcrição IA
+                          </span>
+                        )}
+                        {role === 'ceo' && (
+                          <button onClick={() => { setTranscriptionProject({id: project.id, name: project.name, client: project.client_name}); setShowTranscription(true) }}
+                            className="text-[10px] font-semibold text-indigo-600 hover:text-indigo-800">
+                            + Colar transcrição
+                          </button>
+                        )}
                       </div>
                     </motion.div>
                   )
@@ -344,51 +377,63 @@ export function ProjectGrid() {
                 </div>
               ) : (
                 filteredPieces.map((piece, i) => {
-                  const cover = (piece.piece_versions ?? []).find(v => v.version_number === 1)?.file_url
-                  const pieceApprovers = (piece.approvals ?? []).map(a => a.decided_by).filter(Boolean)
+                  const maxVersion = (piece.piece_versions ?? []).reduce((m, v) => Math.max(m, v.version_number), 0)
+                  const typedApprovals = (piece.approvals ?? []).filter(a => a.role && a.step_order).map(a => ({
+                    role: a.role!, step_order: a.step_order!, decision: a.decision, decided_by: a.decided_by
+                  }))
                   return (
                     <motion.div
                       key={piece.id}
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04 }}
-                      className="bg-white rounded-xl border border-slate-100 px-4 py-3 flex items-center gap-4 hover:shadow-sm transition-shadow"
+                      className="rounded-2xl border-2 border-slate-100 bg-white overflow-hidden hover:shadow-lg hover:border-indigo-300 transition-all"
                     >
-                      {/* Thumbnail */}
-                      {cover ? (
-                        <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0">
-                          <img src={cover} alt={piece.title} className="w-full h-full object-cover" />
-                        </div>
-                      ) : (
-                        <div className="w-11 h-11 rounded-lg bg-slate-100 flex-shrink-0" />
-                      )}
-
-                      {/* Info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-800 truncate">{piece.title}</p>
-                        <p className="text-xs text-slate-400 truncate">
-                          {piece.projects?.name ?? '—'} · {piece.projects?.client_name ?? '—'}
-                        </p>
+                      {/* Color accent bar */}
+                      <div className="flex h-1.5">
+                        {(['da','redator','dc','ecd'] as const).map((r, idx) => {
+                          const colors = ['bg-violet-600','bg-amber-500','bg-pink-500','bg-emerald-500']
+                          const hasApproval = piece.approvals?.some(a => a.role === r && a.decision === 'approved')
+                          return <div key={r} className={cn(colors[idx], hasApproval ? 'opacity-100' : 'opacity-20')} style={{flex:1}} />
+                        })}
                       </div>
-
-                      {/* Approvers avatars */}
-                      {pieceApprovers.length > 0 && (
-                        <div className="flex-shrink-0">
-                          <AvatarStack names={pieceApprovers} size={24} />
+                      <div className="p-4">
+                        {/* Title + AI Score */}
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-sm text-slate-900 truncate">{piece.title}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">{piece.projects?.client_name} · {piece.projects?.name}</p>
+                          </div>
+                          {role === 'criacao' && <AIScoreBadge score={piece.ai_score} issues={piece.ai_issues} />}
                         </div>
-                      )}
 
-                      {/* Deadline + status */}
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        {piece.deadline && (
-                          <span className="text-xs text-slate-400">
-                            {new Date(piece.deadline).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
-                          </span>
+                        {/* Thumbnail */}
+                        {piece.piece_versions?.[0]?.file_url && (
+                          <img src={piece.piece_versions[0].file_url} className="w-full aspect-video object-cover rounded-xl mb-3" alt="" />
                         )}
-                        <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', STATUS_STYLE[piece.status], role === 'criacao' && piece.ai_score !== null && piece.ai_score < 50 ? 'ring-1 ring-red-400' : '')}>
-                          {STATUS_LABEL[piece.status] ?? piece.status}
-                        </span>
-                        {role === 'criacao' && <AIScoreBadge score={piece.ai_score} issues={piece.ai_issues} />}
+
+                        {/* Approval Chain */}
+                        <ApprovalChain approvals={typedApprovals} />
+
+                        {/* Footer */}
+                        <div className="flex items-center justify-between mt-3">
+                          <div className="flex items-center gap-2">
+                            <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', STATUS_STYLE[piece.status])}>
+                              {STATUS_LABEL[piece.status]}
+                            </span>
+                            {maxVersion > 0 && (
+                              <span className="text-[10px] text-slate-400 font-medium">v{maxVersion}</span>
+                            )}
+                            {role === 'ceo' && isFullyApprovedInternally(typedApprovals) && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">Pronta para envio</span>
+                            )}
+                          </div>
+                          {piece.deadline && (
+                            <span className="text-[11px] text-orange-500 font-semibold flex items-center gap-1">
+                              <Clock size={11} /> {new Date(piece.deadline).toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit'})}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </motion.div>
                   )
@@ -405,6 +450,21 @@ export function ProjectGrid() {
       </div>
 
       <NewProjectModal open={showModal} onOpenChange={setShowModal} onCreated={fetchData} />
+
+      {showTranscription && transcriptionProject && (
+        <TranscriptionModal
+          open={showTranscription}
+          onClose={() => setShowTranscription(false)}
+          projectName={transcriptionProject.name}
+          clientName={transcriptionProject.client}
+          projectId={transcriptionProject.id}
+          onBriefingGenerated={async (data: any) => {
+            const supabase = createClient()
+            await supabase.from('projects').update({ briefing_data: data, briefing_score: data.confianca_analise ?? 0 }).eq('id', transcriptionProject.id)
+            fetchData()
+          }}
+        />
+      )}
     </div>
   )
 }
