@@ -1,6 +1,6 @@
 -- ============================================================
--- CRIVO — Demo Seed v2 (rich)
--- Run after migration 003_ai_score_and_suppliers.sql
+-- CRIVO — Demo Seed v3 (sequential approvals + AI transcription)
+-- Run after migration 004_approval_chain.sql
 -- ============================================================
 
 -- Clean up in FK order
@@ -19,13 +19,13 @@ INSERT INTO projects (id, name, client_name, sector, briefing_score, briefing_da
 -- iFood: Dia das Mães (criação, score alto)
 ('10000001-0000-0000-0000-000000000001',
  'Campanha Dia das Mães 2026', 'iFood', 'criacao', 94,
- '{"produto":"Entrega Grátis Dia das Mães","verba":"R$ 120.000","prazo":"05/05/2026","aprovador":"Camila Torres (Head de Marketing)","assets_necessarios":["logo iFood alta resolução","fotos de mães com entregadores","paleta Dia das Mães"],"observacoes":"Campanha emocional, foco em gratidão. Evitar humor.","informacoes_faltando":[],"resumo_executivo":"Campanha digital para o Dia das Mães com foco em entrega grátis. Verba aprovada, prazo definido, aprovador confirmado.","confianca_analise":94}',
+ '{"produto":"Entrega Grátis Dia das Mães","verba":"R$ 120.000","prazo":"05/05/2026","aprovador":"Camila Torres (Head de Marketing)","assets_necessarios":["logo iFood alta resolução","fotos de mães com entregadores","paleta Dia das Mães"],"observacoes":"Campanha emocional, foco em gratidão. Evitar humor.","informacoes_faltando":[],"resumo_executivo":"Campanha digital para o Dia das Mães com foco em entrega grátis. Verba aprovada, prazo definido, aprovador confirmado.","confianca_analise":94,"transcription_summary":"Call 26/03 14h — Camila Torres (iFood) com Desirre. Campanha emocional Dia das Mães, foco entrega grátis. Verba R$120k aprovada. Prazo 05/05."}',
  NOW() - INTERVAL '7 days'),
 
 -- Nubank: NuPay (atendimento, score médio — faltam infos)
 ('20000002-0000-0000-0000-000000000002',
  'Lançamento NuPay', 'Nubank', 'atendimento', 61,
- '{"produto":"NuPay — pagamento por aproximação","verba":null,"prazo":"20/04/2026","aprovador":"Rodrigo Lopes (Gerente de Produto)","assets_necessarios":["ícone NuPay","mockup celular","paleta roxa Nubank"],"observacoes":null,"informacoes_faltando":["verba total da campanha","canais de veiculação confirmados"],"resumo_executivo":"Lançamento do NuPay com prazo definido mas verba e canais ainda não confirmados pelo cliente.","confianca_analise":61}',
+ '{"produto":"NuPay — pagamento por aproximação","verba":null,"prazo":"20/04/2026","aprovador":"Rodrigo Lopes (Gerente de Produto)","assets_necessarios":["ícone NuPay","mockup celular","paleta roxa Nubank"],"observacoes":null,"informacoes_faltando":["verba total da campanha","canais de veiculação confirmados"],"resumo_executivo":"Lançamento do NuPay com prazo definido mas verba e canais ainda não confirmados pelo cliente.","confianca_analise":61,"transcription_summary":"Call 24/03 10h — Rodrigo Lopes (Nubank) com Desirre. Lançamento NuPay, pagamento por aproximação. Verba pendente aprovação diretoria. Prazo 20/04. Canais ainda indefinidos."}',
  NOW() - INTERVAL '5 days'),
 
 -- Magalu: Black Friday (mídia, briefing vazio — score 0)
@@ -36,21 +36,21 @@ INSERT INTO projects (id, name, client_name, sector, briefing_score, briefing_da
 -- Itaú: Renegociação (criação, score alto)
 ('40000004-0000-0000-0000-000000000004',
  'Campanha Renegocia Fácil', 'Itaú Unibanco', 'criacao', 88,
- '{"produto":"Renegocia Fácil — renegociação digital de dívidas","verba":"R$ 85.000","prazo":"30/04/2026","aprovador":"Patricia Alves (Diretora de Comunicação)","assets_necessarios":["manual de marca Itaú","ícones da plataforma","mockups mobile"],"observacoes":"Tom acolhedor, não alarmista. Evitar menção a dívidas de forma negativa.","informacoes_faltando":[],"resumo_executivo":"Campanha educativa sobre renegociação digital. Verba e aprovador definidos.","confianca_analise":88}',
+ '{"produto":"Renegocia Fácil — renegociação digital de dívidas","verba":"R$ 85.000","prazo":"30/04/2026","aprovador":"Patricia Alves (Diretora de Comunicação)","assets_necessarios":["manual de marca Itaú","ícones da plataforma","mockups mobile"],"observacoes":"Tom acolhedor, não alarmista. Evitar menção a dívidas de forma negativa.","informacoes_faltando":[],"resumo_executivo":"Campanha educativa sobre renegociação digital. Verba e aprovador definidos.","confianca_analise":88,"transcription_summary":"Call 25/03 16h — Patricia Alves (Itaú) com Fabi e Bruno. Campanha Renegocia Fácil, tom acolhedor. Verba R$85k confirmada. Prazo 30/04. Evitar linguagem negativa sobre dívidas."}',
  NOW() - INTERVAL '4 days'),
 
 -- Ambev: Copa do Mundo (atendimento, score médio)
 ('50000005-0000-0000-0000-000000000005',
  'Ativação Copa do Mundo 2026', 'Ambev / Brahma', 'atendimento', 72,
- '{"produto":"Brahma Copa do Mundo 2026 — ativação digital + OOH","verba":"R$ 320.000","prazo":"01/06/2026","aprovador":"Renato Coelho (Gerente Nacional)","assets_necessarios":["logo Brahma Copa","mascote oficial","paleta Copa 2026"],"observacoes":"Material precisa seguir guidelines FIFA. Validação jurídica obrigatória.","informacoes_faltando":["aprovação jurídica FIFA pending","canais OOH confirmados"],"resumo_executivo":"Grande ativação Copa do Mundo com verba robusta mas com pendências jurídicas.","confianca_analise":72}',
+ '{"produto":"Brahma Copa do Mundo 2026 — ativação digital + OOH","verba":"R$ 320.000","prazo":"01/06/2026","aprovador":"Renato Coelho (Gerente Nacional)","assets_necessarios":["logo Brahma Copa","mascote oficial","paleta Copa 2026"],"observacoes":"Material precisa seguir guidelines FIFA. Validação jurídica obrigatória.","informacoes_faltando":["aprovação jurídica FIFA pending","canais OOH confirmados"],"resumo_executivo":"Grande ativação Copa do Mundo com verba robusta mas com pendências jurídicas.","confianca_analise":72,"transcription_summary":"Call 23/03 11h — Renato Coelho (Ambev) com Desirre e Fabi. Ativação Copa do Mundo Brahma, digital + OOH 8 capitais. Verba R$320k. Prazo 01/06. Pendência jurídica FIFA."}',
  NOW() - INTERVAL '6 days');
 
 
 -- ============================================================
--- PEÇAS (12)
+-- PEÇAS (12) — now with internal_status
 -- ============================================================
 INSERT INTO pieces (id, project_id, title, description, status, public_token, deadline,
-                    ai_score, ai_issues, notified_at, first_opened_at, created_at, updated_at) VALUES
+                    ai_score, ai_issues, notified_at, first_opened_at, created_at, updated_at, internal_status) VALUES
 
 -- iFood Dia das Mães
 ('a1000001-0000-0000-0000-000000000001', '10000001-0000-0000-0000-000000000001',
@@ -58,21 +58,21 @@ INSERT INTO pieces (id, project_id, title, description, status, public_token, de
  'tok_ifood_feed01', '2026-04-28',
  91, NULL,
  NOW() - INTERVAL '5 days', NOW() - INTERVAL '4 days',
- NOW() - INTERVAL '6 days', NOW() - INTERVAL '1 day'),
+ NOW() - INTERVAL '6 days', NOW() - INTERVAL '1 day', 'sent_to_client'),
 
 ('a2000002-0000-0000-0000-000000000001', '10000001-0000-0000-0000-000000000001',
  'Story Instagram 1080×1920', 'Versão story com CTA "Peça agora"', 'approved',
  'tok_ifood_story01', '2026-04-28',
  87, NULL,
  NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days',
- NOW() - INTERVAL '6 days', NOW() - INTERVAL '2 days'),
+ NOW() - INTERVAL '6 days', NOW() - INTERVAL '2 days', 'internally_approved'),
 
 ('a3000003-0000-0000-0000-000000000001', '10000001-0000-0000-0000-000000000001',
  'Banner Site Header 1920×600', 'Header da homepage no período da campanha', 'pending',
  'tok_ifood_header01', '2026-05-01',
  43, ARRAY['Contraste de texto insuficiente (WCAG AA)','CTA não identificado claramente','Hierarquia tipográfica fraca no mobile'],
  NULL, NULL,
- NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+ NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day', 'draft'),
 
 -- Nubank NuPay
 ('b1000001-0000-0000-0000-000000000002', '20000002-0000-0000-0000-000000000002',
@@ -80,14 +80,14 @@ INSERT INTO pieces (id, project_id, title, description, status, public_token, de
  'tok_nubank_kv01', '2026-04-15',
  58, ARRAY['Tipografia muito pequena (≤10px)','Fundo escuro reduz legibilidade do logo'],
  NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days',
- NOW() - INTERVAL '4 days', NOW() - INTERVAL '12 hours'),
+ NOW() - INTERVAL '4 days', NOW() - INTERVAL '12 hours', 'in_review'),
 
 ('b2000002-0000-0000-0000-000000000002', '20000002-0000-0000-0000-000000000002',
  'Banner Google Display 300×250', 'Versão adaptada para rede de display', 'pending',
  'tok_nubank_display01', '2026-04-18',
  76, ARRAY['Área segura insuficiente nas bordas'],
  NULL, NULL,
- NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+ NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days', 'in_review'),
 
 -- Magalu Black Friday
 ('c1000001-0000-0000-0000-000000000003', '30000003-0000-0000-0000-000000000003',
@@ -95,14 +95,14 @@ INSERT INTO pieces (id, project_id, title, description, status, public_token, de
  'tok_magalu_radio01', '2026-04-10',
  NULL, NULL,
  NULL, NULL,
- NOW() - INTERVAL '6 hours', NOW() - INTERVAL '6 hours'),
+ NOW() - INTERVAL '6 hours', NOW() - INTERVAL '6 hours', 'draft'),
 
 ('c2000002-0000-0000-0000-000000000003', '30000003-0000-0000-0000-000000000003',
  'Vídeo 15s — Instagram Reels', 'Corte para Reels da campanha Black Friday', 'pending',
  'tok_magalu_reels01', '2026-04-10',
  38, ARRAY['Sem legendas (acessibilidade)','Corte abrupto no 12s','Logo aparece apenas no frame final'],
  NULL, NULL,
- NOW() - INTERVAL '6 hours', NOW() - INTERVAL '6 hours'),
+ NOW() - INTERVAL '6 hours', NOW() - INTERVAL '6 hours', 'draft'),
 
 -- Itaú Renegocia Fácil
 ('d1000001-0000-0000-0000-000000000004', '40000004-0000-0000-0000-000000000004',
@@ -110,21 +110,21 @@ INSERT INTO pieces (id, project_id, title, description, status, public_token, de
  'tok_itau_video01', '2026-04-22',
  82, NULL,
  NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days',
- NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day'),
+ NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day', 'sent_to_client'),
 
 ('d2000002-0000-0000-0000-000000000004', '40000004-0000-0000-0000-000000000004',
  'Banner LinkedIn 1200×628', 'Versão para campanha de awareness no LinkedIn', 'revision_requested',
  'tok_itau_linkedin01', '2026-04-25',
  55, ARRAY['Hierarquia de informação invertida','CTA "Saiba mais" genérico demais'],
  NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days',
- NOW() - INTERVAL '4 days', NOW() - INTERVAL '6 hours'),
+ NOW() - INTERVAL '4 days', NOW() - INTERVAL '6 hours', 'in_review'),
 
 ('d3000003-0000-0000-0000-000000000004', '40000004-0000-0000-0000-000000000004',
  'E-mail Marketing HTML', 'E-mail disparado para base de clientes com dívida', 'pending',
  'tok_itau_email01', '2026-04-20',
  79, ARRAY['Subject line com 68 chars (ideal < 50)'],
  NULL, NULL,
- NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+ NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day', 'draft'),
 
 -- Ambev Copa
 ('e1000001-0000-0000-0000-000000000005', '50000005-0000-0000-0000-000000000005',
@@ -132,14 +132,14 @@ INSERT INTO pieces (id, project_id, title, description, status, public_token, de
  'tok_brahma_manifesto01', '2026-05-15',
  NULL, NULL,
  NULL, NULL,
- NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+ NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days', 'draft'),
 
 ('e2000002-0000-0000-0000-000000000005', '50000005-0000-0000-0000-000000000005',
  'Pacote OOH — 12 formatos', 'Outdoors, metrô, busdoor para 8 capitais', 'approved',
  'tok_brahma_ooh01', '2026-05-10',
  93, NULL,
  NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days',
- NOW() - INTERVAL '6 days', NOW() - INTERVAL '2 days');
+ NOW() - INTERVAL '6 days', NOW() - INTERVAL '2 days', 'internally_approved');
 
 
 -- ============================================================
@@ -221,47 +221,145 @@ INSERT INTO piece_versions (id, piece_id, version_number, file_url, file_type, u
 
 
 -- ============================================================
--- APROVAÇÕES
+-- APROVAÇÕES (sequential chain with role + step_order)
 -- ============================================================
-INSERT INTO approvals (id, piece_id, version_id, decision, feedback, decided_by, decided_at) VALUES
+-- Roles: DA (step 1, Bruno), Redator (step 2, Carla), DC (step 3, Rodrigo), ECD (step 4, Patricia)
+-- ============================================================
+INSERT INTO approvals (id, piece_id, version_id, decision, feedback, decided_by, decided_at, role, step_order) VALUES
 
+-- iFood Feed — full chain approved → sent_to_client
 ('e1000001-0000-0000-0000-000000000001', 'a1000001-0000-0000-0000-000000000001',
  'f1000001-0000-0000-0000-000000000001',
- 'approved', 'Perfeito! Exatamente o que pedimos. Pode produzir.', 'Camila Torres',
- NOW() - INTERVAL '1 day'),
+ 'approved', 'Layout e grid ok, pode seguir.', 'Bruno',
+ NOW() - INTERVAL '5 days', 'da', 1),
+
+('e1000002-0000-0000-0000-000000000001', 'a1000001-0000-0000-0000-000000000001',
+ 'f1000001-0000-0000-0000-000000000001',
+ 'approved', 'Copy revisado, sem ajustes.', 'Carla',
+ NOW() - INTERVAL '4 days', 'redator', 2),
+
+('e1000003-0000-0000-0000-000000000001', 'a1000001-0000-0000-0000-000000000001',
+ 'f1000001-0000-0000-0000-000000000001',
+ 'approved', 'Conceito criativo alinhado com briefing. Aprovado.', 'Rodrigo',
+ NOW() - INTERVAL '3 days', 'dc', 3),
+
+('e1000004-0000-0000-0000-000000000001', 'a1000001-0000-0000-0000-000000000001',
+ 'f1000001-0000-0000-0000-000000000001',
+ 'approved', 'Perfeito! Exatamente o que pedimos. Pode produzir.', 'Patricia',
+ NOW() - INTERVAL '2 days', 'ecd', 4),
+
+-- iFood Story — full chain approved → internally_approved
+('e2000001-0000-0000-0000-000000000001', 'a2000002-0000-0000-0000-000000000001',
+ 'f2000002-0000-0000-0000-000000000001',
+ 'approved', 'Formato story ok, CTA bem posicionado.', 'Bruno',
+ NOW() - INTERVAL '5 days', 'da', 1),
 
 ('e2000002-0000-0000-0000-000000000001', 'a2000002-0000-0000-0000-000000000001',
  'f2000002-0000-0000-0000-000000000001',
- 'approved', 'Aprovado. O CTA ficou muito bom.', 'Camila Torres',
- NOW() - INTERVAL '2 days'),
+ 'approved', 'Texto enxuto e direto. Aprovado.', 'Carla',
+ NOW() - INTERVAL '4 days', 'redator', 2),
+
+('e2000003-0000-0000-0000-000000000001', 'a2000002-0000-0000-0000-000000000001',
+ 'f2000002-0000-0000-0000-000000000001',
+ 'approved', 'Boa execução, linguagem emocional adequada.', 'Rodrigo',
+ NOW() - INTERVAL '3 days', 'dc', 3),
+
+('e2000004-0000-0000-0000-000000000001', 'a2000002-0000-0000-0000-000000000001',
+ 'f2000002-0000-0000-0000-000000000001',
+ 'approved', 'Aprovado. O CTA ficou muito bom.', 'Patricia',
+ NOW() - INTERVAL '2 days', 'ecd', 4),
+
+-- iFood Header (draft, score 43) — no approvals
+
+-- Nubank KV — DA✅ Redator✅ DC❌ → in_review
+('e3000001-0000-0000-0000-000000000002', 'b1000001-0000-0000-0000-000000000002',
+ 'f4000004-0000-0000-0000-000000000002',
+ 'approved', 'Composição visual ok, seguir para copy.', 'Bruno',
+ NOW() - INTERVAL '3 days', 'da', 1),
+
+('e3000002-0000-0000-0000-000000000002', 'b1000001-0000-0000-0000-000000000002',
+ 'f4000004-0000-0000-0000-000000000002',
+ 'approved', 'Copy aprovado com ressalva de tamanho mobile.', 'Carla',
+ NOW() - INTERVAL '2 days', 'redator', 2),
 
 ('e3000003-0000-0000-0000-000000000002', 'b1000001-0000-0000-0000-000000000002',
  'f4000004-0000-0000-0000-000000000002',
  'revision_requested',
  'A tipografia está pequena demais no mobile. Precisamos aumentar o título pelo menos 20%. O roxo do fundo está escuro — o logo some. Pode testar com o roxo padrão da nossa paleta?',
- 'Rodrigo Lopes',
- NOW() - INTERVAL '1 day'),
+ 'Rodrigo',
+ NOW() - INTERVAL '1 day', 'dc', 3),
 
-('e4000004-0000-0000-0000-000000000004', 'd1000001-0000-0000-0000-000000000004',
+-- Nubank Display — DA✅ → in_review
+('e4000001-0000-0000-0000-000000000002', 'b2000002-0000-0000-0000-000000000002',
+ 'f6000006-0000-0000-0000-000000000002',
+ 'approved', 'Layout 300x250 dentro da área segura. Ok.', 'Bruno',
+ NOW() - INTERVAL '1 day', 'da', 1),
+
+-- Magalu Radio (draft) — no approvals
+-- Magalu Reels (draft) — no approvals
+
+-- Itaú Video — full chain approved → sent_to_client
+('e5000001-0000-0000-0000-000000000004', 'd1000001-0000-0000-0000-000000000004',
+ 'f9000009-0000-0000-0000-000000000004',
+ 'approved', 'Storyboard e cortes ok.', 'Bruno',
+ NOW() - INTERVAL '4 days', 'da', 1),
+
+('e5000002-0000-0000-0000-000000000004', 'd1000001-0000-0000-0000-000000000004',
+ 'f9000009-0000-0000-0000-000000000004',
+ 'approved', 'Roteiro e locução revisados. Tom acolhedor mantido.', 'Carla',
+ NOW() - INTERVAL '3 days', 'redator', 2),
+
+('e5000003-0000-0000-0000-000000000004', 'd1000001-0000-0000-0000-000000000004',
+ 'f9000009-0000-0000-0000-000000000004',
+ 'approved', 'Direção criativa alinhada. Aprovado.', 'Rodrigo',
+ NOW() - INTERVAL '2 days', 'dc', 3),
+
+('e5000004-0000-0000-0000-000000000004', 'd1000001-0000-0000-0000-000000000004',
  'f9000009-0000-0000-0000-000000000004',
  'approved',
  'Excelente execução! O tom acolhedor ficou muito bem representado. Aprovado para veiculação.',
- 'Patricia Alves',
- NOW() - INTERVAL '1 day'),
+ 'Patricia',
+ NOW() - INTERVAL '1 day', 'ecd', 4),
 
-('e5000005-0000-0000-0000-000000000004', 'd2000002-0000-0000-0000-000000000004',
+-- Itaú LinkedIn — DA✅ Redator❌ → in_review
+('e6000001-0000-0000-0000-000000000004', 'd2000002-0000-0000-0000-000000000004',
+ 'fa000001-0000-0000-0000-000000000004',
+ 'approved', 'Formato LinkedIn dentro do padrão.', 'Bruno',
+ NOW() - INTERVAL '2 days', 'da', 1),
+
+('e6000002-0000-0000-0000-000000000004', 'd2000002-0000-0000-0000-000000000004',
  'fa000001-0000-0000-0000-000000000004',
  'revision_requested',
  'A hierarquia ficou confusa — o benefício principal não aparece de imediato. Precisa revisão no copy e no CTA.',
- 'Patricia Alves',
- NOW() - INTERVAL '1 day'),
+ 'Carla',
+ NOW() - INTERVAL '1 day', 'redator', 2),
 
-('e6000006-0000-0000-0000-000000000005', 'e2000002-0000-0000-0000-000000000005',
+-- Itaú Email (draft) — no approvals
+
+-- Ambev Manifesto (draft) — no approvals
+
+-- Ambev OOH — full chain approved → internally_approved
+('e7000001-0000-0000-0000-000000000005', 'e2000002-0000-0000-0000-000000000005',
+ 'fd000002-0000-0000-0000-000000000005',
+ 'approved', 'Formatos OOH conferidos, proporções ok.', 'Bruno',
+ NOW() - INTERVAL '5 days', 'da', 1),
+
+('e7000002-0000-0000-0000-000000000005', 'e2000002-0000-0000-0000-000000000005',
+ 'fd000002-0000-0000-0000-000000000005',
+ 'approved', 'Textos curtos e impactantes. Adequado para OOH.', 'Carla',
+ NOW() - INTERVAL '4 days', 'redator', 2),
+
+('e7000003-0000-0000-0000-000000000005', 'e2000002-0000-0000-0000-000000000005',
+ 'fd000002-0000-0000-0000-000000000005',
+ 'approved', 'Paleta Copa vibrante, logo Brahma bem posicionado. Guidelines FIFA ok.', 'Rodrigo',
+ NOW() - INTERVAL '3 days', 'dc', 3),
+
+('e7000004-0000-0000-0000-000000000005', 'e2000002-0000-0000-0000-000000000005',
  'fd000002-0000-0000-0000-000000000005',
  'approved',
  'Incrível! A paleta Copa ficou vibrante e o logo Brahma está bem posicionado. Aprovado para todos os formatos.',
- 'Renato Coelho',
- NOW() - INTERVAL '2 days');
+ 'Patricia',
+ NOW() - INTERVAL '2 days', 'ecd', 4);
 
 
 -- ============================================================
