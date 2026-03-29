@@ -409,7 +409,7 @@ export function ProjectGrid() {
                             <p className="font-bold text-sm text-slate-900 truncate">{piece.title}</p>
                             <p className="text-xs text-slate-500 mt-0.5">{piece.projects?.client_name} · {piece.projects?.name}</p>
                           </div>
-                          {role === 'criacao' && <AIScoreBadge score={piece.ai_score} issues={piece.ai_issues} />}
+                          <AIScoreBadge score={piece.ai_score} issues={piece.ai_issues} />
                         </div>
 
                         {/* Thumbnail */}

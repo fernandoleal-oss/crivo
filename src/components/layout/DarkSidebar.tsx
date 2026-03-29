@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils'
 
 const PERSONAS: { role: AppRole; name: string; initial: string; color: string; icon: any; label: string }[] = [
   { role: 'ceo',     name: 'Desirre', initial: 'D', color: 'bg-indigo-500', icon: Briefcase, label: 'CEO / Atendimento' },
-  { role: 'criacao', name: 'Bruno',   initial: 'B', color: 'bg-violet-500', icon: Palette,   label: 'Criação' },
   { role: 'midia',   name: 'Fabi',    initial: 'F', color: 'bg-orange-500', icon: Radio,     label: 'Mídia / RTV' },
 ]
 

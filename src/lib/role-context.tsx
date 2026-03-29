@@ -18,7 +18,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem('crivo_role') as AppRole | null
-    if (saved && ['ceo', 'criacao', 'midia'].includes(saved)) {
+    if (saved && ['ceo', 'midia'].includes(saved)) {
       setRoleState(saved)
     }
   }, [])
