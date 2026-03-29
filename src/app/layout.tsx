@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import { ConditionalNav } from '@/components/layout/ConditionalNav'
 import { DarkSidebar } from '@/components/layout/DarkSidebar'
 import { RoleProvider } from '@/lib/role-context'
+import { DemoTicker } from '@/components/DemoTicker'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body className={`${inter.className} text-slate-900`} style={{ backgroundColor: '#F5F3EF' }}>
         <RoleProvider>
+          <DemoTicker />
           <DarkSidebar />
           <main className="ml-52 min-h-screen">
             {children}
