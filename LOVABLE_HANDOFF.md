@@ -240,7 +240,7 @@ Filtro por categoria no topo. Busca por nome.
 
 **Projeto:** `pvtozapmwecuqpzbdtfd`
 **URL:** `https://pvtozapmwecuqpzbdtfd.supabase.co`
-**Anon key:** `sb_publishable_V72q-CcD63mNu2-tkMS0lA_Y9bR0ZTO`
+**Anon key:** `${NEXT_PUBLIC_SUPABASE_ANON_KEY}`
 
 ### Schema completo
 

@@ -69,13 +69,13 @@ Criar workflow "Crivo_Notify" em https://n8n.nummo-ai.com.br com:
 - Push para GitHub
 - Conectar repo no Vercel, adicionar env vars:
   - NEXT_PUBLIC_SUPABASE_URL=https://pvtozapmwecuqpzbdtfd.supabase.co
-  - NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_V72q-CcD63mNu2-tkMS0lA_Y9bR0ZTO
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
   - N8N_WEBHOOK_URL=https://n8n.nummo-ai.com.br/webhook/crivo-notify
 
 ## Credenciais Supabase
 - Project ID: pvtozapmwecuqpzbdtfd
 - URL: https://pvtozapmwecuqpzbdtfd.supabase.co
-- Anon key: sb_publishable_V72q-CcD63mNu2-tkMS0lA_Y9bR0ZTO
+- Anon key: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
 
 ## Spec e plano
 - Design: docs/superpowers/specs/2026-03-27-crivo-design.md
