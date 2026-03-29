@@ -1,0 +1,6 @@
+ALTER TABLE approvals
+  ADD COLUMN IF NOT EXISTS role TEXT,
+  ADD COLUMN IF NOT EXISTS step_order INT;
+
+ALTER TABLE pieces
+  ADD COLUMN IF NOT EXISTS internal_status TEXT DEFAULT 'draft';
