@@ -189,47 +189,127 @@ export function ProjectGrid() {
       </div>
 
       {/* Atendimento command center — only for Desirre */}
-      {role === 'ceo' && (
-        <div className="grid grid-cols-4 gap-3 mb-8">
-          {/* Briefing Health */}
-          {(() => {
-            const withBriefing = projects.filter(p => (p as any).briefing_score > 0)
-            const avgScore = withBriefing.length
-              ? Math.round(withBriefing.reduce((s, p) => s + ((p as any).briefing_score ?? 0), 0) / withBriefing.length)
-              : 0
-            const noBriefing = projects.filter(p => !(p as any).briefing_score).length
-            const pendingReview = pieces.filter(p => p.status === 'revision_requested').length
-            const readyToSend = pieces.filter(p => {
-              const typed = (p.approvals ?? []).filter(a => a.role && a.step_order)
-              return typed.length >= 4 && typed.every(a => a.decision === 'approved') && p.internal_status !== 'sent_to_client'
-            }).length
-            return (
-              <>
-                <div className="bg-indigo-50 rounded-2xl p-4 border border-indigo-100">
-                  <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider mb-1">Score Briefing Médio</p>
-                  <p className="text-3xl font-black text-indigo-700">{avgScore}<span className="text-base font-medium text-indigo-300">/100</span></p>
-                  <p className="text-[11px] text-indigo-500 mt-1">{withBriefing.length} briefings preenchidos</p>
+      {role === 'ceo' && (() => {
+        const withBriefing = projects.filter(p => (p as any).briefing_score > 0)
+        const avgScore = withBriefing.length
+          ? Math.round(withBriefing.reduce((s, p) => s + ((p as any).briefing_score ?? 0), 0) / withBriefing.length)
+          : 0
+        const noBriefing = projects.filter(p => !(p as any).briefing_score).length
+        const pendingReview = pieces.filter(p => p.status === 'revision_requested').length
+        const readyToSend = pieces.filter(p => {
+          const typed = (p.approvals ?? []).filter(a => a.role && a.step_order)
+          return typed.length >= 4 && typed.every(a => a.decision === 'approved') && p.internal_status !== 'sent_to_client'
+        })
+        const upcomingDeadlines = pieces
+          .filter(p => p.deadline && new Date(p.deadline) > new Date() && p.status !== 'approved')
+          .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
+          .slice(0, 5)
+        const clientWaiting = pieces.filter(p => p.status === 'revision_requested' && p.piece_versions?.length > 0)
+
+        return (
+          <div className="space-y-4 mb-8">
+            {/* KPI row */}
+            <div className="grid grid-cols-4 gap-3">
+              <div className="bg-indigo-50 rounded-2xl p-4 border border-indigo-100">
+                <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider mb-1">Score Briefing Médio</p>
+                <p className="text-3xl font-black text-indigo-700">{avgScore}<span className="text-base font-medium text-indigo-300">/100</span></p>
+                <p className="text-[11px] text-indigo-500 mt-1">{withBriefing.length} briefings preenchidos</p>
+              </div>
+              <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
+                <p className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-1">Sem Briefing</p>
+                <p className="text-3xl font-black text-amber-700">{noBriefing}</p>
+                <p className="text-[11px] text-amber-500 mt-1">projeto{noBriefing !== 1 ? 's' : ''} sem dados</p>
+              </div>
+              <div className="bg-rose-50 rounded-2xl p-4 border border-rose-100">
+                <p className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider mb-1">Aguardando Revisão</p>
+                <p className="text-3xl font-black text-rose-700">{pendingReview}</p>
+                <p className="text-[11px] text-rose-500 mt-1">peça{pendingReview !== 1 ? 's' : ''} com pedido de ajuste</p>
+              </div>
+              <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
+                <p className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider mb-1">Prontas p/ Cliente</p>
+                <p className="text-3xl font-black text-emerald-700">{readyToSend.length}</p>
+                <p className="text-[11px] text-emerald-500 mt-1">aprovadas internamente</p>
+              </div>
+            </div>
+
+            {/* Action rows — envios pendentes + deadlines */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Envios Pendentes */}
+              <div className="bg-white rounded-2xl border border-slate-200 p-4">
+                <h3 className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-3">Enviar ao Cliente</h3>
+                {readyToSend.length === 0 ? (
+                  <p className="text-xs text-slate-400">Nenhuma peça pronta para envio.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {readyToSend.slice(0, 4).map(piece => (
+                      <div key={piece.id} onClick={() => router.push(`/project/${piece.project_id}`)} className="flex items-center gap-3 p-2 rounded-xl hover:bg-emerald-50 cursor-pointer transition-colors">
+                        {piece.piece_versions?.[0]?.file_url && (
+                          <img src={piece.piece_versions[0].file_url} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" alt="" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-slate-800 truncate">{piece.title}</p>
+                          <p className="text-[10px] text-slate-400">{piece.projects?.client_name}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex-shrink-0">4/4</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Deadlines próximos */}
+              <div className="bg-white rounded-2xl border border-slate-200 p-4">
+                <h3 className="text-[10px] font-bold text-orange-600 uppercase tracking-wider mb-3">Próximos Prazos</h3>
+                {upcomingDeadlines.length === 0 ? (
+                  <p className="text-xs text-slate-400">Nenhum deadline próximo.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {upcomingDeadlines.map(piece => {
+                      const days = Math.ceil((new Date(piece.deadline!).getTime() - Date.now()) / 86400000)
+                      const urgent = days <= 3
+                      return (
+                        <div key={piece.id} onClick={() => router.push(`/project/${piece.project_id}`)} className="flex items-center gap-3 p-2 rounded-xl hover:bg-orange-50 cursor-pointer transition-colors">
+                          <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-black', urgent ? 'bg-red-100 text-red-700' : 'bg-orange-50 text-orange-600')}>
+                            {days}d
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-slate-800 truncate">{piece.title}</p>
+                            <p className="text-[10px] text-slate-400">{piece.projects?.client_name} · {new Date(piece.deadline!).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})}</p>
+                          </div>
+                          <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', STATUS_STYLE[piece.status])}>
+                            {STATUS_LABEL[piece.status]}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Cobranças de revisão */}
+              {clientWaiting.length > 0 && (
+                <div className="bg-white rounded-2xl border border-slate-200 p-4 col-span-2">
+                  <h3 className="text-[10px] font-bold text-rose-600 uppercase tracking-wider mb-3">Cliente Aguardando Resposta</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {clientWaiting.slice(0, 4).map(piece => (
+                      <div key={piece.id} onClick={() => router.push(`/project/${piece.project_id}`)} className="flex items-center gap-3 p-2 rounded-xl hover:bg-rose-50 cursor-pointer transition-colors">
+                        {piece.piece_versions?.[0]?.file_url && (
+                          <img src={piece.piece_versions[0].file_url} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" alt="" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-slate-800 truncate">{piece.title}</p>
+                          <p className="text-[10px] text-slate-400">{piece.projects?.client_name} · v{piece.piece_versions?.length ?? 0}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full flex-shrink-0">Revisão</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
-                  <p className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-1">Sem Briefing</p>
-                  <p className="text-3xl font-black text-amber-700">{noBriefing}</p>
-                  <p className="text-[11px] text-amber-500 mt-1">projeto{noBriefing !== 1 ? 's' : ''} sem dados</p>
-                </div>
-                <div className="bg-rose-50 rounded-2xl p-4 border border-rose-100">
-                  <p className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider mb-1">Aguardando Revisão</p>
-                  <p className="text-3xl font-black text-rose-700">{pendingReview}</p>
-                  <p className="text-[11px] text-rose-500 mt-1">peça{pendingReview !== 1 ? 's' : ''} com pedido de ajuste</p>
-                </div>
-                <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
-                  <p className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider mb-1">Prontas p/ Cliente</p>
-                  <p className="text-3xl font-black text-emerald-700">{readyToSend}</p>
-                  <p className="text-[11px] text-emerald-500 mt-1">aprovadas internamente</p>
-                </div>
-              </>
-            )
-          })()}
-        </div>
-      )}
+              )}
+            </div>
+          </div>
+        )
+      })()}
 
       <div className="flex gap-6 items-start">
         <div className="flex-1 min-w-0 space-y-8">

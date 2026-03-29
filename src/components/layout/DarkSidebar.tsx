@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 const PERSONAS: { role: AppRole; name: string; initial: string; color: string; icon: any; label: string }[] = [
-  { role: 'ceo',     name: 'Desirre', initial: 'D', color: 'bg-indigo-500', icon: Briefcase, label: 'CEO / Atendimento' },
+  { role: 'ceo',     name: 'Desirre', initial: 'D', color: 'bg-indigo-500', icon: Briefcase, label: 'Atendimento' },
   { role: 'midia',   name: 'Fabiana',  initial: 'F', color: 'bg-orange-500', icon: Radio,     label: 'Gerente de Mídia' },
 ]
 
