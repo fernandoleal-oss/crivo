@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { createClient } from '@/lib/supabase/client'
 import { NewProjectModal } from './NewProjectModal'
@@ -90,6 +91,7 @@ function projectApprovers(project: ProjectWithCounts, pieces: PieceRow[]): strin
 
 export function ProjectGrid() {
   const { role } = useRole()
+  const router = useRouter()
   if (role === 'midia') return <CampaignPanel />
 
   const [projects, setProjects] = useState<ProjectWithCounts[]>([])
@@ -211,7 +213,8 @@ export function ProjectGrid() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.06, type: 'spring', stiffness: 280, damping: 26 }}
-                      className={cn('rounded-2xl p-5 flex flex-col gap-3', accent.bg)}
+                      className={cn('rounded-2xl p-5 flex flex-col gap-3 cursor-pointer hover:shadow-lg transition-shadow', accent.bg)}
+                      onClick={() => router.push(`/project/${project.id}`)}
                     >
                       {/* Top row */}
                       <div className="flex items-start justify-between">
@@ -267,7 +270,7 @@ export function ProjectGrid() {
                           </span>
                         )}
                         {role === 'ceo' && (
-                          <button onClick={() => { setTranscriptionProject({id: project.id, name: project.name, client: project.client_name}); setShowTranscription(true) }}
+                          <button onClick={(e) => { e.stopPropagation(); setTranscriptionProject({id: project.id, name: project.name, client: project.client_name}); setShowTranscription(true) }}
                             className="text-[10px] font-semibold text-indigo-600 hover:text-indigo-800">
                             + Colar transcrição
                           </button>
@@ -298,7 +301,8 @@ export function ProjectGrid() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.12 + i * 0.05, type: 'spring', stiffness: 280, damping: 26 }}
-                      className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col gap-2"
+                      className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => router.push(`/project/${project.id}`)}
                     >
                       <p className="text-[10px] text-slate-400 font-medium truncate uppercase tracking-wide">{project.client_name}</p>
                       <p className="text-sm font-bold text-slate-800 leading-tight truncate">{project.name}</p>
@@ -322,7 +326,7 @@ export function ProjectGrid() {
                           </span>
                         )}
                         {role === 'ceo' && (
-                          <button onClick={() => { setTranscriptionProject({id: project.id, name: project.name, client: project.client_name}); setShowTranscription(true) }}
+                          <button onClick={(e) => { e.stopPropagation(); setTranscriptionProject({id: project.id, name: project.name, client: project.client_name}); setShowTranscription(true) }}
                             className="text-[10px] font-semibold text-indigo-600 hover:text-indigo-800">
                             + Colar transcrição
                           </button>
@@ -387,7 +391,8 @@ export function ProjectGrid() {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04 }}
-                      className="rounded-2xl border-2 border-slate-100 bg-white overflow-hidden hover:shadow-lg hover:border-indigo-300 transition-all"
+                      className="rounded-2xl border-2 border-slate-100 bg-white overflow-hidden hover:shadow-lg hover:border-indigo-300 transition-all cursor-pointer"
+                      onClick={() => router.push(`/project/${piece.project_id}`)}
                     >
                       {/* Color accent bar */}
                       <div className="flex h-1.5">
