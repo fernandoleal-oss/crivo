@@ -1,5 +1,7 @@
 # Crivo
 
+![Crivo](public/globe.svg)
+
 > "Aprova essa versão?" — enviado no grupo do WhatsApp, junto com 47 outras mensagens, 3 áudios e uma foto de gato.
 
 Toda agência conhece essa cena. O cliente aprova a versão errada porque não achou a certa no histórico. A revisão chega sem feedback estruturado. Ninguém sabe exatamente quem aprovou o quê, e quando.
@@ -7,6 +9,8 @@ Toda agência conhece essa cena. O cliente aprova a versão errada porque não a
 **Crivo** resolve isso com um link. Sem cadastro pro cliente. Sem WhatsApp. Sem confusão.
 
 **→ [Abrir o demo](https://crivo-neon.vercel.app)** — projetos reais de agência já criados, explore sem precisar cadastrar nada.
+
+
 
 ---
 
@@ -39,7 +43,7 @@ Agência recebe no WhatsApp em tempo real → fecha o loop
 - **Upload com versionamento** — cada revisão é uma nova versão, o histórico nunca se perde
 - **Comentários ancorados por posição** — o cliente clica em qualquer ponto da imagem para comentar; o número do pin aparece exatamente naquela coordenada (pin_x, pin_y em % relativos)
 - **Comparação lado a lado de versões** — o cliente vê exatamente o que mudou entre v1 e v2
-- **Link público sem autenticação** — nanoid de 10 chars por peça, sem dado sensível exposto
+- **Link público sem autenticação** — nanoID de 10 chars por peça, sem dado sensível exposto
 - **Aprovação com registro** — quem aprovou, quando, com qual feedback, vinculado à versão específica
 - **`first_opened_at` tracking** — "Visualizado" aparece no momento em que o cliente abre o link pela primeira vez, eliminando o e-mail passivo-agressivo de follow-up
 - **Notificação WhatsApp em tempo real** — n8n + Evolution API entregam o status para a agência

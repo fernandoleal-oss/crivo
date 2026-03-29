@@ -1,0 +1,93 @@
+<style>
+  .flow { display: flex; flex-direction: column; gap: 0; max-width: 700px; margin: 0 auto; }
+  .step { display: flex; align-items: flex-start; gap: 16px; padding: 20px 24px; background: white; border: 1.5px solid #e2e8f0; border-radius: 16px; margin-bottom: 4px; position: relative; }
+  .step:not(:last-child)::after { content: '↓'; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 18px; color: #94a3b8; z-index: 1; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 700; font-size: 15px; color: #0f172a; margin-bottom: 4px; }
+  .step-desc { font-size: 13px; color: #64748b; line-height: 1.5; }
+  .step-roles { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .role-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+  .tag-atend { background: #e0f2fe; color: #0369a1; }
+  .tag-criacao { background: #ede9fe; color: #6d28d9; }
+  .tag-dc { background: #fef3c7; color: #92400e; }
+  .tag-da { background: #fce7f3; color: #9d174d; }
+  .tag-ecd { background: #dcfce7; color: #166534; }
+  .tag-client { background: #f1f5f9; color: #475569; }
+  .s1 { background: #eff6ff; border-color: #bfdbfe; }
+  .s2 { background: #f5f3ff; border-color: #ddd6fe; }
+  .s3 { background: #fefce8; border-color: #fde68a; }
+  .s4 { background: #fff7ed; border-color: #fed7aa; }
+  .s5 { background: #f0fdf4; border-color: #bbf7d0; }
+  .gate { background: #fef2f2; border: 2px dashed #fca5a5; border-radius: 12px; padding: 12px 20px; text-align: center; font-size: 13px; color: #dc2626; font-weight: 600; margin: 4px 0; }
+  .gate-ok { background: #f0fdf4; border: 2px dashed #86efac; color: #15803d; }
+</style>
+
+<h2>Fluxo de Aprovação — Crivo</h2>
+<p class="subtitle">Como uma peça percorre o sistema do briefing até o cliente</p>
+
+<div class="flow" style="margin-top: 24px;">
+
+  <div class="step s1">
+    <div class="step-num" style="background:#bfdbfe;color:#1d4ed8;">1</div>
+    <div class="step-body">
+      <div class="step-title">Briefing & Reunião</div>
+      <div class="step-desc">Atendimento reúne infos do cliente, agenda com Criação. Briefing centralizado no Crivo com análise IA (score 0–100).</div>
+      <div class="step-roles">
+        <span class="role-tag tag-atend">Atendimento</span>
+        <span class="role-tag tag-client">Cliente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step s2">
+    <div class="step-num" style="background:#ddd6fe;color:#6d28d9;">2</div>
+    <div class="step-body">
+      <div class="step-title">Produção da Peça</div>
+      <div class="step-desc">Criação produz e faz upload da peça no Crivo. Score IA avalia qualidade antes de enviar para aprovação interna.</div>
+      <div class="step-roles">
+        <span class="role-tag tag-criacao">Criação</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step s3">
+    <div class="step-num" style="background:#fde68a;color:#92400e;">3</div>
+    <div class="step-body">
+      <div class="step-title">Aprovação Interna — DC · DA · ECD</div>
+      <div class="step-desc">Peça enviada para aprovação dos três papéis internos. Cada um pode aprovar ou solicitar revisão independentemente.</div>
+      <div class="step-roles">
+        <span class="role-tag tag-dc">DC</span>
+        <span class="role-tag tag-da">DA</span>
+        <span class="role-tag tag-ecd">ECD</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gate">⛔ Bloqueado até que DC + DA + ECD tenham todos aprovado</div>
+
+  <div class="step s4">
+    <div class="step-num" style="background:#fed7aa;color:#c2410c;">4</div>
+    <div class="step-body">
+      <div class="step-title">Liberação para o Cliente</div>
+      <div class="step-desc">Com todos aprovados internamente, Atendimento recebe notificação e decide se envia para o cliente.</div>
+      <div class="step-roles">
+        <span class="role-tag tag-atend">Atendimento</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step s5">
+    <div class="step-num" style="background:#bbf7d0;color:#15803d;">5</div>
+    <div class="step-body">
+      <div class="step-title">Aprovação do Cliente</div>
+      <div class="step-desc">Cliente acessa via link público (/review/token), comenta com pins, aprova ou solicita revisão.</div>
+      <div class="step-roles">
+        <span class="role-tag tag-client">Cliente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gate gate-ok">✅ Peça aprovada — fluxo completo</div>
+
+</div>
