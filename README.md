@@ -4,7 +4,7 @@
 
 Substitui o WhatsApp como ferramenta de aprovação com um fluxo rastreável, sequencial e inteligente.
 
-**[Demo ao vivo](https://p-vivo.lovable.app)** | **Video demo (51s) — incluso na entrega**
+**[Demo ao vivo](https://c-rivo.lovable.app)** | **[Video demo (52s)](https://drive.google.com/drive/folders/14Wvx6_aoPJB17ihbmBZtd-KzEoDh81Pp?usp=sharing)**
 
 ---
 
